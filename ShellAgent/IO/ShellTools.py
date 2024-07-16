@@ -1,4 +1,5 @@
 from langchain.tools import tool
+import os
 
 class ShellTools: 
 
@@ -9,3 +10,7 @@ class ShellTools:
             you want to execute as a string inside the arguments 
             you should pass only the command nothing more nothing less
             """
+        try: 
+            return os.popen(command).read()
+        except Exception as e : 
+            return f"There was an error executing the command : {e}"
