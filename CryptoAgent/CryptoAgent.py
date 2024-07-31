@@ -21,3 +21,18 @@ def hash_to(input: str, algorithm:str):
         the tool returns the result of hash"""
 
     return os.popen(f"echo -n \'{input}\' | {algorithm}").read()
+
+tools = [hash_to]
+chat_bot = ChatOllama(model="llama3-groq-tool-use",
+                      temperature=0,
+                      keep_alive=-1).bind_tools(tools)
+parser = JsonOutputToolsParser(first_tool_only=True)
+prompt = ChatPromptTemplate.from_template(
+    """
+    you are a helpful cryptography and hashing AI agent 
+    your job is to take user prompt and execute what the 
+    user tells you using the tools I provided you with
+    the user prompt is : {input}
+    please don't forget to use the tools
+    """
+)
