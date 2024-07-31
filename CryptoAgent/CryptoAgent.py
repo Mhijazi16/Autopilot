@@ -36,3 +36,11 @@ prompt = ChatPromptTemplate.from_template(
     please don't forget to use the tools
     """
 )
+
+chain = prompt | chat_bot | parser 
+call = chain.invoke({"input":"convert hello to sha hash that has 224 bytes"}) 
+
+if not call : 
+    print("not working")
+else: 
+    print(hash_to(call['args']))
