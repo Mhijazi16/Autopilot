@@ -22,7 +22,22 @@ def hash_to(input: str, algorithm:str):
 
     return os.popen(f"echo -n \'{input}\' | {algorithm}").read()
 
-tools = [hash_to]
+@tool("crack_hash")
+def crack_hash(input: str, format: str): 
+    """this tool takes two things
+        input which is a string of the hash you want to crack 
+        format which is a string of the format of the hash
+        you can choose these types of formats: 
+
+        1) raw-md5
+        2) raw-sha1
+
+        the tool returns a text of the cracked hash"""
+
+    # os.popen(f"echo -n {input} > hash3.txt")
+    return os.popen(f"~/builds/john/run/john --format={format} hash.txt").read()
+
+tools = [hash_to, crack_hash]
 chat_bot = ChatOllama(model="llama3-groq-tool-use",
                       temperature=0,
                       keep_alive=-1).bind_tools(tools)
@@ -38,9 +53,11 @@ prompt = ChatPromptTemplate.from_template(
 )
 
 chain = prompt | chat_bot | parser 
-call = chain.invoke({"input":"convert hello to sha hash that has 224 bytes"}) 
+call = chain.invoke({"input":"I want you to crack this hash : a44671631fabd7e1cf9e344569045d14 that has md5 format"}) 
+# print(call['args'])
 
-if not call : 
-    print("not working")
-else: 
-    print(hash_to(call['args']))
+# if not call : 
+#     print("not working")
+# else: 
+print(crack_hash.invoke(call['args']))
+# print(os.popen("~/builds/john/run/john hash.txt").read())
