@@ -20,6 +20,7 @@ def hash_to(input: str, algorithm:str):
 
         the tool returns the result of hash"""
 
+    print("The Agent is Converting the text to Hash.....")
     return os.popen(f"echo -n \'{input}\' | {algorithm}").read()
 
 @tool("crack_hash")
@@ -34,30 +35,31 @@ def crack_hash(input: str, format: str):
 
         the tool returns a text of the cracked hash"""
 
-    # os.popen(f"echo -n {input} > hash3.txt")
+    os.popen(f"echo -n {input} > hash.txt")
     return os.popen(f"~/builds/john/run/john --format={format} hash.txt").read()
 
-tools = [hash_to, crack_hash]
-chat_bot = ChatOllama(model="llama3-groq-tool-use",
-                      temperature=0,
-                      keep_alive=-1).bind_tools(tools)
-parser = JsonOutputToolsParser(first_tool_only=True)
-prompt = ChatPromptTemplate.from_template(
-    """
-    you are a helpful cryptography and hashing AI agent 
-    your job is to take user prompt and execute what the 
-    user tells you using the tools I provided you with
-    the user prompt is : {input}
-    please don't forget to use the tools
-    """
-)
+def get_chain(): 
+    tools = [hash_to, crack_hash]
+    chat_bot = ChatOllama(model="llama3-groq-tool-use",
+                          temperature=0,
+                          keep_alive=-1).bind_tools(tools)
+    parser = JsonOutputToolsParser(first_tool_only=True)
+    prompt = ChatPromptTemplate.from_template(
+        """
+        you are a helpful cryptography and hashing AI agent 
+        your job is to take user prompt and execute what the 
+        user tells you using the tools I provided you with
+        the user prompt is : {input}
+        please don't forget to use the tools
+        """
+    )
 
-chain = prompt | chat_bot | parser 
-call = chain.invoke({"input":"I want you to crack this hash : a44671631fabd7e1cf9e344569045d14 that has md5 format"}) 
-# print(call['args'])
+    return prompt | chat_bot | parser 
 
-# if not call : 
-#     print("not working")
-# else: 
-print(crack_hash.invoke(call['args']))
-# print(os.popen("~/builds/john/run/john hash.txt").read())
+def chat(prompt):
+    chain = get_chain()
+    call = chain.invoke({"input":prompt}) 
+    print(crack_hash.invoke(call['args']))
+
+
+chat("I want you to crack this hash : 0edc9b073397681dc9f2c479686ea0d9 that has md5 format")
