@@ -21,3 +21,12 @@ through this project we aim to :
 3. Enhance User Experience
 4. Up Scaling the Productivity of regular users and developer
 5. Introduce a new Way of Interacting with Operating Systems
+
+### Objectives 
+___
+1. Building tools that reflect different OS modules 
+2. Building a Knowledge Base(vector databse) holds needed information
+2. Integrating these tools into sepreate Autonomous AI Agents 
+3. Design a Workflow of interaction between these Agents 
+4. Design a common web interface to interact with Agents 
+5. Create checklist to test and evaluating the effectivness of Agents
