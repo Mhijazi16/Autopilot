@@ -47,3 +47,14 @@ commands.
 
 ### Context Diagram 
 ![context-diagram](./AutopilotContextDiagram.svg)
+
+### Limitations & Contraints 
+
+# Theoretical Background 🍿
+
+## Abstraction
+### Evolution through Abstraction
+The Abstraction Principle is a fundamental concept in computer science; it states that complexity should be hidden, and only the essential features or functionalities of an object or system should be exposed to the outside world. In essence, this principle advocates for simplifying complex systems by identifying and isolating their underlying structures, properties, and behaviors, while providing a common interface.
+
+By abstracting away irrelevant details, the Abstraction Principle enables engineers and users to focus on the essential aspects of a system, improving their ability to reason about and work with it effectively. If we take a closer look at the evolution of operating systems, we would come to the conclusion that abstraction played a great role in that evolution – from systems like MS-DOS abstracting away hardware complexity to a simple text-based interface, to GUIs like Windows and Linux that abstracted away the command-line interface to a graphical one. And we plan through this project to add an extra layer of abstraction, which comes in the form of a Web interface chat-bot that has full control over the system; its main responsibility is to translate users' natural language into system commands to complete essential tasks. Thus, abstracting the OS into an OS powered by Natural Language.
+
