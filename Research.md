@@ -58,3 +58,15 @@ The Abstraction Principle is a fundamental concept in computer science; it state
 
 By abstracting away irrelevant details, the Abstraction Principle enables engineers and users to focus on the essential aspects of a system, improving their ability to reason about and work with it effectively. If we take a closer look at the evolution of operating systems, we would come to the conclusion that abstraction played a great role in that evolution – from systems like MS-DOS abstracting away hardware complexity to a simple text-based interface, to GUIs like Windows and Linux that abstracted away the command-line interface to a graphical one. And we plan through this project to add an extra layer of abstraction, which comes in the form of a Web interface chat-bot that has full control over the system; its main responsibility is to translate users' natural language into system commands to complete essential tasks. Thus, abstracting the OS into an OS powered by Natural Language.
 
+# Linux
+### Why Linux ?
+
+Linux is an open-source operating system that stands out for its unparalleled flexibility, customizability, and scaleability. What makes Linux the right tool for the job is the ability to reflect GUI actions into command-line equivalents. This means that users can access every feature and function available on the graphical user interface (GUI) through a bunch of commands. By taking advantage of this feature we can bulid on top of it our system.
+
+
+### Linux Architecture 
+Like a typical operating system the linux architecture consist of layers the kernel is reponsible for directly interfacing with the hardware, the shell is a user-friendly interface between the user and the kernel, and finally application & utility interface that includes GUI and other system utilities. 
+
+Unserstanding the Linux Architecture is vital for building out Autopilot system. We are mostly intrested in the GUI layer and the Shell layer, where we are going to be running our centralized interface of the project in the GUI layer and executing our instructions in the shell layer. 
+
+![linux-architecture](./linx-architecture.png)
