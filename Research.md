@@ -46,7 +46,7 @@ and the OS shell that provides us with an interface to execute commands and retu
 commands.
 
 ### Context Diagram 
-![context-diagram](./AutopilotContextDiagram.svg)
+![context-diagram](./AutopilotContextDiagram.png)
 
 ### Limitations & Contraints 
 
