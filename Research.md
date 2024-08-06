@@ -44,3 +44,6 @@ Furthermore the system is mainly composed of three interconnected components wit
 the user that prompts the system second is the AI backend that translates the prompt to OS commands
 and the OS shell that provides us with an interface to execute commands and return results of those
 commands.
+
+### Context Diagram 
+![context-diagram](./AutopilotContextDiagram.svg)
