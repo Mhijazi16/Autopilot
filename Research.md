@@ -30,3 +30,17 @@ ___
 3. Design a Workflow of interaction between these Agents 
 4. Design a common web interface to interact with Agents 
 5. Create checklist to test and evaluating the effectivness of Agents
+
+### System Description 
+___ 
+The system is designed to innovate the way we interact with operating systems by offering a
+centralized chat interface that recieve prompts from the user in their natural language and passes that prompt to the AI powered backend 
+that breaks it down into actionable steps and dispatches them to the relevant agent responsible for executing those tasks. The agent 
+then carries out the required actions within the system by executing corrosponding commands on the shell and returns the results.
+
+Broadly speaking the system consists of three components: first, the user who initiates interactions with the system; second, the AI-driven backend that translates user prompts from natural language into operating system commands; and third, the OS shell, which provides a interface for executing commands and returning their results.
+
+Furthermore the system is mainly composed of three interconnected components with each other the first is 
+the user that prompts the system second is the AI backend that translates the prompt to OS commands
+and the OS shell that provides us with an interface to execute commands and return results of those
+commands.
