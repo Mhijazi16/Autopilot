@@ -12,3 +12,12 @@ for unexperienced user these operations can be complex and time consuming and fo
 whats un-common between these users is the experience versus the complixity they are faceing this 
 challenge directly affects their Productivity and effictivness of completing the needed task.
 However whats common between all users is the Natural Language and the different tasks they want to achieve.by utilizing these common ground we aim to map the natural language of these users to OS commands responsible for completing the different tasks for the users. to elimenate the gap of experience and boost the productivity and introduce precision and accuracy to these tasks.
+
+### Aims 
+___
+through this project we aim to : 
+1. Abstract the Complexity of Managing & Monitoring the OS 
+2. Provide a Centralized Panel/Interface for Controlling the OS 
+3. Enhance User Experience
+4. Up Scaling the Productivity of regular users and developer
+5. Introduce a new Way of Interacting with Operating Systems
