@@ -16,13 +16,14 @@ def execute(command):
         the output of the command
     """
     try: 
-        print(f"[🪵] Executing {command}")
+        print("================================ Tool Node =================================")
+        print(f"[⚒️] Executing {command}")
         output = os.popen(command).read()
-        print(f"[🪵] Command Executed")
-        print(f"[🪵] Result: {output}")
+        print(f"[⚒️] Command Executed")
+        print(f"[⚒️] Result: {output}")
         return output 
     except Exception as ex: 
-        print(f"[🪵] An Error Occured {ex}")
+        print(f"[⚒️] An Error Occured {ex}")
         return f"Error occured {ex}"
 
 class AgentState(MessagesState): 
@@ -33,20 +34,32 @@ tools = [execute]
 shell_agent = llm.bind_tools(tools)
 
 def planner(state: AgentState): 
-    print("planning....")
+    print("================================ Planner Node =================================")
+    print(f"[🧠] Recieved prompt: {state['messages'][-1].content}")
+    print(f"[🧠] Planning")
     return {"messages": [shell_agent.invoke(state["messages"])]}
 
-builder = StateGraph(AgentState)
-builder.add_node("planner",planner)
-builder.add_node("tools",ToolNode(tools))
+def build_graph():
 
-builder.add_edge(START,"planner")
-builder.add_conditional_edges("planner",tools_condition)
-builder.add_edge("tools","planner")
-builder.add_edge("planner",END)
+    builder = StateGraph(AgentState)
+    builder.add_node("planner",planner)
+    builder.add_node("tools",ToolNode(tools))
 
-workflow = builder.compile()
+    builder.add_edge(START,"planner")
+    builder.add_conditional_edges("planner",tools_condition)
+    builder.add_edge("tools","planner")
+    builder.add_edge("planner",END)
 
-messages = workflow.invoke({"messages" : "tell me which user am using and then print the current directory am in"})['messages']
-for message in messages: 
-    message.pretty_print() 
+    graph = builder.compile()
+    return graph
+
+def prompt_agent(message):
+
+    workflow = build_graph()
+    messages = workflow.invoke({"messages" : message})['messages']
+
+    for message in messages: 
+        message.pretty_print() 
+
+prompt_agent("print the current working directory")
+
