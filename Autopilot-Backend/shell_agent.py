@@ -46,3 +46,7 @@ builder.add_edge("tools","planner")
 builder.add_edge("planner",END)
 
 workflow = builder.compile()
+
+messages = workflow.invoke({"messages" : "tell me which user am using and then print the current directory am in"})['messages']
+for message in messages: 
+    message.pretty_print() 
