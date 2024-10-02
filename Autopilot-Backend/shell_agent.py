@@ -31,3 +31,18 @@ class AgentState(MessagesState):
 llm = ChatOllama(model="llama3.2",temperature=0)
 tools = [execute]
 shell_agent = llm.bind_tools(tools)
+
+def planner(state: AgentState): 
+    print("planning....")
+    return {"messages": [shell_agent.invoke(state["messages"])]}
+
+builder = StateGraph(AgentState)
+builder.add_node("planner",planner)
+builder.add_node("tools",ToolNode(tools))
+
+builder.add_edge(START,"planner")
+builder.add_conditional_edges("planner",tools_condition)
+builder.add_edge("tools","planner")
+builder.add_edge("planner",END)
+
+workflow = builder.compile()
