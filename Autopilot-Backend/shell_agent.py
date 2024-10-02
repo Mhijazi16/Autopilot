@@ -24,3 +24,10 @@ def execute(command):
     except Exception as ex: 
         print(f"[🪵] An Error Occured {ex}")
         return f"Error occured {ex}"
+
+class AgentState(MessagesState): 
+    command: tuple[str,str]
+
+llm = ChatOllama(model="llama3.2",temperature=0)
+tools = [execute]
+shell_agent = llm.bind_tools(tools)
