@@ -3,8 +3,8 @@ from langchain_core.messages.human import HumanMessage
 from langgraph.graph import StateGraph,MessagesState, START, END
 from langgraph.prebuilt import ToolNode
 from langchain_ollama import ChatOllama
-from shelltool import execute
-from workflow import Workflow 
+from Tools.shelltool import execute
+from workflow import Workflow
 
 tools = [execute]
 llm = ChatOllama(model="llama3.1",temperature=0).bind_tools(tools)
