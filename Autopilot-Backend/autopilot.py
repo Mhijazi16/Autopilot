@@ -1,9 +1,17 @@
-from workflow import compile_workflow
+from workflow import Workflow
+from simpleWorkflow import SimpleWorkflow
 
-workflow = compile_workflow()
+class Autopilot: 
+    def __init__(self, workflow: Workflow) -> None:
+        self.workflow = workflow
+
+    def build_workflow(self): 
+        return self.workflow.compile_workflow()
+                        
+
 print("[🤖] : please enter a prompt.")
-
+flow = Autopilot(SimpleWorkflow()).build_workflow()
 while True: 
     prompt = input("[🧒🏻] : ")
-    messages = workflow.invoke({"messages" : prompt})['messages']
+    messages = flow.invoke({"messages" : prompt})['messages']
     print(f"[🤖] : {messages[-1].content}")
