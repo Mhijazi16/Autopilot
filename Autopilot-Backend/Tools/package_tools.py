@@ -82,3 +82,17 @@ def remove_packages(names: list[str]):
     process = spawn(command)
     process = handle_sudo(process)
     return process.read().decode()
+
+def remove_full_packages(names: list[str]):
+    """
+    Remove a list of package and their Dpenedencies
+    by running 'sudo pacman -Rns <names>' on the shell
+    Args: 
+        names: list of strings 
+    Returns: 
+        returns the output of the removal process.
+    """
+    command = f"sudo pacman --noconfirm -Rns {" ".join(names)}"
+    process = spawn(command)
+    process = handle_sudo(process)
+    return process.read().decode()
