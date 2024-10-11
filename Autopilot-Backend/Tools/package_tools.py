@@ -40,3 +40,18 @@ def update_packages():
     process = handle_sudo(process)
     return process.read().decode()
 
+def list_installed_packages():
+    """
+        list_installed_packages this tool run the command 
+        'pacman -Qe' on the shell to list the installed
+        packages
+    Args: 
+        takes no arguments
+    
+    Returns: 
+        returns list of installed packages.
+    """
+    command = "pacman -Qe"
+    process = spawn(command)
+    return process.read().decode()
+
