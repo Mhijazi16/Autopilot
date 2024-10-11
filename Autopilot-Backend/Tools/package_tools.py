@@ -18,11 +18,6 @@ def install_package(name: str):
         Returns: 
             returns what happened after execution
     """
-    process = spawn(f"sudo pacman -S {name}")
+    process = spawn(f"sudo pacman --noconfirm -S {name}")
     process = handle_sudo(process)
-    expectation = process.expect(["[Y/n]","target not found"])
-    if expectation == 0:
-        process.sendline("y")
-        process.expect("")
     return process.read().decode()
-
