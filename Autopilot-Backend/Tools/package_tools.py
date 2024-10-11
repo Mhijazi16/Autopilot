@@ -96,3 +96,17 @@ def remove_full_packages(names: list[str]):
     process = spawn(command)
     process = handle_sudo(process)
     return process.read().decode()
+
+def clean_package_cache():
+    """
+    this tool cleans the cache of packages on the system 
+    by running 'sudo pacman --noconfirm -Sc' on the shell
+    Args: 
+        takes nothing
+    Returns: 
+        reutrns the result
+    """
+    command = f"sudo pacman --noconfirm -Sc"
+    process = spawn(command)
+    process = handle_sudo(process)
+    return process.read().decode()
