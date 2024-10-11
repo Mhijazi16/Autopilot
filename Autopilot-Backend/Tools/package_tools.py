@@ -69,3 +69,16 @@ def list_dependencies():
     process = spawn(command)
     return process.read().decode()
 
+def remove_packages(names: list[str]):
+    """
+    Remove a list of specified package by running
+    'sudo pacman -R <names>' on the shell
+    Args: 
+        names: list of strings 
+    Returns: 
+        returns the output of the removal process.
+    """
+    command = f"sudo pacman --noconfirm -R {" ".join(names)}"
+    process = spawn(command)
+    process = handle_sudo(process)
+    return process.read().decode()
