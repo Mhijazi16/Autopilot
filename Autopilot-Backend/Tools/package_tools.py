@@ -55,3 +55,17 @@ def list_installed_packages():
     process = spawn(command)
     return process.read().decode()
 
+def list_dependencies():
+    """
+        this tool is used  to list all the package 
+        depandencies on the system by running 
+        'pacman -Qd' on the shell
+    Args: 
+        takes no arguments
+    Returns: 
+        returns list of package depandencies.
+    """
+    command = "pacman -Qd"
+    process = spawn(command)
+    return process.read().decode()
+
