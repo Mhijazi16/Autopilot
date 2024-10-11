@@ -24,4 +24,19 @@ def install_packages(names: list[str]):
     process = handle_sudo(process)
     return process.read().decode()
 
-print(install_packages(["neofetch","fastfetch"]))
+def update_packages(): 
+    """
+        update_packages this tool run the command 
+        'sudo pacman -Syu' on the shell to update the
+        system and its packages then returns the output 
+        of update  
+        Args: 
+            takes no arguments
+        Returns: 
+            returns what happened after execution
+    """
+    command = "sudo pacman --noconfirm -Syu"
+    process = spawn(command)
+    process = handle_sudo(process)
+    return process.read().decode()
+
