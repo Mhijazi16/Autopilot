@@ -1,4 +1,8 @@
-import pexpect
-import os
+from os import environ
+from pexpect import spawn
 
-password = os.environ.get("PASS")
+def handle_sudo(process: spawn): 
+    password = environ.get("PASS")
+    process.expect('password')
+    process.sendline(str(password))
+    return process
