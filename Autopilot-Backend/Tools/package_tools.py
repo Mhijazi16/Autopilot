@@ -110,3 +110,16 @@ def clean_package_cache():
     process = spawn(command)
     process = handle_sudo(process)
     return process.read().decode()
+
+def search_packages(name: str): 
+    """
+    this tool searches for a package on the system 
+    by running 'sudo pacman --noconfirm -Sc' on the shell
+    Args: 
+        name : string
+    Returns: 
+        returns the list of similar packages
+    """
+    command = f"pacman -Ss {name}"
+    process = spawn(command)
+    return process.read().decode()
