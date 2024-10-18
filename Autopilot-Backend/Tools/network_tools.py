@@ -46,7 +46,8 @@ def start_http_server(directory: str):
 
 def kill_http_server(): 
     """
-        This Tool 
+        This Tool is used to kill the http srever 
+        that you already started
     """
     getProcess = "ps -aux | grep 'python -m http.server' | head -1 | tr -s ' ' | cut -d ' ' -f 2"
     pid = os.popen(getProcess).read()
