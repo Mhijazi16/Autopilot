@@ -32,3 +32,23 @@ def ssh(username: str, hostname: str, password, commands: list[str]):
     session.logout()
     return output
 
+def start_http_server(directory: str):
+    """
+        This tools starts an http server inside 
+        the directory you supply in parameters
+        Args: 
+            directory: str
+        Returns: 
+            the output of trying to run the server
+    """
+
+    return os.popen(f"cd {directory} && python -m http.server")
+
+def kill_http_server(): 
+    """
+        This Tool 
+    """
+    getProcess = "ps -aux | grep 'python -m http.server' | head -1 | tr -s ' ' | cut -d ' ' -f 2"
+    pid = os.popen(getProcess).read()
+    killProcess = f"kill {pid}"
+    return os.popen(killProcess).read()
