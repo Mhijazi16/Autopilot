@@ -1,6 +1,8 @@
 from pexpect import pxssh
 import os
 
+import pexpect
+
 def read_status(process):
     return process.before.decode()
 
@@ -53,3 +55,27 @@ def kill_http_server():
     pid = os.popen(getProcess).read()
     killProcess = f"kill {pid}"
     return os.popen(killProcess).read()
+
+def list_network_hosts(password: str): 
+    """ 
+        this tool used to list the ips of 
+        the devices on this network
+        takes in the root password
+        Args: 
+            password: str
+        returns: 
+            list of ips and mac addreses
+    """
+    process = "sudo evillimiter --flush"
+    child = pexpect.spawn(process)
+    child.expect("password")
+    child.sendline(password)
+    child.expect(">>>")
+    child.sendline("scan")
+    child.expect(">>>")
+    child.sendline("hosts")
+    child.expect(">>>")
+    child.sendline("exit")
+    return read_status(child)
+
+print(list_network_hosts("GOTnoCap"))
