@@ -1,7 +1,6 @@
+import pexpect
 from pexpect import pxssh
 import os
-
-import pexpect
 
 def read_status(process):
     return process.before.decode()
@@ -78,4 +77,12 @@ def list_network_hosts(password: str):
     child.sendline("exit")
     return read_status(child)
 
-print(list_network_hosts("GOTnoCap"))
+def list_interfaces(): 
+    """
+        This tool is used to list 
+        the available network interfaces 
+        on the device 
+    """
+    return os.popen("ip a").read()
+
+print(list_interfaces())
