@@ -1,4 +1,5 @@
 import os
+import pexpect
 
 log_process = False
 def execute(command): 
@@ -23,3 +24,9 @@ def execute(command):
     except Exception as ex: 
         print(f"[⚒️] An Error Occured {ex}")
         return f"Error occured {ex}"
+
+def handle_sudo(process: pexpect.spawn, password: str):
+    process.expect("passowrd")
+    process.sendline(password)
+    return process
+
