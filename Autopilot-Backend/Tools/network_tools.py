@@ -1,5 +1,6 @@
 import pexpect
 from pexpect import pxssh
+from shelltool import handle_sudo
 import os
 
 def read_status(process):
@@ -85,4 +86,26 @@ def list_interfaces():
     """
     return os.popen("ip a").read()
 
-print(list_interfaces())
+def disable_interface(name: str):
+    """
+        This tool disables a network interface 
+        Args: 
+            name: str
+    """
+    command = f"sudo ip link set {name} down"
+    child = pexpect.spawn(command) 
+    handle_sudo(child,"GOTnoCap")
+    return read_status(child)
+
+def enable_interface(name: str):
+    """
+        This tool enables a network interface 
+        Args: 
+            name: str
+    """
+    command = f"sudo ip link set {name} up"
+    child = pexpect.spawn(command) 
+    handle_sudo(child,"GOTnoCap")
+    return read_status(child)
+
+print(disable_interface("wlp45s0"))
