@@ -1,10 +1,8 @@
 import pexpect
 from pexpect import pxssh
-from shelltool import handle_sudo
+from shelltool import handle_sudo, read_status
 import os
 
-def read_status(process):
-    return process.before.decode()
 
 def ssh(username: str, hostname: str, password, commands: list[str]):
     """

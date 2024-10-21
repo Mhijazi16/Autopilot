@@ -1,7 +1,23 @@
 import os
 import pexpect
 
-log_process = False
+def read_status(process):
+    return process.before.decode()
+
+def handle_sudo(process: pexpect.spawn, password: str = ""):
+    if password == "":
+        password = str(os.getenv("PASS"))
+
+    process.expect_exact("[sudo] password for ha1st: ")
+    process.sendline(password)
+    result = process.expect(["Sorry, try again.", pexpect.EOF])
+
+    if  result == 0: 
+        process.close()
+        return process, "permission denied"
+    else :
+        return process, "access granted"
+
 def execute(command): 
     """ 
     execute is a tool that takes in a 
@@ -12,21 +28,14 @@ def execute(command):
     Returns 
         the output of the command
     """
-    try: 
-        if log_process:
-            print("================================ Tool Node =================================")
-            print(f"[⚒️] Executing {command}")
-        output = os.popen(command).read()
-        if log_process:
-            print(f"[⚒️] Command Executed")
-            print(f"[⚒️] Result: {output}")
-        return output 
-    except Exception as ex: 
-        print(f"[⚒️] An Error Occured {ex}")
-        return f"Error occured {ex}"
+    if "sudo" in command: 
+        child = pexpect.spawn(command)
+        child, message = handle_sudo(child,"GOTnoCap")
+        if "denied" in message: 
+            return f"process failed : {message}"
+        return read_status(child) 
 
-def handle_sudo(process: pexpect.spawn, password: str):
-    process.expect("passowrd")
-    process.sendline(password)
-    return process
+    return os.popen(command).read()
+
+print(execute("sudo echo jammm"))
 
