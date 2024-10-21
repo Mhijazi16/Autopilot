@@ -1,6 +1,6 @@
 import pexpect
 from pexpect import pxssh
-from shelltool import handle_sudo, read_status
+from shell_tools import handle_sudo, read_status
 import os
 
 
