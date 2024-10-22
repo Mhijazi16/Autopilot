@@ -1,4 +1,5 @@
 from shell_tools import handle_sudo, read_status, pexpect, EOF
+import os
 
 def create_users(usernames: list[str], passwords: list[str]): 
     """
@@ -72,3 +73,34 @@ def remove_users(usernames: list[str]):
             output += f"🚨 faild removing {username}.\n"
 
     return f"The result of the process:\n{output}"
+
+def add_groups(names: list[str]): 
+    """
+        This Tool used to create one 
+        or more groups on the linux 
+        system 
+        Args: 
+            names: list of strings
+    """
+    if len(names) == 0: 
+        return "⚠️ Error: no group names were supplied!" 
+
+    command = "sudo groupadd "
+    output = ""
+    for group in names: 
+        try: 
+            cmd = command + group 
+            child = pexpect.spawn(cmd)
+            child, message = handle_sudo(child)
+
+            if "granted" in message: 
+                issue = f"groupadd: group '{group}' already exists"
+                if  issue in read_status(child): 
+                    output += f"🚨 group by the name of '{group}' already exist.\n"
+                else: 
+                    output += f"✅ group by the name of '{group}' was added.\n"
+        except: 
+            output += f"🚨 faild creating {group}.\n"
+
+    return f"The result of the process:\n{output}"
+
