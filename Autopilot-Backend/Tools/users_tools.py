@@ -104,3 +104,34 @@ def add_groups(names: list[str]):
 
     return f"The result of the process:\n{output}"
 
+def remove_groups(names: list[str]): 
+    """
+        This Tool used to remove one 
+        or more groups on the linux 
+        system 
+        Args: 
+            names: list of strings
+    """
+    if len(names) == 0: 
+        return "⚠️ Error: no group names were supplied!" 
+
+    command = "sudo groupdel "
+    output = ""
+    for group in names: 
+        try: 
+            cmd = command + group 
+            child = pexpect.spawn(cmd)
+            child, message = handle_sudo(child)
+
+            if "granted" in message: 
+                issue = f"groupdel: group '{group}' does not exist"
+                if  issue in read_status(child): 
+                    output += f"🚨 group by the name of '{group}' doesn't exist.\n"
+                else: 
+                    output += f"✅ group by the name of '{group}' was removed.\n"
+        except: 
+            output += f"🚨 faild removing {group}.\n"
+
+    return f"The result of the process:\n{output}"
+
+print(remove_groups(["two","one"]))
