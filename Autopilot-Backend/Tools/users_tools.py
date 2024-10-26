@@ -30,7 +30,7 @@ def create_users(usernames: list[str], passwords: list[str]):
             if "granted" in message: 
                 issue = f"useradd: user '{username}' already exists"
                 if issue in read_status(child): 
-                    output += f"🚨 user by the name of {username} is already in the system.\n"
+                    output += f"🚧 user by the name of {username} is already in the system.\n"
                 else: 
                     successful_users.append(username)
                     output += f"✅ user by the name of {username} was created.\n"
@@ -65,7 +65,7 @@ def remove_users(usernames: list[str]):
             if "granted" in message: 
                 issue = f"userdel: user '{username}' does not exist"
                 if  issue in read_status(child): 
-                    output += f"🚨 user by the name of {username} doesn't exist.\n"
+                    output += f"🚧 user by the name of {username} doesn't exist.\n"
                 else: 
                     successful_removes.append(username)
                     output += f"✅ user by the name of {username} was removed.\n"
@@ -96,7 +96,7 @@ def add_groups(names: list[str]):
             if "granted" in message: 
                 issue = f"groupadd: group '{group}' already exists"
                 if  issue in read_status(child): 
-                    output += f"🚨 group by the name of '{group}' already exist.\n"
+                    output += f"🚧 group by the name of '{group}' already exist.\n"
                 else: 
                     output += f"✅ group by the name of '{group}' was added.\n"
         except: 
@@ -126,7 +126,7 @@ def remove_groups(names: list[str]):
             if "granted" in message: 
                 issue = f"groupdel: group '{group}' does not exist"
                 if  issue in read_status(child): 
-                    output += f"🚨 group by the name of '{group}' doesn't exist.\n"
+                    output += f"🚧 group by the name of '{group}' doesn't exist.\n"
                 else: 
                     output += f"✅ group by the name of '{group}' was removed.\n"
         except: 
@@ -134,4 +134,19 @@ def remove_groups(names: list[str]):
 
     return f"The result of the process:\n{output}"
 
-print(remove_groups(["two","one"]))
+def add_group_users(group: str, usernames: list[str]): 
+    """
+        this tool adds one or more users to 
+        a group takes in group name and usernames
+        Args: 
+            group: str
+            usernames: list of strings
+    """
+
+    names = ",".join(usernames)
+    command = f"sudo gpasswd -M {names} {group}"
+    print(command)
+    child = pexpect.spawn(command)
+    child, message = handle_sudo(child)
+
+    return f"✅ {names} where added to group {group}"
