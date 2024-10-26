@@ -1,5 +1,6 @@
 import os
 import pexpect
+from pexpect import pxssh, EOF
 
 def read_status(process):
     return process.before.decode()
@@ -10,7 +11,7 @@ def handle_sudo(process: pexpect.spawn, password: str = ""):
 
     process.expect_exact("[sudo] password for ha1st: ")
     process.sendline(password)
-    result = process.expect(["Sorry, try again.", pexpect.EOF])
+    result = process.expect(["Sorry, try again.", pexpect.EOF,".*"])
 
     if  result == 0: 
         process.close()
@@ -30,12 +31,9 @@ def execute(command):
     """
     if "sudo" in command: 
         child = pexpect.spawn(command)
-        child, message = handle_sudo(child,"GOTnoCap")
+        child, message = handle_sudo(child)
         if "denied" in message: 
             return f"process failed : {message}"
         return read_status(child) 
 
     return os.popen(command).read()
-
-print(execute("sudo echo jammm"))
-
