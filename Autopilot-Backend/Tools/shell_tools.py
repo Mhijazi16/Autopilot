@@ -11,7 +11,7 @@ def handle_sudo(process: pexpect.spawn, password: str = ""):
 
     process.expect_exact("[sudo] password for ha1st: ")
     process.sendline(password)
-    result = process.expect(["Sorry, try again.", pexpect.EOF])
+    result = process.expect(["Sorry, try again.", pexpect.EOF,".*"])
 
     if  result == 0: 
         process.close()

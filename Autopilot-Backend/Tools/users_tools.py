@@ -150,3 +150,30 @@ def add_group_users(group: str, usernames: list[str]):
     child, message = handle_sudo(child)
 
     return f"✅ {names} where added to group {group}"
+
+def change_password(username: str, new_password: str): 
+    """ 
+        This tool is used to change 
+        password of a user 
+        Args: 
+            username: str 
+            new_password: str
+    """
+    try:
+        command = f"sudo passwd {username}"
+        child = pexpect.spawn(command)
+        child, message = handle_sudo(child)
+
+        if "granted" in message: 
+            child.expect("New password: ")
+            child.sendline(new_password)
+            child.expect("Retype new password: ")
+            child.sendline(new_password)
+            child.expect(EOF)
+            return "✅ " + read_status(child).strip()
+        else: 
+            return "🚧 Access Denied." 
+    except:
+        return "🚨 faild changing the password."
+
+print(change_password("one","123"))
