@@ -104,4 +104,12 @@ def enable_interface(name: str):
     handle_sudo(child)
     return read_status(child)
 
-print(disable_interface("wlp45s0"))
+def list_wifi_networks(): 
+    """ 
+        This tool is used to list all SSIDs
+        near this device
+    """
+    
+    command = "nmcli dev wifi list | cat | tr -s ' ' | cut -d ' ' -f 3"
+    ssid = os.popen(command).read()
+    return ssid
