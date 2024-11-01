@@ -1,5 +1,6 @@
 // src/App.js
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -8,6 +9,13 @@ import Dashboard from './components/Dashboard';
 import Monitoring from './components/Monitoring';
 
 function App() {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    // Apply the theme class to the html element
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
   const handleSearch = (e) => {
     // Implement search functionality within the current section
     console.log('Search query:', e.target.value);
@@ -15,10 +23,10 @@ function App() {
 
   return (
     <Router>
-      <div className="flex">
+      <div>
         <Sidebar />
-        <div className="ml-64 flex-1 p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
-          <Header onSearch={handleSearch} />
+        <div className="content p-6 min-h-screen">
+          <Header onSearch={handleSearch} theme={theme} setTheme={setTheme} />
           <div className="mt-6">
             <Routes>
               <Route path="/" element={<Chatbot />} />

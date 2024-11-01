@@ -1,21 +1,125 @@
-/* src/index.css */
+/* index.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* You can add custom styles below */
+/* Importing the Roboto font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+/* Color Variables */
+:root {
+  --bg-light-start: #eef4ff;
+  --bg-light-end: #dbe8ff;
+  --bg-dark-start: #2a3b5d;
+  --bg-dark-end: #1b263b;
+  --text-light: #333333;
+  --text-dark: #f0f0f0;
+  --sidebar-bg-light: #ffffff;
+  --sidebar-bg-dark: #333a42;
+  --link-color-light: #000000;
+  --link-color-dark: #f0f0f0;
+  --active-bg-light-start: #2563EB;
+  --active-bg-light-end: #1E40AF;
+  --active-bg-dark-start: #1f2937;
+  --active-bg-dark-end: #111827;
+  --hover-bg-light-start: #D1E3FF;
+  --hover-bg-light-end: #B0D0FF;
+  --hover-bg-dark-start: #4b5563;
+  --hover-bg-dark-end: #374151;
+  --footer-text-light: #666666;
+  --footer-text-dark: #b0b0b0;
+}
 
+/* Custom font and base styles */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to bottom right, var(--bg-light-start), var(--bg-light-end));
+  color: var(--text-light);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.dark body {
+  background: linear-gradient(to bottom right, var(--bg-dark-start), var(--bg-dark-end));
+  color: var(--text-dark);
 }
+
+/* Sidebar styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 16rem;
+  background-color: #f3f4f6; /* Slightly darker white */
+  border-radius: 0 20px 20px 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+  z-index: 10; /* Ensures sidebar stays on top */
+  overflow-y: auto; /* Enable scrolling within the sidebar */
+}
+
+.dark .sidebar {
+  background-color: #1f2937; /* Darker background for dark mode */
+}
+
+/* Content area adjustment */
+.content {
+  margin-left: 16rem; /* Offset content by the sidebar width */
+  padding: 2rem;
+  min-height: 100vh;
+  overflow: hidden; /* Prevents content overflow */
+}
+
+/* Sidebar link styles */
+.sidebar-link {
+  color: var(--link-color-light);
+  background-color: transparent;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem; /* Increased padding for larger button */
+  gap: 10px;
+  border-radius: 10px;
+  font-size: 1.125rem; /* Larger font size */
+  transition: background 0.3s, color 0.3s;
+}
+
+.dark .sidebar-link {
+  color: var(--link-color-dark);
+}
+
+/* Active link style with gradient */
+.sidebar-link.active {
+  color: #ffffff;
+  background: linear-gradient(to right, var(--active-bg-light-start), var(--active-bg-light-end));
+}
+
+.dark .sidebar-link.active {
+  background: linear-gradient(to right, var(--active-bg-dark-start), var(--active-bg-dark-end));
+}
+
+/* Hover effect with gradient */
+.sidebar-link:hover {
+  background: linear-gradient(to right, var(--hover-bg-light-start), var(--hover-bg-light-end));
+}
+
+.dark .sidebar-link:hover {
+  background: linear-gradient(to right, var(--hover-bg-dark-start), var(--hover-bg-dark-end));
+}
+
+/* Sidebar footer text */
+.sidebar-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: var(--footer-text-light);
+  font-size: 0.75rem;
+}
+
+.dark .sidebar-footer {
+  color: var(--footer-text-dark);
+}
+
