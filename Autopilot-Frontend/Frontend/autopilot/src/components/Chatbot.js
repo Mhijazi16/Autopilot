@@ -1,5 +1,8 @@
 // src/components/Chatbot.js
+
 import React, { useState, useEffect, useRef } from 'react';
+import botLogo from '../assets/icons/bot-logo.png';
+
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
@@ -59,7 +62,6 @@ const Chatbot = () => {
           { sender: 'bot', text: '' },
         ]);
 
-        // Declare the function outside the loop
         const updateMessages = (currentBotMessage) => {
           setMessages((prevMessages) => {
             const lastMessage = prevMessages[prevMessages.length - 1];
@@ -91,8 +93,6 @@ const Chatbot = () => {
               const json = JSON.parse(line);
               const text = json.response || json.choices?.[0]?.text || '';
               botMessage += text;
-
-              // Use the function declared outside the loop
               updateMessages(botMessage);
             } catch (e) {
               console.error('Error parsing JSON:', e);
@@ -146,24 +146,27 @@ const Chatbot = () => {
               }`}
             >
               {msg.sender === 'bot' && (
-                <div className="bg-blue-200 w-10 h-10 rounded-full flex items-center justify-center text-blue-600 font-bold mr-2">
-                  🤖
-                </div>
+                <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center mr-2">
+                <img src={botLogo} alt="Bot Icon" className="h-10 w-10" />
+              </div>
+              
               )}
-              <div
+              <span
                 className={`${
                   msg.sender === 'user'
-                    ? 'bg-blue-500 bg-opacity-80 text-white'
-                    : 'bg-white bg-opacity-80 text-gray-800 dark:text-gray-200'
-                } backdrop-blur rounded-2xl p-4 max-w-full`}
-              >
+                    ? 'bg-white text-black rounded-3xl shadow-md border border-gray-200'
+                    : 'bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 text-gray-800 dark:text-gray-200'
+                } p-4 max-w-full inline-block`}
+                
+                
+                >
                 {msg.text}
-              </div>
+              </span>
               {msg.sender === 'user' && (
-                <div className="bg-blue-500 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ml-2">
-                  U
-                </div>
-              )}
+            <div className="w-10 h-10 flex-shrink-0 rounded-2xl flex items-center justify-center font-bold ml-2">
+            </div>
+)}
+
             </div>
           ))}
           <div ref={messagesEndRef} />
@@ -175,7 +178,7 @@ const Chatbot = () => {
         onSubmit={handleSubmit}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4"
       >
-        <div className="flex items-center bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-lg px-4 py-2">
+        <div className="flex items-center bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 border border-gray-300 dark:border-gray-600 rounded-full shadow-lg px-4 py-2 backdrop-blur-md">
           <input
             type="text"
             value={input}

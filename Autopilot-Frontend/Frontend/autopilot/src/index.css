@@ -29,8 +29,23 @@
   --hover-bg-dark-end: #374151;
   --footer-text-light: #666666;
   --footer-text-dark: #b0b0b0;
+  --main-light-bg: #eef4ff; /* Light mode main background color */
+  --main-dark-bg: #1b263b; /* Dark mode main background color */
+  --light-text: #f0f0f0; /* Light text color for dark mode */
 }
 
+/* Classes to apply the main background colors */
+.bg-main-light {
+  background-color: var(--main-light-bg);
+}
+
+.dark .bg-main-dark {
+  background-color: var(--main-dark-bg);
+}
+
+.dark .text-light-text {
+  color: var(--light-text);
+}
 /* Custom font and base styles */
 body {
   margin: 0;
@@ -123,3 +138,10 @@ body {
   color: var(--footer-text-dark);
 }
 
+.sidebar-link img {
+  filter: brightness(0) saturate(100%);
+}
+
+.sidebar-link.active img {
+  filter: brightness(0) invert(1);
+}

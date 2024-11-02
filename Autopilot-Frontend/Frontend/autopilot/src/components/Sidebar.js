@@ -2,20 +2,18 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  FaCogs,
-  FaTachometerAlt,
-  FaChartLine,
-  FaHeartbeat,
-} from 'react-icons/fa';
+import autopilotLogo from '../assets/icons/autopilot-logo.png';
+import autopilotButtonLogo from '../assets/icons/autopilot-button.png';
+import dashboardLogo from '../assets/icons/home.png';
+import monitoringLogo from '../assets/icons/monirotring.png';
 
 const Sidebar = () => {
   return (
     <div className="sidebar flex flex-col p-8 space-y-8 shadow-xl">
       {/* Sidebar Title with Icon */}
       <h1 className="text-3xl font-bold text-blue-500 dark:text-blue-400 flex items-center space-x-3">
-        <FaCogs className="h-10 w-10" />
-        <span>Autopilot</span>
+        <img src={autopilotLogo} alt="Autopilot Icon" className="h-10 w-10 no-filter" /> {/* Exclude from color change */}
+        <span style={{color: '#003092'}}>Autopilot</span>
       </h1>
 
       <nav className="space-y-6">
@@ -27,8 +25,8 @@ const Sidebar = () => {
             isActive ? 'sidebar-link active' : 'sidebar-link'
           }
         >
-          <FaTachometerAlt className="h-8 w-8" />
-          <span className="text-lg font-medium">Dashboard</span>
+          <img src={autopilotButtonLogo} alt="Autopilot Button Icon" className="h-10 w-10" />
+          <span className="text-lg font-medium">Autopilot</span>
         </NavLink>
         <NavLink
           to="/dashboard"
@@ -36,8 +34,8 @@ const Sidebar = () => {
             isActive ? 'sidebar-link active' : 'sidebar-link'
           }
         >
-          <FaChartLine className="h-8 w-8" />
-          <span className="text-lg font-medium">Autopilot</span>
+          <img src={dashboardLogo} alt="Dashboard Icon" className="h-10 w-10" />
+          <span className="text-lg font-medium">Dashboard</span>
         </NavLink>
         <NavLink
           to="/monitoring"
@@ -45,8 +43,8 @@ const Sidebar = () => {
             isActive ? 'sidebar-link active' : 'sidebar-link'
           }
         >
-          <FaHeartbeat className="h-8 w-8" />
-          <span className="text-lg font-medium">Settings</span>
+          <img src={monitoringLogo} alt="Monitoring Icon" className="h-10 w-10" />
+          <span className="text-lg font-medium">Monitoring</span>
         </NavLink>
       </nav>
 
