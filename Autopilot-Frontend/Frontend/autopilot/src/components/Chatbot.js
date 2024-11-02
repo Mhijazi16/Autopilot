@@ -1,22 +1,30 @@
-// src/components/Chatbot.js
-
 import React, { useState, useEffect, useRef } from 'react';
 import botLogo from '../assets/icons/bot-logo.png';
 
-
 const Chatbot = () => {
-  const [messages, setMessages] = useState([
-    { sender: 'bot', text: 'Hello! How can I assist you today?' },
-  ]);
+  const [messages, setMessages] = useState(() => {
+    // Load messages from localStorage if available
+    const savedMessages = localStorage.getItem('chatMessages');
+    return savedMessages ? JSON.parse(savedMessages) : [{ sender: 'bot', text: 'Hello! How can I assist you today?' }];
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [abortController, setAbortController] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Scroll to the bottom when messages change
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const handleScroll = () => {
+      const isNearBottom = messagesEndRef.current 
+        && (messagesEndRef.current.getBoundingClientRect().top - window.innerHeight) < 100;
+      
+      if (isNearBottom) {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+  
+    handleScroll();
   }, [messages]);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +50,7 @@ const Chatbot = () => {
         body: JSON.stringify({
           model: 'llama3.2',
           prompt: userInput,
-          stream: true, // Enable streaming
+          stream: true, 
         }),
         signal: controller.signal,
       });
@@ -156,9 +164,8 @@ const Chatbot = () => {
                   msg.sender === 'user'
                     ? 'bg-white text-black rounded-3xl shadow-md border border-gray-200'
                     : 'bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 text-gray-800 dark:text-gray-200'
-                } p-4 max-w-full inline-block`}
-                
-                
+                } p-4 max-w-full inline-block` }
+                style={{ whiteSpace: 'pre-wrap' }}
                 >
                 {msg.text}
               </span>
@@ -175,36 +182,39 @@ const Chatbot = () => {
 
       {/* Message Input Bar */}
       <form
-        onSubmit={handleSubmit}
-        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4"
+  onSubmit={handleSubmit}
+  className="fixed bottom-7 left-1/2 transform -translate-x-[30%] w-full max-w-2xl px-4"
+  style={{ width: 'calc(100% - 4rem)', maxWidth: '700px' }} // Ensures alignment with chat width
+>
+  <div className="flex items-center bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 border border-gray-300 dark:border-gray-600 rounded-full shadow-lg px-4 py-2 backdrop-blur-md">
+    <input
+      type="text"
+      value={input}
+      disabled={loading}
+      onChange={(e) => setInput(e.target.value)}
+      placeholder="Message Autopilot"
+      className="flex-grow bg-transparent text-gray-800 dark:text-gray-200 focus:outline-none px-2"
+    />
+    {loading ? (
+      <button
+        type="button"
+        onClick={handleStop}
+        className="ml-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors duration-300"
       >
-        <div className="flex items-center bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 border border-gray-300 dark:border-gray-600 rounded-full shadow-lg px-4 py-2 backdrop-blur-md">
-          <input
-            type="text"
-            value={input}
-            disabled={loading}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Message Autopilot"
-            className="flex-grow bg-transparent text-gray-800 dark:text-gray-200 focus:outline-none px-2"
-          />
-          {loading ? (
-            <button
-              type="button"
-              onClick={handleStop}
-              className="ml-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors duration-300"
-            >
-              Stop
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
-            >
-              Send
-            </button>
-          )}
-        </div>
-      </form>
+        Stop
+      </button>
+    ) : (
+      <button
+        type="submit"
+        className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
+      >
+        Send
+      </button>
+    )}
+  </div>
+</form>
+
+
     </div>
   );
 };
