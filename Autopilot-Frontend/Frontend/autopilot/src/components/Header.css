@@ -1,0 +1,71 @@
+/* src/components/Header.css */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  font-size: 1.125rem; /* Increased font size */
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.dark .header-left {
+  color: #e5e7eb;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-input {
+  background-color: #e5e7eb;
+  color: #1f2937;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.dark .search-input {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.search-input::placeholder {
+  color: #6b7280;
+}
+
+.dark .search-input::placeholder {
+  color: #9ca3af;
+}
+
+
+/* Add this to Header.css */
+
+.theme-toggle-button {
+  padding: 0.5rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+}
+
+.dark .theme-toggle-button {
+  background-color: #374151;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #1f2937;
+}
+
+.dark .icon {
+  color: #fbbf24;
+}

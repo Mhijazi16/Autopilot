@@ -5,51 +5,36 @@ import { NavLink } from 'react-router-dom';
 import autopilotLogo from '../assets/icons/autopilot-logo.png';
 import autopilotButtonLogo from '../assets/icons/autopilot-button.png';
 import dashboardLogo from '../assets/icons/home.png';
-import monitoringLogo from '../assets/icons/monirotring.png';
+import monitoringLogo from '../assets/icons/monitoring.png';
+import './Sidebar.css';
 
 const Sidebar = () => {
   return (
-    <div className="sidebar flex flex-col p-8 space-y-8 shadow-xl">
+    <div className="sidebar">
       {/* Sidebar Title with Icon */}
-      <h1 className="text-3xl font-bold text-blue-500 dark:text-blue-400 flex items-center space-x-3">
-        <img src={autopilotLogo} alt="Autopilot Icon" className="h-10 w-10 no-filter" /> {/* Exclude from color change */}
-        <span style={{color: '#003092'}}>Autopilot</span>
+      <h1 className="sidebar-title">
+        <img src={autopilotLogo} alt="Autopilot Icon" className="logo" />
+        <span>Autopilot</span>
       </h1>
 
-      <nav className="space-y-6">
+      <nav className="nav-links">
         {/* Links with icons */}
-        <NavLink
-          exact
-          to="/"
-          className={({ isActive }) =>
-            isActive ? 'sidebar-link active' : 'sidebar-link'
-          }
-        >
-          <img src={autopilotButtonLogo} alt="Autopilot Button Icon" className="h-10 w-10" />
-          <span className="text-lg font-medium">Autopilot</span>
+        <NavLink to="/" className="sidebar-link">
+          <img src={autopilotButtonLogo} alt="Autopilot Button Icon" />
+          <span>Autopilot</span>
         </NavLink>
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) =>
-            isActive ? 'sidebar-link active' : 'sidebar-link'
-          }
-        >
-          <img src={dashboardLogo} alt="Dashboard Icon" className="h-10 w-10" />
-          <span className="text-lg font-medium">Dashboard</span>
+        <NavLink to="/dashboard" className="sidebar-link">
+          <img src={dashboardLogo} alt="Dashboard Icon" />
+          <span>Dashboard</span>
         </NavLink>
-        <NavLink
-          to="/monitoring"
-          className={({ isActive }) =>
-            isActive ? 'sidebar-link active' : 'sidebar-link'
-          }
-        >
-          <img src={monitoringLogo} alt="Monitoring Icon" className="h-10 w-10" />
-          <span className="text-lg font-medium">Monitoring</span>
+        <NavLink to="/monitoring" className="sidebar-link">
+          <img src={monitoringLogo} alt="Monitoring Icon" />
+          <span>Monitoring</span>
         </NavLink>
       </nav>
 
       {/* Footer text */}
-      <p className="sidebar-footer text-xs">
+      <p className="sidebar-footer">
         All rights go to Autopilot<br />
       </p>
     </div>

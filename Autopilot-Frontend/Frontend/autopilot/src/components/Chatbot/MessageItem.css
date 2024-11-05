@@ -1,0 +1,63 @@
+/* src/components/Chatbot/MessageItem.css */
+
+.message-item {
+  display: flex;
+}
+
+.message-item.user {
+  justify-content: flex-end;
+}
+
+.message-item.bot {
+  justify-content: flex-start;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+}
+
+.avatar img {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.message-text {
+  padding: 1rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  font-size: 1.2rem; /* Increased font size */
+}
+
+.message-item.user .message-text {
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.dark .message-item.user .message-text {
+  background-color: #333a42;
+  color: #f0f0f0;
+}
+
+.message-item.bot .message-text {
+  color: #333333;
+}
+
+.dark .message-item.bot .message-text {
+  color: #f0f0f0;
+}
+
+.spacer {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}

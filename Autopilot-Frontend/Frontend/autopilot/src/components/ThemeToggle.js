@@ -11,12 +11,12 @@ const ThemeToggle = ({ theme, setTheme }) => {
   return (
     <button
       onClick={handleToggle}
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+      className="theme-toggle-button"
     >
       {theme === 'light' ? (
-        <MoonIcon className="h-6 w-6 text-gray-800" />
+        <MoonIcon className="icon" />
       ) : (
-        <SunIcon className="h-6 w-6 text-yellow-500" />
+        <SunIcon className="icon" />
       )}
     </button>
   );
