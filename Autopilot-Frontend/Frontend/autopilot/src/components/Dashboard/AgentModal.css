@@ -1,0 +1,77 @@
+/* src/components/AgentModal.css */
+
+.modal-overlay {
+  /* opacity: 0.98; */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #121417; /* Darker black background */
+  color: #f0f0f0; /* Light text */
+  width: 95%;
+  max-width: 500px; /* Increased max width */
+  padding: 2rem; /* Increased padding for more spacious layout */
+  border-radius: 16px; /* Slightly more rounded corners */
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header-info {
+  flex: 1;
+}
+
+.modal-title {
+  font-size: 2rem; /* Larger font for title */
+  font-weight: bold;
+}
+
+.modal-description {
+  font-size: 1.2rem; /* Larger font for description */
+  color: #b0b0b0; /* More subtle color */
+  line-height: 1.5; /* Better readability */
+}
+
+.modal-icon img {
+  width: 6rem; /* Increased size for the icon */
+  height: 6rem; /* Ensures the icon is proportional */
+}
+
+.modal-divider {
+  border-top: 1px solid #555; /* Darker divider */
+  margin: 1.5rem 0; /* More space around divider */
+}
+
+.modal-body ul {
+  list-style-type: disc;
+  padding-left: 1.75rem;
+  font-size: 1.1rem; /* Increased font size for list items */
+}
+
+.modal-close-button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem 1.5rem; /* Larger button size */
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer;
+  margin-top: 1.5rem;
+  font-size: 1rem; /* Larger font for button */
+}
+
+.modal-close-button:hover {
+  background-color: #2563eb;
+}

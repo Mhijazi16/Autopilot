@@ -1,0 +1,29 @@
+/* index.css */
+
+/* Tailwind imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importing the Roboto font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Custom font and base styles */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #eef4ff, #dbe8ff); /* Light theme gradient */
+  transition: background 0.3s;
+  height: 100%;
+}
+
+.dark body, .dark html {
+  background: linear-gradient(135deg, #0A0D14, #1B2130); /* Dark theme gradient */
+  transition: background 0.3s;
+}
+
+:root {
+  font-size: 16px; /* Increased base font size */
+}

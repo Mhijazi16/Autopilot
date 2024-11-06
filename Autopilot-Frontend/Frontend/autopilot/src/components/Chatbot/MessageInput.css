@@ -1,0 +1,65 @@
+/* src/components/Chatbot/MessageInput.css */
+
+.message-input-form {
+  position: fixed;
+  bottom: 1.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 4rem);
+  max-width: 700px;
+  padding: 0 1rem;
+}
+
+.message-input-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark .message-input-container {
+  background-color: rgba(31, 41, 55, 0.7);
+  border-color: #4b5563;
+}
+
+.message-input {
+  flex-grow: 1;
+  background-color: transparent;
+  color: #1f2937;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+}
+
+.dark .message-input {
+  color: #d1d5db;
+}
+
+.send-button,
+.stop-button {
+  margin-left: 0.5rem;
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.send-button:hover {
+  background-color: #2563eb;
+}
+
+.stop-button {
+  background-color: #ef4444;
+}
+
+.stop-button:hover {
+  background-color: #dc2626;
+}
