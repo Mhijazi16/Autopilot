@@ -2,8 +2,9 @@ from typing import override
 from langchain_core.messages.human import HumanMessage
 from langgraph.graph import StateGraph,MessagesState, START, END
 from langgraph.prebuilt import ToolNode
+from langgraph.checkpoint.memory import MemorySaver
 from langchain_ollama import ChatOllama
-from Tools.shelltool import execute
+from Tools.shell_tools import execute
 from workflow import Workflow
 
 tools = [execute]
@@ -19,15 +20,8 @@ class SimpleWorkflow(Workflow):
     def parse_command(self, call): 
         return call.tool_calls[-1]['args']['command']
 
-    def retry(self, state: AgentState): 
-        last_message = state['messages'][-1]
-        command = self.parse_command(last_message)
-        prompt = f"""
-         I don't want to use this command: {command},
-         can you think of any other commands?
-        """
-        msg = HumanMessage(prompt)
-        return {"messages": msg}
+    def feedback(self, state: AgentState): 
+        pass
 
     def should_execute(self, state: AgentState): 
         print("-- inside should execute")
@@ -39,24 +33,30 @@ class SimpleWorkflow(Workflow):
         if isToolCall and isCommand: 
             command = self.parse_command(last_message)
             choice = input(f"THE Agent wants to execute {command} accept: ")
-            if choice == 'y': 
+            if choice in ['y','Y','Yes','yes']: 
                 return "tools"
-            return "retry"
+            return "feedback"
         return END
 
     @override
-    def compile_workflow(self):
+    def compile_workflow(self, feedbackOn = False):
 
         builder = StateGraph(AgentState)
         builder.add_node("planner",self.planner)
         builder.add_node("tools",ToolNode(tools))
-        builder.add_node("retry",self.retry)
+        builder.add_node("feedback",self.feedback)
 
         builder.add_edge(START,"planner")
         builder.add_conditional_edges("planner",self.should_execute)
         builder.add_edge("tools","planner")
-        builder.add_edge("retry","planner")
+        builder.add_edge("feedback","planner")
 
-        graph = builder.compile()
+        memory = MemorySaver()
+
+        if feedbackOn: 
+            graph = builder.compile(memory, interrupt_before=['feedback'])
+        else: 
+            graph = builder.compile(memory)
+
         return graph
 
