@@ -1,22 +1,25 @@
 from workflow import Autopilot
-from SimpleAgent.simpleWorkflow import SimpleWorkflow
-
-# print("[🤖] : please enter a prompt.")
-flow = Autopilot(SimpleWorkflow()).build_workflow()
-# while True: 
-#     prompt = input("[🧒🏻] : ")
-#     messages = flow.invoke({"messages" : prompt})['messages']
-#     print(f"[🤖] : {messages[-1].content}")
-
-# from ComplexAgent.complexWorkflow import init
-# init()
-
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
+from SimpleAgent.simpleWorkflow import SimpleWorkflow
+
+print("[🤖] : please enter a prompt.")
+graph = Autopilot(SimpleWorkflow()).build_workflow()
 
 app = FastAPI()
 
-@app.get("/autopilot/command")
+def get_token(chunk):
+    return chunk['data']['chunk'].content
+
+async def run_task(prompt: str):
+    task = {'messages': prompt}
+    async for chunk in graph.astream_events(task, version="v2"):
+        if chunk["event"] == "on_chat_model_stream":
+            token = get_token(chunk) 
+            yield token 
+            print(token,flush=True,end="")
+
+@app.get("/command")
 async def command(prompt: str):
-    return StreamingResponse(flow.invoke({"messages": prompt}))
+    return StreamingResponse(run_task(prompt))
 
