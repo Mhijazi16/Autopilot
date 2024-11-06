@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
+import Sidebar from './components/Sidebar/Sidebar';
+import Header from './components/Header/Header';
 import Chatbot from './components/Chatbot/Chatbot';
-import Dashboard from './components/Dashboard';
-import Monitoring from './components/Monitoring';
+import Dashboard from './components/Dashboard/Dashboard';
+import Monitoring from './components/Monitoring/Monitoring';
 import './App.css'; // Import App-level styles
 
 function App() {

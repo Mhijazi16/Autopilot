@@ -1,0 +1,85 @@
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .agent-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.agent-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  /* padding-right: 4rem; */
+  /* padding-left: 4rem; */
+  border-radius: 12px;
+  background: white; 
+  width: 90%;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  text-align: left;
+
+  border: 1px solid whitesmoke; 
+  background: transparent
+    linear-gradient(135deg, #d0e1ff, #b0c8ff); 
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.dark .agent-card {
+  background: transparent; 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+}
+
+.agent-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+}
+
+.agent-icon {
+  display: flex;
+  width: 95%;
+  justify-content: center;
+}
+
+.agent-icon img {
+  align-items: flex-end;
+  width: 7rem; /* Increased size for the icon */
+}
+
+.agent-info {
+  display: flex;
+  flex-direction: column;
+  padding-left: 5rem;
+  width: 95%;
+  flex-grow: 1;
+}
+
+.agent-info h3 {
+  font-weight: bold;
+}
+
+.agent-name {
+  font-size: 1.5rem; /* Increased font size */
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .agent-name {
+  color: #f0f0f0; /* Adjusted color for dark theme */
+}

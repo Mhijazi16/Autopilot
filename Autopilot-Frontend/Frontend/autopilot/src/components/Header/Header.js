@@ -1,7 +1,7 @@
 // src/components/Header.js
 
 import React from 'react';
-import ThemeToggle from './ThemeToggle';
+import ThemeToggle from '../ThemeToggle';
 import './Header.css';
 
 const Header = ({ onSearch, theme, setTheme }) => {

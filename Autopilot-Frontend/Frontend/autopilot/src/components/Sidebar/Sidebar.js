@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import autopilotLogo from '../assets/icons/autopilot-logo.png';
-import autopilotButtonLogo from '../assets/icons/autopilot-button.png';
-import dashboardLogo from '../assets/icons/home.png';
-import monitoringLogo from '../assets/icons/monitoring.png';
+import autopilotLogo from '../../assets/icons/autopilot-logo.png';
+import autopilotButtonLogo from '../../assets/icons/autopilot-button.png';
+import dashboardLogo from '../../assets/icons/home.png';
+import monitoringLogo from '../../assets/icons/monitoring.png';
 import './Sidebar.css';
 
 const Sidebar = () => {
