@@ -1,25 +1,32 @@
 // src/App.js
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import Chatbot from './components/Chatbot';
-import Dashboard from './components/Dashboard';
-import Monitoring from './components/Monitoring';
+import Sidebar from './components/Sidebar/Sidebar';
+import Header from './components/Header/Header';
+import Chatbot from './components/Chatbot/Chatbot';
+import Dashboard from './components/Dashboard/Dashboard';
+import Monitoring from './components/Monitoring/Monitoring';
+import './App.css'; // Import App-level styles
 
 function App() {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
   const handleSearch = (e) => {
-    // Implement search functionality within the current section
     console.log('Search query:', e.target.value);
   };
 
   return (
     <Router>
-      <div className="flex">
+      <div className="app-container">
         <Sidebar />
-        <div className="ml-64 flex-1 p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
-          <Header onSearch={handleSearch} />
-          <div className="mt-6">
+        <div className="content">
+          <Header onSearch={handleSearch} theme={theme} setTheme={setTheme} />
+          <div className="main-content">
             <Routes>
               <Route path="/" element={<Chatbot />} />
               <Route path="/dashboard" element={<Dashboard />} />

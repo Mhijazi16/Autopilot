@@ -1,0 +1,115 @@
+/* src/components/Sidebar.css */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 18rem; /* Increased width for a more spacious sidebar */
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.7); /* Light, semi-transparent */
+  backdrop-filter: blur(12px); /* Enhanced blur for frosted effect */
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
+  border-radius: 0 20px 20px 0;
+  border: 1px solid #d1d5db;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem; /* Increased padding for a spacious look */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.dark .sidebar {
+  background-color: rgba(31, 41, 55, 0.7); /* Dark, semi-transparent */
+  border-color: #4b5563;
+}
+
+.sidebar-title {
+  font-size: 2.25rem; /* Larger font size for the title */
+  font-weight: bold;
+  color: #003092;
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Increased gap for better spacing with icon */
+}
+
+.dark .sidebar-title {
+  color: #1F68FF;
+}
+
+.logo {
+  width: 2.75rem; /* Slightly larger logo */
+  height: 2.75rem;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Increased gap between links for a clean look */
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: bold;
+  font-size: 1.5rem; /* Increased font size for better readability */
+  color: #000000;
+  text-decoration: none;
+  padding: 1rem 1.5rem; /* Increased padding for a button-like feel */
+  border-radius: 1rem; /* Increased border-radius for a more rounded look */
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.sidebar-link img {
+  width: 2.75rem; /* Slightly larger icon */
+  height: 2.75rem;
+  /* filter: brightness(0) saturate(100%); */
+  /* transition: filter 0.3s; */
+}
+
+.dark .sidebar-link img {
+  filter: brightness(0) invert(1); /* Make icon white when selected */
+}
+
+.sidebar-link:hover {
+  background-color: #D1E3FF;
+  transform: scale(1.05); /* Slight grow effect on hover */
+}
+
+.sidebar-link.active {
+  background-color: #1F68FF;
+  color: #273B4A;
+}
+
+.dark .sidebar-link {
+  color: #FFFFFF;
+}
+
+.dark .sidebar-link:hover {
+  background-color: rgba(43, 48, 53, 0.7);
+}
+
+.dark .sidebar-link.active {
+  background-color: #1F68FF;
+  color: #273B4A;
+}
+
+.dark .sidebar-link.active img {
+  filter: none; 
+}
+
+
+.sidebar-footer {
+  margin-top: auto;
+  font-size: 0.875rem; /* Slightly larger footer text */
+  color: #666666;
+  text-align: center;
+}
+
+.dark .sidebar-footer {
+  color: #b0b0b0;
+}
+
+

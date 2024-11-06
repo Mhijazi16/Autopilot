@@ -1,14 +1,9 @@
 // src/components/ThemeToggle.js
-import React, { useState, useEffect } from 'react';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'; // Updated import path
 
-const ThemeToggle = () => {
-  const [theme, setTheme] = useState('light');
+import React from 'react';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
-
+const ThemeToggle = ({ theme, setTheme }) => {
   const handleToggle = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
@@ -16,12 +11,12 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={handleToggle}
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+      className="theme-toggle-button"
     >
       {theme === 'light' ? (
-        <MoonIcon className="h-6 w-6 text-gray-800" />
+        <MoonIcon className="icon" />
       ) : (
-        <SunIcon className="h-6 w-6 text-yellow-500" />
+        <SunIcon className="icon" />
       )}
     </button>
   );
