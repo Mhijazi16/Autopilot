@@ -21,8 +21,10 @@
   margin-top: 1.5rem;
 }
 
-/* Background Variables */
 :root {
   --bg-light: linear-gradient(to bottom right, #eef4ff, #dbe8ff);
-  --bg-dark: linear-gradient(135deg, #0A0D14, #1B2130);
+  /* --bg-dark: linear-gradient(135deg, #0A0D14, #1B2130); */
+  --bg-dark: linear-gradient(60deg, #0a0c11, #101b37);
+
+
 }

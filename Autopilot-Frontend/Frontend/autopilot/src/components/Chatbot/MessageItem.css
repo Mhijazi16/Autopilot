@@ -31,7 +31,7 @@
   padding: 1rem;
   max-width: 100%;
   white-space: pre-wrap;
-  font-size: 1.2rem; /* Increased font size */
+  font-size: 1.3rem;
 }
 
 .message-item.user .message-text {
@@ -43,7 +43,8 @@
 }
 
 .dark .message-item.user .message-text {
-  background-color: #333a42;
+  background-color: rgba(31, 41, 55, 0.7);
+  border-color: #4b5563;
   color: #f0f0f0;
 }
 

@@ -2,8 +2,8 @@
 
 .message-input-form {
   position: fixed;
-  bottom: 1.75rem;
-  left: 50%;
+  bottom: 3.5rem;
+  left: 55%;
   transform: translateX(-50%);
   width: calc(100% - 4rem);
   max-width: 700px;
@@ -30,7 +30,7 @@
   flex-grow: 1;
   background-color: transparent;
   color: #1f2937;
-  font-size: 1rem;
+  font-size: 1.2rem;
   padding: 0.5rem;
   border: none;
   outline: none;
