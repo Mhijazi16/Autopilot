@@ -1,44 +1,67 @@
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header-left {
-  font-size: 1.125rem; 
-  font-weight: 600;
-  color: #4b5563;
-}
-
-.dark .header-left {
-  color: #e5e7eb;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.theme-toggle-button {
-  padding: 0.5rem;
-  background-color: #e5e7eb;
-  border-radius: 9999px;
-  border: none;
+#theme-toggle-button {
+  position: absolute;
+  right: 3rem;
+  top: 1;
+  z-index: 10;
+  font-size: 13px;
+  width: 7em;
   cursor: pointer;
 }
 
-.dark .theme-toggle-button {
-  background-color: #374151;
+#toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: #1f2937;
+#container,
+#patches,
+#stars,
+#button,
+#sun,
+#moon,
+#cloud {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.25s;
 }
 
-.dark .icon {
-  color: #fbbf24;
+#toggle:checked + svg #container {
+  fill: #2b4360;
+}
+
+#toggle:checked + svg #button {
+  transform: translate(28px, 2.333px);
+}
+
+#sun {
+  opacity: 1;
+}
+
+#toggle:checked + svg #sun {
+  opacity: 0;
+}
+
+#moon {
+  opacity: 0;
+}
+
+#toggle:checked + svg #moon {
+  opacity: 1;
+}
+
+#cloud {
+  opacity: 1;
+}
+
+#toggle:checked + svg #cloud {
+  opacity: 0;
+}
+
+#stars {
+  opacity: 0;
+}
+
+#toggle:checked + svg #stars {
+  opacity: 1;
 }
