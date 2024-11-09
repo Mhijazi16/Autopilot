@@ -56,7 +56,7 @@
 
 .agent-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
   
 }
 
@@ -68,7 +68,7 @@
 
 .agent-icon img {
   align-items: flex-end;
-  transition: transform 0.3s ease; /* Smooth transition */
+  transition: transform 0.3s ease; 
 }
 
 .agent-icon img:hover{
@@ -99,5 +99,5 @@
 
 
 .dark .agent-name {
-  color: #f0f0f0; /* Adjusted color for dark theme */
+  color: #f0f0f0; 
 }

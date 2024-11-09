@@ -1,4 +1,3 @@
-/* src/components/Toolbar.css */
 
 .toolbar {
   z-index: 10;
@@ -36,6 +35,5 @@
 }
 
 .toolbar-icon.active {
-  /* filter: grayscale(100%);  */
   filter: drop-shadow(0 0 10px #007bff); 
 }

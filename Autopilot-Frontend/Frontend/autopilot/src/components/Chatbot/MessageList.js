@@ -1,4 +1,3 @@
-// src/components/Chatbot/MessageList.js
 
 import React from 'react';
 import MessageItem from './MessageItem';

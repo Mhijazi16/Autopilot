@@ -1,4 +1,3 @@
-// src/components/Chatbot/MessageInput.js
 
 import React from 'react';
 import './MessageInput.css';
