@@ -1,4 +1,3 @@
-/* src/App.css */
 
 .app-container {
   display: flex;
@@ -7,7 +6,7 @@
 .content {
   flex: 1;
   min-height: 100vh;
-  margin-left: 18rem; /* Match Sidebar width */
+  margin-left: 18rem; 
   padding: 2rem;
   background: var(--bg-light);
   transition: background 0.3s;
@@ -21,8 +20,10 @@
   margin-top: 1.5rem;
 }
 
-/* Background Variables */
 :root {
   --bg-light: linear-gradient(to bottom right, #eef4ff, #dbe8ff);
-  --bg-dark: linear-gradient(135deg, #0A0D14, #1B2130);
+  /* --bg-dark: linear-gradient(135deg, #0A0D14, #1B2130); */
+  --bg-dark: linear-gradient(60deg, #0a0c11, #101b37);
+
+
 }

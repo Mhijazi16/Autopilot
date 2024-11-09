@@ -1,27 +1,27 @@
-/* src/components/AgentModal.css */
 
 .modal-overlay {
-  /* opacity: 0.98; */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+  background-color: rgba(0, 0, 0, 0.7); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  
 }
 
 .modal-content {
-  background-color: #121417; /* Darker black background */
-  color: #f0f0f0; /* Light text */
+  background: linear-gradient(270deg, rgba(10, 10, 10, 0.95), rgba(9, 3, 23, 1));
+  color: #f0f0f0; 
   width: 95%;
-  max-width: 500px; /* Increased max width */
-  padding: 2rem; /* Increased padding for more spacious layout */
-  border-radius: 16px; /* Slightly more rounded corners */
+  max-width: 500px; 
+  padding: 2rem; 
+  border-radius: 16px; 
   position: relative;
+  border: 1px solid rgb(87, 87, 87);
 }
 
 .modal-header {
@@ -35,41 +35,41 @@
 }
 
 .modal-title {
-  font-size: 2rem; /* Larger font for title */
+  font-size: 2rem; 
   font-weight: bold;
 }
 
 .modal-description {
-  font-size: 1.2rem; /* Larger font for description */
-  color: #b0b0b0; /* More subtle color */
-  line-height: 1.5; /* Better readability */
+  font-size: 1.2rem; 
+  color: #b0b0b0; 
+  line-height: 1.5; 
 }
 
 .modal-icon img {
-  width: 6rem; /* Increased size for the icon */
-  height: 6rem; /* Ensures the icon is proportional */
+  width: 6rem; 
+  height: 6rem; 
 }
 
 .modal-divider {
-  border-top: 1px solid #555; /* Darker divider */
-  margin: 1.5rem 0; /* More space around divider */
+  border-top: 1px solid #555; 
+  margin: 1.5rem 0; 
 }
 
 .modal-body ul {
   list-style-type: disc;
   padding-left: 1.75rem;
-  font-size: 1.1rem; /* Increased font size for list items */
+  font-size: 1.1rem; 
 }
 
 .modal-close-button {
   background-color: #3b82f6;
   color: white;
-  padding: 0.75rem 1.5rem; /* Larger button size */
+  padding: 0.75rem 1.5rem; 
   border: none;
-  border-radius: 8px; /* Rounded corners */
+  border-radius: 8px; 
   cursor: pointer;
   margin-top: 1.5rem;
-  font-size: 1rem; /* Larger font for button */
+  font-size: 1rem; 
 }
 
 .modal-close-button:hover {

@@ -1,7 +1,7 @@
 // src/components/Chatbot/Chatbot.js
 
-
 import React, { useState, useEffect, useRef } from 'react';
+import Toolbar from '../Toolbar/Toolbar';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import './Chatbot.css';
@@ -79,7 +79,6 @@ const Chatbot = () => {
           }
         }
       } else {
-        // Non-streaming response
         const data = await response.json();
         const botResponse = data.response;
         setMessages((prev) => [...prev, { sender: 'bot', text: botResponse }]);
@@ -103,6 +102,8 @@ const Chatbot = () => {
   };
 
   return (
+    <>
+    <Toolbar/>
     <div className="flex flex-col h-full relative">
       <MessageList messages={messages} messagesEndRef={messagesEndRef} />
       <MessageInput
@@ -113,6 +114,7 @@ const Chatbot = () => {
         handleStop={handleStop}
       />
     </div>
+    </>
   );
 };
 

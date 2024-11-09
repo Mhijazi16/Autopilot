@@ -1,4 +1,3 @@
-// src/components/Monitoring.js
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
@@ -52,7 +51,6 @@ const Monitoring = () => {
       },
     });
 
-    // Cleanup on unmount
     return () => {
       monitoringChart.destroy();
     };

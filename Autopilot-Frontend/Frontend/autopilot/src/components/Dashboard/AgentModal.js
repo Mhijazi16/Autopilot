@@ -1,4 +1,3 @@
-// src/components/AgentModal.js
 import React from 'react';
 import './AgentModal.css';
 

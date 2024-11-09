@@ -1,3 +1,15 @@
+
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 70%;
+  margin-left: 100px;
+}
+
 .dashboard-title {
   font-size: 2rem;
   font-weight: 600;
@@ -8,9 +20,11 @@
 
 .agent-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 2rem; 
   padding: 0 1.5rem;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -21,34 +35,29 @@
 
 .agent-card {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  gap: 10px;
   padding: 1.5rem;
-  /* padding-right: 4rem; */
-  /* padding-left: 4rem; */
   border-radius: 12px;
-  background: white; 
-  width: 90%;
+  width: 95%;
+  min-height: 15rem;
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
-  text-align: left;
-
   border: 1px solid whitesmoke; 
-  background: transparent
-    linear-gradient(135deg, #d0e1ff, #b0c8ff); 
+  background: linear-gradient(135deg, rgba(46, 68, 114, 0.65), rgba(72, 128, 177, 0.7));
   background-origin: border-box;
   background-clip: padding-box, border-box;
+  
 }
 
 .dark .agent-card {
-  background: transparent; 
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.65), rgba(9, 3, 23, 0.7));
   border: 1px solid rgba(255, 255, 255, 0.2); 
 }
 
 .agent-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+  
 }
 
 .agent-icon {
@@ -59,13 +68,17 @@
 
 .agent-icon img {
   align-items: flex-end;
-  width: 7rem; /* Increased size for the icon */
+  transition: transform 0.3s ease; 
+}
+
+.agent-icon img:hover{
+  transform: scale(1.18);
 }
 
 .agent-info {
+  justify-content: center;
   display: flex;
   flex-direction: column;
-  padding-left: 5rem;
   width: 95%;
   flex-grow: 1;
 }
@@ -74,12 +87,17 @@
   font-weight: bold;
 }
 
+.agent-info h4{
+  font-size: 1.4rem;
+}
+
 .agent-name {
-  font-size: 1.5rem; /* Increased font size */
+  font-size: 1.8rem; 
   font-weight: 500;
   color: #333;
 }
 
+
 .dark .agent-name {
-  color: #f0f0f0; /* Adjusted color for dark theme */
+  color: #f0f0f0; 
 }
