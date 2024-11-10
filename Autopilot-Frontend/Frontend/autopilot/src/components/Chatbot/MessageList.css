@@ -1,11 +1,10 @@
-/* src/components/Chatbot/MessageList.css */
 
 .message-list {
   position: relative;
-  left: 50%;
+  left: 56%;
   transform: translateX(-65%); 
-  width: calc(100% - 4rem); 
-  max-width: 800px; 
+  width: calc(100% - 1rem); 
+  max-width: 60%; 
   flex: 1;
   overflow-y: auto;
   padding: 1rem;

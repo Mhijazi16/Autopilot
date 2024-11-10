@@ -1,18 +1,16 @@
-/* src/components/Sidebar.css */
-
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 18rem; /* Increased width for a more spacious sidebar */
+  width: 18rem;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.7); /* Light, semi-transparent */
-  backdrop-filter: blur(12px); /* Enhanced blur for frosted effect */
-  -webkit-backdrop-filter: blur(12px); /* Safari support */
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 0 20px 20px 0;
   border: 1px solid #d1d5db;
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
-  padding: 2.5rem 2rem; /* Increased padding for a spacious look */
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -21,17 +19,17 @@
 }
 
 .dark .sidebar {
-  background-color: rgba(31, 41, 55, 0.7); /* Dark, semi-transparent */
+  background: linear-gradient(135deg, rgba(66, 70, 85, 0.7), rgba(31, 35, 50, 0.7));
   border-color: #4b5563;
 }
 
 .sidebar-title {
-  font-size: 2.25rem; /* Larger font size for the title */
+  font-size: 2.25rem;
   font-weight: bold;
   color: #003092;
   display: flex;
   align-items: center;
-  gap: 1rem; /* Increased gap for better spacing with icon */
+  gap: 1rem;
 }
 
 .dark .sidebar-title {
@@ -39,14 +37,14 @@
 }
 
 .logo {
-  width: 2.75rem; /* Slightly larger logo */
+  width: 2.75rem;
   height: 2.75rem;
 }
 
 .nav-links {
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* Increased gap between links for a clean look */
+  gap: 2rem;
 }
 
 .sidebar-link {
@@ -54,28 +52,26 @@
   align-items: center;
   gap: 1rem;
   font-weight: bold;
-  font-size: 1.5rem; /* Increased font size for better readability */
+  font-size: 1.5rem;
   color: #000000;
   text-decoration: none;
-  padding: 1rem 1.5rem; /* Increased padding for a button-like feel */
-  border-radius: 1rem; /* Increased border-radius for a more rounded look */
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
 .sidebar-link img {
-  width: 2.75rem; /* Slightly larger icon */
+  width: 2.75rem;
   height: 2.75rem;
-  /* filter: brightness(0) saturate(100%); */
-  /* transition: filter 0.3s; */
 }
 
 .dark .sidebar-link img {
-  filter: brightness(0) invert(1); /* Make icon white when selected */
+  filter: brightness(0) invert(1);
 }
 
 .sidebar-link:hover {
   background-color: #D1E3FF;
-  transform: scale(1.05); /* Slight grow effect on hover */
+  transform: scale(1.05);
 }
 
 .sidebar-link.active {
@@ -97,13 +93,12 @@
 }
 
 .dark .sidebar-link.active img {
-  filter: none; 
+  filter: none;
 }
-
 
 .sidebar-footer {
   margin-top: auto;
-  font-size: 0.875rem; /* Slightly larger footer text */
+  font-size: 0.875rem;
   color: #666666;
   text-align: center;
 }
@@ -111,5 +106,3 @@
 .dark .sidebar-footer {
   color: #b0b0b0;
 }
-
-

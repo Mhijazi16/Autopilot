@@ -1,4 +1,3 @@
-// src/components/Sidebar.js
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
@@ -11,14 +10,12 @@ import './Sidebar.css';
 const Sidebar = () => {
   return (
     <div className="sidebar">
-      {/* Sidebar Title with Icon */}
       <h1 className="sidebar-title">
         <img src={autopilotLogo} alt="Autopilot Icon" className="logo" />
         <span>Autopilot</span>
       </h1>
 
       <nav className="nav-links">
-        {/* Links with icons */}
         <NavLink to="/" className="sidebar-link">
           <img src={autopilotButtonLogo} alt="Autopilot Button Icon" />
           <span>Autopilot</span>
@@ -33,7 +30,6 @@ const Sidebar = () => {
         </NavLink>
       </nav>
 
-      {/* Footer text */}
       <p className="sidebar-footer">
         All rights go to Autopilot<br />
       </p>

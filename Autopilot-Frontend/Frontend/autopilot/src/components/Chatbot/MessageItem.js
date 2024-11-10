@@ -1,5 +1,3 @@
-// src/components/Chatbot/MessageItem.js
-
 import React from 'react';
 import botLogo from '../../assets/icons/bot-logo.png';
 import './MessageItem.css';

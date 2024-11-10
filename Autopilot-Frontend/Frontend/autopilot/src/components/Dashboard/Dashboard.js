@@ -13,7 +13,7 @@ const agentDetails = {
     icon: cryptographyIcon,
     description: "Handles encryption, decryption, and security protocols.",
   },
-  Script: {
+  Scripting: {
     icon: scriptIcon,
     description: "Automates tasks and manages scripts.",
   },
@@ -29,7 +29,7 @@ const agentDetails = {
     icon: terminalIcon,
     description: "Provides command-line interface functionalities.",
   },
-  Code: {
+  Coding: {
     icon: codeIcon,
     description: "Supports coding and development tools.",
   },
@@ -43,7 +43,7 @@ const AgentCard = ({ name, iconPath, onClick }) => {
       </div>
       <div className="agent-info">
         <h3 className="agent-name text-gray-900 dark:text-gray-100">{name}</h3>
-        <h4 className="text-gray-600 dark:text-gray-400">Agent</h4> 
+        <h4 className="text-gray-700 dark:text-gray-100">Agent</h4> 
       </div>
     </div>
   );
@@ -62,7 +62,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div className='dashboard'>
       <h2 className="dashboard-title text-gray-900 dark:text-gray-100">Dashboard</h2>
       <div className="agent-grid">
         {Object.keys(agentDetails).map((agentName) => (
