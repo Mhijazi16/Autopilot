@@ -1,63 +1,63 @@
-
 .message-item {
-  display: flex;
+    display: flex;
 }
 
 .message-item.user {
-  justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 .message-item.bot {
-  justify-content: flex-start;
+    justify-content: flex-start;
+    padding-right: 1.8rem;
 }
 
 .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
 }
 
 .avatar img {
-  width: 2.5rem;
-  height: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
 .message-text {
-  padding: 1rem;
-  max-width: 100%;
-  white-space: pre-wrap;
-  font-size: 1.3rem;
+    padding: 1rem;
+    max-width: 100%;
+    white-space: pre-wrap;
+    font-size: 1.3rem;
 }
 
 .message-item.user .message-text {
-  background-color: #ffffff;
-  color: #000000;
-  border-radius: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
 }
 
 .dark .message-item.user .message-text {
-  background-color: rgba(31, 41, 55, 0.7);
-  border-color: #4b5563;
-  color: #f0f0f0;
+    background-color: rgba(31, 41, 55, 0.7);
+    border-color: #4b5563;
+    color: #f0f0f0;
 }
 
 .message-item.bot .message-text {
-  color: #333333;
+    color: #333333;
 }
 
 .dark .message-item.bot .message-text {
-  color: #f0f0f0;
+    color: #f0f0f0;
 }
 
 .spacer {
-  width: 2.5rem;
-  height: 2.5rem;
-  flex-shrink: 0;
-  margin-left: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
 }

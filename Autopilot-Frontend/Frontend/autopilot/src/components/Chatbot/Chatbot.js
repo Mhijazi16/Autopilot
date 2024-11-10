@@ -1,5 +1,3 @@
-// src/components/Chatbot/Chatbot.js
-
 import React, { useState, useEffect, useRef } from "react";
 import Toolbar from "../Toolbar/Toolbar";
 import MessageList from "./MessageList";
@@ -110,7 +108,6 @@ const Chatbot = () => {
 
   return (
     <>
-      {/* add feedback icon */}
       <Toolbar />
       <div className="flex flex-col h-full relative">
         <MessageList messages={messages} messagesEndRef={messagesEndRef} />
