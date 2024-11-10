@@ -1,14 +1,14 @@
-import React from 'react';
-import './Header.css';
+import React from "react";
+import "./ThemeSwitch.css";
 
 const ThemeToggle = ({ theme, setTheme }) => {
   const handleToggle = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
     <div id="theme-toggle-button" onClick={handleToggle}>
-      <input type="checkbox" id="toggle" checked={theme === 'dark'} readOnly />
+      <input type="checkbox" id="toggle" checked={theme === "dark"} readOnly />
       <svg viewBox="0 0 69.667 44" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g transform="translate(3.5 3.5)" id="Component_15_1">
           <g transform="matrix(1, 0, 0, 1, -3.5, -3.5)">
@@ -61,13 +61,47 @@ const ThemeToggle = ({ theme, setTheme }) => {
                   id="moon"
                 />
               </g>
-              <g fill="#a6cad0" transform="translate(-24.415 -1.009)" id="patches">
-                <circle transform="translate(43.009 4.496)" r="2" cy="2" cx="2" />
-                <circle transform="translate(39.366 17.952)" r="2" cy="2" cx="2" />
-                <circle transform="translate(33.016 8.044)" r="1" cy="1" cx="1" />
-                <circle transform="translate(51.081 18.888)" r="1" cy="1" cx="1" />
-                <circle transform="translate(33.016 22.503)" r="1" cy="1" cx="1" />
-                <circle transform="translate(50.081 10.53)" r="1.5" cy="1.5" cx="1.5" />
+              <g
+                fill="#a6cad0"
+                transform="translate(-24.415 -1.009)"
+                id="patches"
+              >
+                <circle
+                  transform="translate(43.009 4.496)"
+                  r="2"
+                  cy="2"
+                  cx="2"
+                />
+                <circle
+                  transform="translate(39.366 17.952)"
+                  r="2"
+                  cy="2"
+                  cx="2"
+                />
+                <circle
+                  transform="translate(33.016 8.044)"
+                  r="1"
+                  cy="1"
+                  cx="1"
+                />
+                <circle
+                  transform="translate(51.081 18.888)"
+                  r="1"
+                  cy="1"
+                  cx="1"
+                />
+                <circle
+                  transform="translate(33.016 22.503)"
+                  r="1"
+                  cy="1"
+                  cx="1"
+                />
+                <circle
+                  transform="translate(50.081 10.53)"
+                  r="1.5"
+                  cy="1.5"
+                  cx="1.5"
+                />
               </g>
             </g>
           </g>
@@ -120,5 +154,3 @@ const ThemeToggle = ({ theme, setTheme }) => {
 };
 
 export default ThemeToggle;
-
-

@@ -1,39 +1,58 @@
-
 .toolbar {
-  z-index: 10;
-  position: fixed;
-  top: 50%;
-  right: 3.6rem;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 0.5rem;
-  border: 2px solid rgba(0, 123, 255, 0.5); 
-  border-radius: 12px;
-  background-color: rgba(20, 20, 30, 0.8); 
+    z-index: 10;
+    position: fixed;
+    top: 53%;
+    right: 3.6rem;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 0.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    border-radius: 12px;
+    background-color: rgba(20, 20, 30, 0.8);
+}
+
+.feedback-dev {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    position: fixed;
+    top: 4rem;
+    right: 3.6rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    border-radius: 12px;
+    background-color: rgba(20, 20, 30, 0.8);
 }
 
 .toolbar-icon {
-  filter: grayscale(100%); 
-  width: 2.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.3s, filter 0.3s;
+    filter: grayscale(100%);
+    width: 2.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+        transform 0.3s,
+        filter 0.3s;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.toolbar-icon img {
-  width: 100%;
-  height: 100%;
+.toolbar-icon:last-child {
+    border-bottom: none;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .toolbar-icon:hover {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 .toolbar-icon.active {
-  filter: drop-shadow(0 0 10px #007bff); 
+    filter: drop-shadow(0 0 10px #007bff);
 }
