@@ -3,8 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from SimpleAgent.simpleWorkflow import SimpleWorkflow
 
-print("[🤖] : please enter a prompt.")
-graph = Autopilot(SimpleWorkflow()).build_workflow()
+graph = Autopilot(SimpleWorkflow()).build_workflow(False)
 
 app = FastAPI()
 
