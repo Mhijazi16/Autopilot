@@ -33,6 +33,7 @@
     font-size: 1.3rem;
 }
 
+
 .message-item.user .message-text {
     background-color: #ffffff;
     color: #000000;
@@ -48,6 +49,7 @@
 }
 
 .message-item.bot .message-text {
+    padding-right: 2rem;
     color: #333333;
 }
 
