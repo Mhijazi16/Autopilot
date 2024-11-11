@@ -1,35 +1,31 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Chatbot from "./components/Chatbot/Chatbot";
+import Dashboard from "./components/Dashboard/Dashboard";
+import "./App.css";
 
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar/Sidebar';
-import Header from './components/Header/Header';
-import Chatbot from './components/Chatbot/Chatbot';
-import Dashboard from './components/Dashboard/Dashboard';
-import Monitoring from './components/Monitoring/Monitoring';
-import './App.css'; 
-
+import Settings from "./components/Settings/Settings";
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
-
-  const handleSearch = (e) => {
-    console.log('Search query:', e.target.value);
-  };
 
   return (
     <Router>
       <div className="app-container">
         <Sidebar />
         <div className="content">
-          <Header onSearch={handleSearch} theme={theme} setTheme={setTheme} />
           <div className="main-content">
             <Routes>
               <Route path="/" element={<Chatbot />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/monitoring" element={<Monitoring />} />
+              <Route
+                path="/settings"
+                element={<Settings theme={theme} setTheme={setTheme} />}
+              />
             </Routes>
           </div>
         </div>
