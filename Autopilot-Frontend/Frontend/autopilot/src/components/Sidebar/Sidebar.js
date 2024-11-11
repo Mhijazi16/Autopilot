@@ -1,11 +1,10 @@
-
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import autopilotLogo from '../../assets/icons/autopilot-logo.png';
-import autopilotButtonLogo from '../../assets/icons/autopilot-button.png';
-import dashboardLogo from '../../assets/icons/home.png';
-import monitoringLogo from '../../assets/icons/monitoring.png';
-import './Sidebar.css';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import autopilotLogo from "../../assets/icons/autopilot-logo.png";
+import autopilotButtonLogo from "../../assets/icons/autopilot-button.png";
+import dashboardLogo from "../../assets/icons/home.png";
+import settingsLogo from "../../assets/icons/settings.svg";
+import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
@@ -24,14 +23,15 @@ const Sidebar = () => {
           <img src={dashboardLogo} alt="Dashboard Icon" />
           <span>Dashboard</span>
         </NavLink>
-        <NavLink to="/monitoring" className="sidebar-link">
-          <img src={monitoringLogo} alt="Monitoring Icon" />
-          <span>Monitoring</span>
+        <NavLink to="/settings" className="sidebar-link">
+          <img src={settingsLogo} alt="Settings Icon" />
+          <span>Settings</span>
         </NavLink>
       </nav>
 
       <p className="sidebar-footer">
-        All rights go to Autopilot<br />
+        All rights go to Autopilot
+        <br />
       </p>
     </div>
   );
