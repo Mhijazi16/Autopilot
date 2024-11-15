@@ -41,12 +41,20 @@ def read_repository_file(repo_name, file_name):
     except Exception as e: 
         return f"error {e}"
 
-def create_repository_file(repo_name, path, commit, content):
+def create_repository_file(repo_name, path, commit_msg, content):
     """ path shouldn't start with / """
     try: 
         repo = user.get_repo(repo_name)
-        repo.create_file(path=path, message=commit, content=content)
+        repo.create_file(path=path, message=commit_msg, content=content)
         return f"created {path} on {repo_name}"
     except Exception as e: 
         return f"error {e}"
 
+def update_repository_file(repo_name, file_name, commit_msg, updates):
+    try: 
+        repo = user.get_repo(repo_name)
+        file = repo.get_contents(file_name)
+        repo.update_file(path=file.path, content=updates, sha=file.sha, message=commit_msg)
+        return f"update {file_name}."
+    except Exception as e: 
+        return f"error {e}"
