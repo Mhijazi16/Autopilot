@@ -1,6 +1,5 @@
 import os
 import pexpect
-from pexpect import pxssh, EOF
 
 def read_status(process):
     return process.before.decode()

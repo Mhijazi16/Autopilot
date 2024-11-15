@@ -1,5 +1,5 @@
-from shell_tools import handle_sudo, read_status, pexpect, EOF
-import os
+from Tools.shell_tools import handle_sudo, read_status, pexpect
+from pexpect import pxssh, EOF
 
 def create_users(usernames: list[str], passwords: list[str]): 
     """
@@ -8,9 +8,11 @@ def create_users(usernames: list[str], passwords: list[str]):
         Args: 
             usernames: list of strings 
             passwords: list of strings
-        Example: 
-            usernaems = ["user1", "user2"]
-            passwords = ["user1password", "user2password"]
+        usernames must be lower case and doesn't 
+        contain spaces.
+        passwords must be random charachters can 
+        contain digits letters and symbols like 
+        Go12j#@1
     """
 
     if len(usernames) == 0 or len(passwords) == 0: 
@@ -23,6 +25,7 @@ def create_users(usernames: list[str], passwords: list[str]):
     output = ""
     for username in usernames: 
         try: 
+            username = username.strip().lower()
             cmd = command + username 
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
@@ -176,4 +179,11 @@ def change_password(username: str, new_password: str):
     except:
         return "🚨 faild changing the password."
 
-print(change_password("one","123"))
+def get_users_toolkit():
+    return [create_users,
+            remove_users,
+            add_groups,
+            remove_groups,
+            add_group_users,
+            change_password]
+

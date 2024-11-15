@@ -123,3 +123,13 @@ def search_packages(name: str):
     command = f"pacman -Ss {name}"
     process = spawn(command)
     return process.read().decode()
+
+def get_package_toolkit():
+    return [search_packages,
+            clean_package_cache,
+            install_packages,
+            update_packages,
+            list_dependencies,
+            list_installed_packages,
+            remove_packages,
+            remove_full_packages]
