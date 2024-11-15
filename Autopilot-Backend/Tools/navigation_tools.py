@@ -31,3 +31,19 @@ def search_google(query):
     search_box.send_keys(Keys.RETURN)
 
     return close_window(engine)
+
+def search_google_images(query):
+    """
+        This tool is for searching google Images
+        it opens a broswer window and show results 
+        to the end user
+        Args: 
+            query: string
+    """
+    engine = webdriver.Chrome(service=service)
+    engine.get("https://www.google.com/imghp")
+    search_box = engine.find_element(By.NAME, "q")
+    search_box.send_keys(query)
+    search_box.send_keys(Keys.RETURN)
+    return close_window(engine)
+
