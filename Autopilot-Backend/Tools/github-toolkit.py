@@ -40,3 +40,13 @@ def read_repository_file(repo_name, file_name):
         return content.decoded_content.decode("utf-8")
     except Exception as e: 
         return f"error {e}"
+
+def create_repository_file(repo_name, path, commit, content):
+    """ path shouldn't start with / """
+    try: 
+        repo = user.get_repo(repo_name)
+        repo.create_file(path=path, message=commit, content=content)
+        return f"created {path} on {repo_name}"
+    except Exception as e: 
+        return f"error {e}"
+
