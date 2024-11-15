@@ -123,7 +123,7 @@ def get_directions(start_location, end_location):
     search_box.send_keys(Keys.RETURN)
     return close_window(engine)
 
-def get_toolkit():
+def get_navigation_toolkit():
      return [search_google,
              search_google_news,
              search_google_images,
