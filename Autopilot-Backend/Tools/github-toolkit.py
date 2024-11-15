@@ -116,3 +116,12 @@ def remove_repository_file(repo_name, file_name, commit_msg):
         return f"removed {file_name} from repo {repo_name}."
     except Exception as e: 
         return f"error {e}"
+
+def get_github_toolkit():
+    return [create_repository_file,
+            delete_repository,
+            modify_repository,
+            remove_repository_file,
+            create_repository_file,
+            update_repository_file,
+            read_repository_file]
