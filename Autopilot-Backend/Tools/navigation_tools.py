@@ -61,3 +61,18 @@ def search_youtube_videos(video_title):
     search_box.send_keys(video_title)
     search_box.send_keys(Keys.RETURN)
     return close_window(engine)
+
+def search_google_news(query):
+    """
+        This tool is for searching google news 
+        it opens a broswer window and show results 
+        to the end user
+        Args: 
+            query: string
+    """
+    engine = webdriver.Chrome(service=service)
+    engine.get("https://news.google.com")
+    search_box = engine.find_element(By.XPATH, "//input[@aria-label='Search']")
+    search_box.send_keys(query)
+    search_box.send_keys(Keys.RETURN)
+    return close_window(engine)
