@@ -76,3 +76,19 @@ def search_google_news(query):
     search_box.send_keys(query)
     search_box.send_keys(Keys.RETURN)
     return close_window(engine)
+
+def search_weather_forecast(location):
+    """
+        This tool is for looking into weather forecast 
+        it opens a broswer window and show results 
+        to the end user
+        Args: 
+            location: string
+    """
+    engine = webdriver.Chrome(service=service)
+    engine.get("https://www.google.com")
+    search_box = engine.find_element(By.NAME, "q")
+    search_box.send_keys(f"weather in {location}")
+    search_box.send_keys(Keys.RETURN)
+    return close_window(engine)
+
