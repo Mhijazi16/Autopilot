@@ -15,3 +15,19 @@ def close_window(engine):
         return f"search was successful here is what the user saw: {page_html}"
     except Exception:
         print("Window closed or browser disconnected.")
+
+def search_google(query):
+    """
+        This tool is for searching google 
+        it opens a broswer window and show results 
+        to the end user
+        Args: 
+            query: string
+    """
+    engine = webdriver.Chrome(service=service)
+    engine.get("https://www.google.com")
+    search_box = engine.find_element(By.NAME, "q")
+    search_box.send_keys(query)
+    search_box.send_keys(Keys.RETURN)
+
+    return close_window(engine)
