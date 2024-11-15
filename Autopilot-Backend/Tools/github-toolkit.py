@@ -23,3 +23,16 @@ def delete_repository(name):
         return f"Repository '{repo.name}' was deleted."
     except Exception as e: 
         return f"error {e}"
+
+def modify_repository(name, description=""): 
+    try: 
+        repo = user.get_repo(name)
+        if description != "": 
+            repo.edit(description=description)
+        return f"Repository '{repo.name}' was modified."
+    except Exception as e: 
+        return f"error {e}"
+
+print(delete_repository("Testing-Automation"))
+
+
