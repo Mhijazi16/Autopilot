@@ -33,6 +33,10 @@ def modify_repository(name, description=""):
     except Exception as e: 
         return f"error {e}"
 
-print(delete_repository("Testing-Automation"))
-
-
+def read_repository_file(repo_name, file_name):
+    try: 
+        repo = user.get_repo(repo_name)
+        content = repo.get_contents(file_name)
+        return content.decoded_content.decode("utf-8")
+    except Exception as e: 
+        return f"error {e}"
