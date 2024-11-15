@@ -179,7 +179,7 @@ def change_password(username: str, new_password: str):
     except:
         return "🚨 faild changing the password."
 
-def get_tool_kit():
+def get_users_toolkit():
     return [create_users,
             remove_users,
             add_groups,
