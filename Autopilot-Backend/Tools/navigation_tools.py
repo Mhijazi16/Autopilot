@@ -92,3 +92,17 @@ def search_weather_forecast(location):
     search_box.send_keys(Keys.RETURN)
     return close_window(engine)
 
+def get_top_search_result(query):
+    """
+        This tool is for search top results in google 
+        it opens a broswer window and show results 
+        to the end user
+        Args: 
+            query : string
+    """
+    engine = webdriver.Chrome(service=service)
+    search_google(query)
+    top_result = engine.find_element(By.XPATH, "(//h3)[1]")
+    print("Top Result:", top_result.text)
+    return close_window(engine)
+    return top_result.text
