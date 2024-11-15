@@ -15,3 +15,11 @@ def create_repository(name, description="", private=False):
         return f"Repository '{repo.name}' created successfully url: {repo.url}"
     except Exception as e: 
         return f"error {e}"
+
+def delete_repository(name): 
+    try: 
+        repo = user.get_repo(name)
+        repo.delete()
+        return f"Repository '{repo.name}' was deleted."
+    except Exception as e: 
+        return f"error {e}"
