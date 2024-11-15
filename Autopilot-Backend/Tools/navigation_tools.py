@@ -122,3 +122,12 @@ def get_directions(start_location, end_location):
     search_box.send_keys(f"{start_location} to {end_location}")
     search_box.send_keys(Keys.RETURN)
     return close_window(engine)
+
+def get_toolkit():
+     return [search_google,
+             search_google_news,
+             search_google_images,
+             search_youtube_videos,
+             search_weather_forecast,
+             get_top_search_result,
+             get_directions]
