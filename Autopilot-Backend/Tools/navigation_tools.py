@@ -47,3 +47,17 @@ def search_google_images(query):
     search_box.send_keys(Keys.RETURN)
     return close_window(engine)
 
+def search_youtube_videos(video_title):
+    """
+        This tool is for searching youtube videos by
+        title it opens a broswer window and show results 
+        to the end user
+        Args: 
+            video_title : string
+    """
+    engine = webdriver.Chrome(service=service)
+    engine.get("https://www.youtube.com")
+    search_box = engine.find_element(By.NAME, "search_query")
+    search_box.send_keys(video_title)
+    search_box.send_keys(Keys.RETURN)
+    return close_window(engine)
