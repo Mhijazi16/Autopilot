@@ -1,10 +1,12 @@
-from shell_tools import handle_sudo, read_status, pexpect, pxssh
+from shell_tools import handle_sudo, read_status
+import pexpect
+from pexpect import pxssh
 import os
 
 
-def ssh(username: str, hostname: str, password, commands: list[str]):
+def ssh_to_host(username: str, hostname: str, password, commands: list[str]):
     """
-        ssh is a tool that connectes and executes 
+        ssh_to_host is a tool that connectes and executes 
         commands to remote host or server.
         it takes in a list of commands
         Args: 
@@ -113,3 +115,13 @@ def list_wifi_networks():
     command = "nmcli dev wifi list | cat | tr -s ' ' | cut -d ' ' -f 3"
     ssid = os.popen(command).read()
     return ssid
+
+def get_network_toolkit():
+    return [list_wifi_networks,
+            list_interfaces,
+            list_network_hosts,
+            enable_interface,
+            disable_interface,
+            start_http_server,
+            kill_http_server,
+            ssh_to_host]
