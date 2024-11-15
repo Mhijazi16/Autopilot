@@ -55,6 +55,15 @@ def update_repository_file(repo_name, file_name, commit_msg, updates):
         repo = user.get_repo(repo_name)
         file = repo.get_contents(file_name)
         repo.update_file(path=file.path, content=updates, sha=file.sha, message=commit_msg)
-        return f"update {file_name}."
+        return f"updated {file_name} in repo: {repo_name}."
+    except Exception as e: 
+        return f"error {e}"
+
+def remove_repository_file(repo_name, file_name, commit_msg):
+    try: 
+        repo = user.get_repo(repo_name)
+        file = repo.get_contents(file_name)
+        repo.delete_file(path=file.path, sha=file.sha, message=commit_msg)
+        return f"removed {file_name} from repo {repo_name}."
     except Exception as e: 
         return f"error {e}"
