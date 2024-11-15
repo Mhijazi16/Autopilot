@@ -106,3 +106,19 @@ def get_top_search_result(query):
     print("Top Result:", top_result.text)
     return close_window(engine)
     return top_result.text
+
+def get_directions(start_location, end_location):
+    """
+        This tool is for getting directions on google maps 
+        it opens a broswer window and show results 
+        to the end user
+        Args: 
+            start_location: string
+            end_location: string
+    """
+    engine = webdriver.Chrome(service=service)
+    engine.get("https://www.google.com/maps")
+    search_box = engine.find_element(By.ID, "searchboxinput")
+    search_box.send_keys(f"{start_location} to {end_location}")
+    search_box.send_keys(Keys.RETURN)
+    return close_window(engine)
