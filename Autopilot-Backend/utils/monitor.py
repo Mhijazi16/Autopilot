@@ -15,3 +15,10 @@ def get_gpu_usage():
         if gpu.name == "NVIDIA GeForce RTX 3060 Laptop GPU": 
             return gpu.load * 100
     return 0
+
+def get_gpu_memory():
+    gpus = GPUtil.getGPUs()
+    for gpu in gpus:
+        if gpu.name == "NVIDIA GeForce RTX 3060 Laptop GPU": 
+            return gpu.memoryUsed / gpu.memoryTotal * 100
+    return 0
