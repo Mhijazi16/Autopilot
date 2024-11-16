@@ -33,19 +33,21 @@ const Toolbar = () => {
 
   return (
     <>
-      <div className="feedback-dev">
-        <div
-          className={`toolbar-icon feedback ${feedbackActive ? "active" : ""}`}
-          onClick={() => setFeedbackActive(!feedbackActive)}
-        >
-          <img src={feedbackIcon} alt={"feedback"} />
+      <div className="toolbar-main">
+        <div className="feedback-dev">
+          <div
+            className={`toolbar-icon feedback ${feedbackActive ? "active" : ""}`}
+            onClick={() => setFeedbackActive(!feedbackActive)}
+            >
+            <img src={feedbackIcon} alt={"feedback"} />
+          </div>
         </div>
-      </div>
-      <div className="toolbar">
-        {icons.map((icon, index) => (
-          <Agent src={icon.src} index={index} alt={icon.alt} />
-        ))}
-      </div>
+        <div className="toolbar">
+          {icons.map((icon, index) => (
+            <Agent src={icon.src} index={index} alt={icon.alt} />
+          ))}
+        </div>
+        </div>
     </>
   );
 };
