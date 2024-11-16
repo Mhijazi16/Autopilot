@@ -4,11 +4,14 @@
 
 .message-item.user {
     justify-content: flex-end;
+    padding-left: 5rem;
+    padding-right: 1rem;
 }
 
 .message-item.bot {
     justify-content: flex-start;
-    padding-right: 1.8rem;
+    padding-right: 1.2rem;
+    margin-right: 2rem;
 }
 
 .avatar {
@@ -63,3 +66,26 @@
     flex-shrink: 0;
     margin-left: 0.5rem;
 }
+
+
+
+.message-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+    background-color: transparent; 
+  }
+  
+  .message-table-header {
+    border: 0.5px solid #b3a0a0;
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .message-table-cell {
+    text-align: justify;
+    border: 0.5px solid #b3a0a0;
+    padding: 8px;
+  }
+  
