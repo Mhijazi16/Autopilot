@@ -26,7 +26,9 @@ const MessageItem = ({ msg }) => {
         </div>
       )}
       <span className="message-text">
-        {msg.sender === 'bot' ? markdownText(msg.text) : (
+        {msg.sender === 'bot' ? (
+          <Markdown remarkPlugins={remarkGfm}>{msg.text}</Markdown>
+        ) : (
           <span>{msg.text}</span>
         )}</span>
       {msg.sender === 'user' && <div className="spacer" />}
