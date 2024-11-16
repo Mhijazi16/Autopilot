@@ -4,11 +4,14 @@
 
 .message-item.user {
     justify-content: flex-end;
+    padding-left: 5rem;
+    padding-right: 1rem;
 }
 
 .message-item.bot {
     justify-content: flex-start;
-    padding-right: 1.8rem;
+    padding-right: 1.2rem;
+    margin-right: 2rem;
 }
 
 .avatar {
