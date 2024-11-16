@@ -22,3 +22,11 @@ def get_gpu_memory():
         if gpu.name == "NVIDIA GeForce RTX 3060 Laptop GPU": 
             return gpu.memoryUsed / gpu.memoryTotal * 100
     return 0
+
+def get_specs():
+        return {
+            "cpu-usage": get_cpu_usage(), 
+            "ram-usage": get_ram_usage(), 
+            "gpu-usage": get_gpu_usage(), 
+            "gpu-mem-usage": get_gpu_memory(), 
+        }
