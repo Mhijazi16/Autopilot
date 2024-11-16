@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Toolbar from "../Toolbar/Toolbar";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
+
 import "./Chatbot.css";
 
 const Chatbot = () => {
@@ -17,12 +18,18 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
+    try  {
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
+    } catch(error) {
+      console.error("Error saving messages to localStorage:", error);
+    }
   }, [messages]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  // useEffect(() => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages]);
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
