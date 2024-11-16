@@ -28,9 +28,6 @@
     backdrop-filter: blur(19px);
 }
 
-// add hover effect here.
-.modal-content:hover {
-}
 .modal-header-info {
     flex: 1;
 }
