@@ -7,6 +7,7 @@ import databaseIcon from '../../assets/icons/database.png';
 import terminalIcon from '../../assets/icons/terminal.png';
 import codeIcon from '../../assets/icons/code.png';
 import AgentModal from './AgentModal';
+import Monitoring from '../Monitoring/Monitoring';
 
 const agentDetails = {
   Cryptography: {
@@ -62,15 +63,16 @@ const Dashboard = () => {
   };
 
   return (
+    <>
     <div className='dashboard'>
       <h2 className="dashboard-title text-gray-900 dark:text-gray-100">Dashboard</h2>
       <div className="agent-grid">
         {Object.keys(agentDetails).map((agentName) => (
           <AgentCard
-            key={agentName}
-            name={agentName}
-            iconPath={agentDetails[agentName].icon}
-            onClick={() => openModal(agentName)}
+          key={agentName}
+          name={agentName}
+          iconPath={agentDetails[agentName].icon}
+          onClick={() => openModal(agentName)}
           />
         ))}
       </div>
@@ -80,8 +82,10 @@ const Dashboard = () => {
         name={modalInfo.name}
         icon={modalInfo.icon}
         description={modalInfo.description}
-      />
+        />
     </div>
+    <Monitoring/>
+    </>
   );
 };
 
