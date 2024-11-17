@@ -63,7 +63,7 @@ def read_repository_file(repo_name, file_name):
     except Exception as e: 
         return f"error {e}"
 
-def create_repository_file(repo_name, path, commit_msg, content):
+def add_repository_file(repo_name, path, commit_msg, content):
     """ this tool is used to create a file in a 
         repository takes in repo_name and path
         and commit messages and content inside file
@@ -118,10 +118,20 @@ def remove_repository_file(repo_name, file_name, commit_msg):
         return f"error {e}"
 
 def get_github_toolkit():
-    return [create_repository_file,
+    return [create_repository,
             delete_repository,
             modify_repository,
             remove_repository_file,
-            create_repository_file,
+            add_repository_file,
             update_repository_file,
             read_repository_file]
+
+def get_toolkit_description(): 
+    tools = get_github_toolkit()
+    description = "The following are the tools you can use:\n"
+    for tool in tools: 
+        description += tool.__name__ + '\n'
+        description += tool.__doc__ + '\n'
+    return description
+
+
