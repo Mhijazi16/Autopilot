@@ -2,10 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import Toolbar from "../Toolbar/Toolbar";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-
+import ResponseModal from "./ResponseModal";
 import "./Chatbot.css";
 
 const Chatbot = () => {
+
+  const [modalOpen, setModalOpen] = useState(false);
+  
+  
+
+
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chatMessages");
     return savedMessages
@@ -25,12 +31,10 @@ const Chatbot = () => {
     }
   }, [messages]);
 
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [messages]);
-
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -116,6 +120,8 @@ const Chatbot = () => {
   return (
     <>
       <Toolbar />
+      {/* <button onClick={() => setModalOpen(true)} style={{color: "white"}}>Show modal</button> */}
+      <ResponseModal isOpen={modalOpen} setModalOpen={setModalOpen}/>
       <div className="flex flex-col h-full relative">
         <MessageList messages={messages} messagesEndRef={messagesEndRef} />
         <MessageInput
