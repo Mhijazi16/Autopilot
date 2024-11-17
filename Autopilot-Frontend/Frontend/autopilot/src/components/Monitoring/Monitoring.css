@@ -1,0 +1,31 @@
+.monitoring-container {
+    padding: 2rem;
+    border-radius: 1rem;
+    background: linear-gradient(145deg, #ffffff, #f3f4f6);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.7);
+    width: 95%;
+    margin: 0 auto;
+    margin-top: 5rem;
+    margin-bottom: 8rem;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .monitoring-container.dark {
+    background: linear-gradient(145deg, #374151, #4b5563);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3), -5px -5px 15px rgba(58, 67, 80, 0.5);
+  }
+  
+  .monitoring-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .monitoring-title.dark {
+    color: #f3f4f6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  

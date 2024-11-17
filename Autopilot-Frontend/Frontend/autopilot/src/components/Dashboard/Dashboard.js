@@ -83,8 +83,8 @@ const Dashboard = () => {
         icon={modalInfo.icon}
         description={modalInfo.description}
         />
-    </div>
     <Monitoring/>
+    </div>
     </>
   );
 };
