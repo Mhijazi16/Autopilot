@@ -6,6 +6,7 @@
     width: 90%;
     height: 70%;
     margin-left: 90px;
+    margin-top: 50px;
 }
 
 .dashboard-title {
@@ -22,6 +23,7 @@
     flex-wrap: wrap;
     justify-content: space-around;
     row-gap: 2rem;
+    margin-bottom: 3rem;
 }
 
 .agent-card {
