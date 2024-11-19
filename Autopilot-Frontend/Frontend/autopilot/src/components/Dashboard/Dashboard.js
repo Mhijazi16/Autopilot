@@ -65,6 +65,7 @@ const Dashboard = () => {
   return (
     <>
     <div className='dashboard'>
+    <Monitoring/>
       <h2 className="dashboard-title text-gray-900 dark:text-gray-100">Dashboard</h2>
       <div className="agent-grid">
         {Object.keys(agentDetails).map((agentName) => (
@@ -83,7 +84,6 @@ const Dashboard = () => {
         icon={modalInfo.icon}
         description={modalInfo.description}
         />
-    <Monitoring/>
     </div>
     </>
   );
