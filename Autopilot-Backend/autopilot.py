@@ -1,11 +1,11 @@
+from utils.monitor import get_specs
+from memory.database import init
+from fastapi import FastAPI, WebSocket
 import asyncio
 import json
-from utils.monitor import get_specs
-from fastapi import FastAPI, WebSocket
 
-
+memory = init()
 app = FastAPI() 
-
 
 @app.websocket("/monitor")
 async def monitor_socket(websocket: WebSocket):
