@@ -80,7 +80,7 @@ const Monitoring = () => {
       "#8979FF", 
       "#FF928A", 
       "#3CC3DF", 
-      "#FFAE4C", 
+      "#6a9b0d", 
     ],
     fill: {
       type: "gradient",
@@ -90,7 +90,7 @@ const Monitoring = () => {
           "#8979FF", 
           "#FF928A", 
           "#3CC3DF", 
-          "#FFAE4C", 
+          "#6a9b0d", 
         ],
         opacityFrom: 0.7,
         opacityTo: 0.2,
