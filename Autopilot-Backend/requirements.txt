@@ -1,0 +1,12 @@
+fastapi==0.115.5
+GPUtil==1.4.0
+GPUtil==1.4.0
+pexpect==4.9.0
+psutil==6.1.0
+pydantic==2.9.2
+PyGithub==2.5.0
+PyGithub==2.5.0
+redis==5.2.0
+selenium==4.26.1
+shell_tools==1.1.8
+Tools==0.1.9
