@@ -13,17 +13,17 @@ def init():
 
 def populate_memory(memory):
     toolbar = {
-        "Navigation": False, 
-        "Coder": False,
-        "Shell": False,
-        "Github": False,
-        "Users": False,
-        "Monitor": False,
-        "Packages": False,
-        "Network": False,
-        "Troubleshooter": False,
+        "Navigation": "False", 
+        "Coder": "False",
+        "Shell": "False",
+        "Github": "False",
+        "Users": "False",
+        "Monitor": "False",
+        "Packages": "False",
+        "Network": "False",
+        "Troubleshooter": "False",
     }
 
-    memory.set("feedback", True)
+    memory.set("feedback", "False")
     memory.hset("toolbar", mapping=toolbar)
     return memory
