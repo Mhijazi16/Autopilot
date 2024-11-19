@@ -1,9 +1,9 @@
 .message-list {
     position: relative;
-    left: 56%;
+    left: 60%;
     transform: translateX(-65%);
     width: calc(100% - 1rem);
-    max-width: 60%;
+    max-width: 65%;
     flex: 1;
     overflow-y: auto;
     padding: 1rem;

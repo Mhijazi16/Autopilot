@@ -4,14 +4,15 @@
 
 .message-item.user {
     justify-content: flex-end;
-    padding-left: 5rem;
-    padding-right: 1rem;
+    padding-left: 8em;
+    /* padding-right: 1rem; */
 }
 
 .message-item.bot {
     justify-content: flex-start;
-    padding-right: 1.2rem;
-    margin-right: 2rem;
+    width: 85%;
+    /* padding-right: 5rem; */
+    /* margin-right: 2rem; */
 }
 
 .avatar {
@@ -87,5 +88,30 @@
     text-align: justify;
     border: 0.5px solid #b3a0a0;
     padding: 8px;
+  }
+  
+
+
+  .code-block-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .copy-button {
+    position: absolute;
+    top: 25px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: #ffffff; 
+    font-size: 1rem;
+    transition: transform 0.2s;
+  }
+  
+  .copy-button:hover {
+    transform: scale(1.1);
   }
   
