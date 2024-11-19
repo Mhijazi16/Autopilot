@@ -5,6 +5,18 @@ auth = Auth.Token(os.environ["GITHUB_TOKEN"])
 github = Github(auth=auth)
 user = github.get_user()
 
+def show_repo_content(repo_name: str):
+    """ this tool is used to show the 
+        content of repository 
+        Args: 
+            repo_name: str"""
+    repo = user.get_repo(repo_name)
+    content = repo.get_contents("")
+    output = "repository description: \n" + repo.description
+    for file in content: 
+        output += '\n' + file.path
+    return output
+
 def create_repository(name, description="", private=False):
     """ this tool is used to create a repository 
         Args: 
@@ -124,7 +136,8 @@ def get_github_toolkit():
             remove_repository_file,
             add_repository_file,
             update_repository_file,
-            read_repository_file]
+            read_repository_file,
+            show_repo_content]
 
 def get_toolkit_description(): 
     tools = get_github_toolkit()
