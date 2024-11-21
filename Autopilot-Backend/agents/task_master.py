@@ -27,3 +27,11 @@ class TaskMaster():
                 HumanMessagePromptTemplate.from_template("{input}")
             ]
         )
+
+    def plan(self, prompt: str): 
+        try:
+            chain = self.template | self.llm 
+            plan = chain.invoke({'input': prompt})
+            return plan
+        except Exception as e:
+            raise e
