@@ -16,6 +16,13 @@ app.add_middleware(
     allow_headers=["*"],  
 )
 
+@app.get("/toolbar")
+def get_toolbar():
+    try:
+        return memory.hgetall("toolbar")
+    except Exception as e:
+        raise e
+
 @app.post("/toolbar")
 async def set_toolbar(toolbar: ToolbarSchema): 
     try: 
