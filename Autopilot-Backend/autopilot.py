@@ -1,11 +1,34 @@
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
-from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi import FastAPI, HTTPException, WebSocket 
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import json
 
 memory = init()
 app = FastAPI() 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
+
+@app.get("/toolbar")
+def get_toolbar():
+    try:
+        return memory.hgetall("toolbar")
+    except Exception as e:
+        raise e
+
+@app.get("/feedback")
+def get_feedback():
+    try:
+        return {"feedback": memory.get("feedback")}
+    except Exception as e:
+        raise e
 
 @app.post("/toolbar")
 async def set_toolbar(toolbar: ToolbarSchema): 
