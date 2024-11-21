@@ -1,6 +1,7 @@
+from typing import Literal
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
-from fastapi import FastAPI, HTTPException, WebSocket 
+from fastapi import Body, FastAPI, HTTPException, WebSocket 
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import json
@@ -31,7 +32,7 @@ def get_feedback():
         raise e
 
 @app.post("/toolbar")
-async def set_toolbar(toolbar: ToolbarSchema): 
+async def set_toolbar(toolbar: ToolbarSchema = Body(...)): 
     try: 
         status = toolbar.model_dump()
         memory.hset("toolbar", mapping=status)
@@ -41,7 +42,7 @@ async def set_toolbar(toolbar: ToolbarSchema):
     return memory.hgetall("toolbar")
 
 @app.post("/feedback")
-async def set_feedback(feedback: str): 
+async def set_feedback(feedback: Literal["On", "Off"] = Body(...)): 
     try:
         memory.set("feedback", feedback)
     except Exception as e:

@@ -1,3 +1,4 @@
+from typing import Literal
 from pydantic import BaseModel
 import redis
 import time
@@ -6,15 +7,15 @@ import os
 memory = None
 
 class ToolbarSchema(BaseModel):
-    Navigation: str = "Off"
-    Coder: str = "Off"
-    Shell: str = "Off"
-    Github: str = "Off"
-    Users: str = "Off"
-    Monitor: str = "Off"
-    Packages: str = "Off"
-    Network: str = "Off"
-    Troubleshooter: str = "Off"
+    Navigation: Literal["On","Off"] = "Off"
+    Coder: Literal["On","Off"] = "Off"
+    Shell: Literal["On","Off"] = "Off"
+    Github: Literal["On","Off"] = "Off"
+    Users: Literal["On","Off"] = "Off"
+    Monitor: Literal["On","Off"] = "Off"
+    Packages: Literal["On","Off"] = "Off"
+    Network: Literal["On","Off"] = "Off"
+    Troubleshooter: Literal["On","Off"] = "Off"
 
 def init():
     global memory
