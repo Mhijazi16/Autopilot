@@ -23,6 +23,13 @@ def get_toolbar():
     except Exception as e:
         raise e
 
+@app.get("/feedback")
+def get_feedback():
+    try:
+        return {"feedback": memory.get("feedback")}
+    except Exception as e:
+        raise e
+
 @app.post("/toolbar")
 async def set_toolbar(toolbar: ToolbarSchema): 
     try: 
