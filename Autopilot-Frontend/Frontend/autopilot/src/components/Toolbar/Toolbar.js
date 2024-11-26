@@ -22,7 +22,7 @@ const Toolbar = () => {
     { src: emailIcon, alt: "Email" },
     { src: navigationIcon, alt: "Navigation" },
     { src: checklistIcon, alt: "Checklist" },
-    { src: codeIcon, alt: "Code" },
+    { src: codeIcon, alt: "Coder" },
     { src: scriptIcon, alt: "Script" },
     { src: calculatorIcon, alt: "Calculator" },
     { src: searchIcon, alt: "Search" },
@@ -30,13 +30,38 @@ const Toolbar = () => {
 
   const [feedbackActive, setFeedbackActive] = useState(false);
 
+  async function runFeedback() {
+    const url = "http://127.0.0.1:8000/feedback";
+  
+    const feedbackData = feedbackActive ? "Off" : "On";
+  
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(feedbackData),
+      });
+  
+      if (response.ok) {
+        setFeedbackActive(!feedbackActive);
+      } else {
+        console.error("Error updating feedback:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  }
+  
+
   return (
     <>
       <div className="toolbar-main">
         <div className="feedback-dev">
           <div
             className={`toolbar-icon feedback ${feedbackActive ? "active" : ""}`}
-            onClick={() => setFeedbackActive(!feedbackActive)}
+            onClick={runFeedback}
             data-tooltip-id={`feedback-tooltip`} 
             data-tooltip-content={`${feedbackActive? "Activated" : "Deactivated"}`}
             data-tooltip-place="left"
@@ -70,12 +95,35 @@ function Agent({ src, alt, index }) {
     setAgentActive(!agentActive);
   }
 
+  async function runAgent() {
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/feedback", 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify("asdf"),
+      })
+
+      if(response.ok) {
+        setAgentActive(!agentActive)
+      }
+      else {
+        console.log("error loading agent!");
+      }
+    } catch (error) {
+      console.log("error loading agent!");
+    }
+  }
+
   return (
     <>
     <div
       key={index}
       className={`toolbar-icon ${agentActive ? "active" : ""}`}
-      onClick={() => activateAgent()}
+      onClick={runAgent}
       data-tooltip-id={`agent-tooltip-${index}`} 
       data-tooltip-content={`${agentActive? "Activated" : "Deactivated"}`}
       data-tooltip-place="left"

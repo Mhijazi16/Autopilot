@@ -26,15 +26,29 @@
 }
 
 .message-input {
+  overflow: auto;
+  resize: none;
   flex-grow: 1;
   background-color: transparent;
   color: #1f2937;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   padding: 0.5rem;
   border: none;
   outline: none;
 }
 
+.message-input::-webkit-scrollbar {
+  width: 0px; 
+  height: 0px; 
+}
+
+.message-input::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+.message-input::-webkit-scrollbar-thumb {
+  background: transparent; 
+}
 .dark .message-input {
   color: #d1d5db;
 }
