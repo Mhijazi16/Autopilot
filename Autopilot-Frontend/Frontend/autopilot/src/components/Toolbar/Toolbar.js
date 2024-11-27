@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import { Tooltip } from 'react-tooltip';
 import "./Toolbar.css";
 
@@ -10,77 +10,63 @@ import navigationIcon from "../../assets/icons/navigation.png";
 import checklistIcon from "../../assets/icons/checklist.png";
 import codeIcon from "../../assets/icons/code.png";
 import scriptIcon from "../../assets/icons/script.png";
-import calculatorIcon from "../../assets/icons/calculator.png";
 import searchIcon from "../../assets/icons/search.png";
 import feedbackIcon from "../../assets/icons/feedback.svg";
+import ToolbarAgent from "./ToolbarAgent";
 
 const Toolbar = () => {
   const icons = [
-    { src: databaseIcon, alt: "Database" },
-    { src: cryptographyIcon, alt: "Cryptography" },
-    { src: terminalIcon, alt: "Terminal" },
-    { src: emailIcon, alt: "Email" },
+    { src: databaseIcon, alt: "Users" },
+    { src: cryptographyIcon, alt: "Monitor" },
+    { src: terminalIcon, alt: "Network" },
+    { src: emailIcon, alt: "Github" },
     { src: navigationIcon, alt: "Navigation" },
-    { src: checklistIcon, alt: "Checklist" },
+    { src: checklistIcon, alt: "Packages" },
     { src: codeIcon, alt: "Coder" },
-    { src: scriptIcon, alt: "Script" },
-    { src: calculatorIcon, alt: "Calculator" },
-    { src: searchIcon, alt: "Search" },
+    { src: scriptIcon, alt: "Shell" },
+    { src: searchIcon, alt: "Troubleshooter" },
   ];
 
-  const [feedbackActive, setFeedbackActive] = useState(false);
+  const [toolbarDictionary, setToolbarDictionary] = useState({});
+  const [feedbackActive, setFeedbackActive] = useState(false);  
 
-  async function runFeedback() {
-    const url = "http://127.0.0.1:8000/feedback";
-  
-    const feedbackData = feedbackActive ? "Off" : "On";
-  
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(feedbackData),
-      });
-  
-      if (response.ok) {
-        setFeedbackActive(!feedbackActive);
-      } else {
-        console.error("Error updating feedback:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  }
-  
+  useEffect(() => {
+    getToolbar({setToolbarDictionary}); 
+  }, []);
+
+  useEffect(() => {
+    getFeedback({setFeedbackActive});
+  }, []);
 
   return (
     <>
       <div className="toolbar-main">
         <div className="feedback-dev">
           <div
-            className={`toolbar-icon feedback ${feedbackActive ? "active" : ""}`}
-            onClick={runFeedback}
-            data-tooltip-id={`feedback-tooltip`} 
-            data-tooltip-content={`${feedbackActive? "Activated" : "Deactivated"}`}
-            data-tooltip-place="left"
+              className={`toolbar-icon feedback ${feedbackActive ? "active" : ""}`}
+              onClick={() => runFeedback({feedbackActive, setFeedbackActive})}
+              data-tooltip-id={`feedback-tooltip`} 
+              data-tooltip-content={`${feedbackActive? "Activated" : "Deactivated"}`}
+              data-tooltip-place="left"
             >
             <img src={feedbackIcon} alt={"feedback"} />
             <Tooltip 
-            id={`feedback-tooltip`}
-            key={feedbackActive ? "active" : "inactive"}
-            offset={20} 
-            style={{
-            fontSize: "18px",
-            borderRadius: "5px",
-            backgroundColor: feedbackActive ? "#1F68FF" : "#1E1E1E",
+              id={`feedback-tooltip`}
+              key={feedbackActive ? "active" : "inactive"}
+              offset={20} 
+              style={{
+              fontSize: "18px",
+              borderRadius: "5px",
+              backgroundColor: feedbackActive ? "#1F68FF" : "#1E1E1E",
             }}/>
           </div>
         </div>
         <div className="toolbar">
           {icons.map((icon, index) => (
-            <Agent src={icon.src} index={index} alt={icon.alt} />
+            <ToolbarAgent key={icon.alt} src={icon.src} index={index} alt={icon.alt}
+              toolbarDictionary={toolbarDictionary}
+              setToolbarDictionary={setToolbarDictionary}
+            />
           ))}
         </div>
         </div>
@@ -88,59 +74,88 @@ const Toolbar = () => {
   );
 };
 
-function Agent({ src, alt, index }) {
-  const [agentActive, setAgentActive] = useState(false);
 
-  function activateAgent() {
-    setAgentActive(!agentActive);
-  }
-
-  async function runAgent() {
-
-    try {
-      const response = await fetch("http://127.0.0.1:8000/feedback", 
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify("asdf"),
-      })
-
-      if(response.ok) {
-        setAgentActive(!agentActive)
-      }
-      else {
-        console.log("error loading agent!");
-      }
-    } catch (error) {
-      console.log("error loading agent!");
+async function getToolbar({setToolbarDictionary}) {
+  const url = "http://127.0.0.1:8000/toolbar";
+  
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const agentsArray =  Object.fromEntries(
+        Object.entries(data).map(entry => [entry[0], entry[1]])
+      );
+      setToolbarDictionary(agentsArray);
+    } else {
+      console.error("Error getting toolbar:", response.status, response.statusText);
     }
+  } catch (error) {
+    console.error("Network error:", error);
   }
+};
 
-  return (
-    <>
-    <div
-      key={index}
-      className={`toolbar-icon ${agentActive ? "active" : ""}`}
-      onClick={runAgent}
-      data-tooltip-id={`agent-tooltip-${index}`} 
-      data-tooltip-content={`${agentActive? "Activated" : "Deactivated"}`}
-      data-tooltip-place="left"
-      >
-      <img src={src} alt={alt} />
-      <Tooltip 
-      id={`agent-tooltip-${index}`}
-      key={agentActive ? "active" : "inactive"}
-      offset={20} 
-      style={{
-        fontSize: "18px",
-        borderRadius: "5px",
-        backgroundColor: agentActive ? "#1F68FF" : "#1E1E1E",
-      }}/>
-    </div>
-    </>
-  );
+const getFeedback = async ({setFeedbackActive}) => {
+  const url = "http://127.0.0.1:8000/feedback";
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      switch (data.feedback) {
+        case "Off":
+          setFeedbackActive(false);
+          break;
+        case "On":
+          setFeedbackActive(true);
+          break;
+        default:
+          break;
+      }
+    } else {
+      console.error("Error updating feedback:", response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+};
+
+
+async function runFeedback({feedbackActive ,setFeedbackActive}) {
+  const url = "http://127.0.0.1:8000/feedback";
+
+  const feedbackData = feedbackActive ? "Off" : "On";
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(feedbackData),
+    });
+
+    if (response.ok) {
+      setFeedbackActive(!feedbackActive);
+    } else {
+      console.error("Error updating feedback:", response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
 }
+
+
 
 export default Toolbar;
