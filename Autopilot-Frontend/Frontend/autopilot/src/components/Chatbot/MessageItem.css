@@ -19,9 +19,7 @@
     width: 2.5rem;
     height: 2.5rem;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-top: 10px;
     margin-right: 0.5rem;
 }
 
@@ -116,10 +114,21 @@
     width: 110%;
 }
 
+.code-block-header {
+    background-color: rgb(32, 31, 31); 
+    color: whitesmoke; 
+    font-size: 14px;
+    font-weight: lighter;
+    font-size: large;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px 1.5rem 10px 1.5rem;
+}
+
 .copy-button {
     position: absolute;
-    top: 25px;
-    right: 20px;
+    top: 7px;
+    right: 10px;
     background: none;
     border: none;
     cursor: pointer;
