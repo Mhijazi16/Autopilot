@@ -20,12 +20,12 @@ const MessageItem = ({ msg }) => {
       background: "rgba(10, 10, 10, 0.75)", 
       borderRadius: "8px", 
       padding: "1rem",
-      fontWeight: "bold",
+      margin: "0",
     },
     'code[class*="language-"]': {
       ...coldarkDark['code[class*="language-"]'],
       background: "transparent", 
-      fontWeight: "bold",
+      fontWeight: "700",
     },
   };
 
@@ -42,6 +42,11 @@ const MessageItem = ({ msg }) => {
             if (!inline) {
               return (
                 <div className="code-block-container">
+                  {language && (
+                  <div className="code-block-header">
+                    {language}
+                  </div>
+                )}
                   <Prism language={language} style={transparentTheme} {...props}>
                     {codeText}
                   </Prism>

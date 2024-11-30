@@ -18,6 +18,7 @@ body {
 
 .dark body, .dark html {
   background: linear-gradient(135deg, #0A0D14, #1B2130); 
+  /* background: linear-gradient(60deg, #0b0c1c, #0d081e);  */
   transition: background 0.3s;
 }
 

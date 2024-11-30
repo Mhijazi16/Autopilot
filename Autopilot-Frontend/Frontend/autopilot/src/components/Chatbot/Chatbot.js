@@ -118,7 +118,7 @@ const Chatbot = () => {
   return (
     <>
       <Toolbar />
-      <button onClick={() => setModalOpen(true)} style={{color: "white"}}>Show modal</button>
+      {/* <button onClick={() => setModalOpen(true)} style={{color: "white"}}>Show modal</button> */}
       <ResponseModal isOpen={modalOpen} setModalOpen={setModalOpen}/>
       <div className="flex flex-col h-full relative">
         <MessageList messages={messages} messagesEndRef={messagesEndRef} />

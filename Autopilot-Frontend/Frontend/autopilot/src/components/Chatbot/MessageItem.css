@@ -10,8 +10,8 @@
 
 .message-item.bot {
     justify-content: flex-start;
-    width: 85%;
-    /* padding-right: 5rem; */
+    width: 90%;
+    /* padding-right: 2rem; */
     /* margin-right: 2rem; */
 }
 
@@ -19,9 +19,7 @@
     width: 2.5rem;
     height: 2.5rem;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-top: 10px;
     margin-right: 0.5rem;
 }
 
@@ -58,6 +56,7 @@
 }
 
 .dark .message-item.bot .message-text {
+    width: 95%;
     color: #f0f0f0;
 }
 
@@ -71,37 +70,65 @@
 
 
 .message-table {
-    border-collapse: collapse;
-    width: 100%;
+    width: 110%;
     margin: 1rem 0;
     background-color: transparent; 
-  }
-  
-  .message-table-header {
+    border-radius: 7px;
+    overflow: hidden;
+    border-spacing: 0;
+    border-collapse: separate;
+}
+
+.message-table-header {
     border: 0.5px solid #b3a0a0;
+    background-color: rgb(63, 63, 65);
     padding: 8px;
     text-align: left;
     font-weight: bold;
-  }
-  
-  .message-table-cell {
-    text-align: justify;
-    border: 0.5px solid #b3a0a0;
-    padding: 8px;
-  }
-  
+}
+
+.message-table-cell {
+    border: 0.1px solid #b3a0a0;
+    padding: 10px;
+}
+
+.message-table-row:first-child .message-table-header:first-child {
+    border-radius: 10px 0 0 0;  
+}
+.message-table-row:first-child .message-table-header:last-child {
+    border-radius: 0px 10px 0 0;  
+}
+
+.message-table-row:last-child .message-table-cell:first-child {
+    border-radius: 0 0 0 10px;  
+}
+.message-table-row:last-child .message-table-cell:last-child {
+    border-radius: 0 0 10px 0;  
+}
 
 
-  .code-block-container {
+
+.code-block-container {
     position: relative;
     display: inline-block;
-    width: 100%;
-  }
-  
-  .copy-button {
+    width: 110%;
+}
+
+.code-block-header {
+    background-color: rgb(32, 31, 31); 
+    color: whitesmoke; 
+    font-size: 14px;
+    font-weight: lighter;
+    font-size: large;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px 1.5rem 10px 1.5rem;
+}
+
+.copy-button {
     position: absolute;
-    top: 25px;
-    right: 20px;
+    top: 7px;
+    right: 10px;
     background: none;
     border: none;
     cursor: pointer;
