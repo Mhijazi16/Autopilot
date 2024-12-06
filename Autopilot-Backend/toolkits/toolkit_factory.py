@@ -30,3 +30,10 @@ def toolkit_factory(toolbar: ToolbarSchema):
         elif tool[0] == "Users": 
             toolkit.extend(get_users_toolkit())
     return toolkit
+
+def get_description(tools): 
+    description = ""
+    for tool in tools: 
+        description += tool.__name__ + '\n'
+        description += tool.__doc__ + '\n'
+    return description
