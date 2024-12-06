@@ -37,3 +37,22 @@ def get_description(tools):
         description += tool.__name__ + '\n'
         description += tool.__doc__ + '\n'
     return description
+
+def description_factory(toolbar: ToolbarSchema):
+    description = ""
+    for tool in toolbar: 
+        if tool[1] == "Off": 
+            continue
+        if tool[0] == "Packages": 
+            description += get_description(get_package_toolkit())
+        elif tool[0] == "Shell": 
+            description += get_description(get_shell_toolkit())
+        elif tool[0] == "Network": 
+            description += get_description(get_network_toolkit())
+        elif tool[0] == "Github": 
+            description += get_description(get_github_toolkit())
+        elif tool[0] == "Navigation": 
+            description += get_description(get_navigation_toolkit())
+        elif tool[0] == "Users": 
+            description += get_description(get_users_toolkit())
+    return description
