@@ -44,15 +44,21 @@ def description_factory(toolbar: ToolbarSchema):
         if tool[1] == "Off": 
             continue
         if tool[0] == "Packages": 
+            description += "\nPackage Management Agent Tools:\n"
             description += get_description(get_package_toolkit())
         elif tool[0] == "Shell": 
+            description += "\nLinux Shell Agent Tools:\n"
             description += get_description(get_shell_toolkit())
         elif tool[0] == "Network": 
+            description += "\nNetwork Agent Tools:\n"
             description += get_description(get_network_toolkit())
         elif tool[0] == "Github": 
+            description += "\nGithub Agent Tools:\n"
             description += get_description(get_github_toolkit())
         elif tool[0] == "Navigation": 
+            description += "\nNavigation Agent Tools:\n"
             description += get_description(get_navigation_toolkit())
         elif tool[0] == "Users": 
+            description += "\nUsers & Groups Agent Tools:\n"
             description += get_description(get_users_toolkit())
     return description
