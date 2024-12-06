@@ -57,6 +57,6 @@ async def monitor_socket(websocket: WebSocket):
         while True:
             specs = get_specs()
             await websocket.send_text(json.dumps(specs)) 
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.3)
     except Exception as e:
         print(f"Error: {e}")

@@ -36,3 +36,6 @@ def execute(command):
         return read_status(child) 
 
     return os.popen(command).read()
+
+def get_shell_toolkit():
+    return [execute]
