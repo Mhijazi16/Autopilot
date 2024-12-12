@@ -45,6 +45,7 @@ async def set_toolbar(toolbar: ToolbarSchema = Body(...)):
 async def set_feedback(feedback: Literal["On", "Off"] = Body(...)): 
     try:
         memory.set("feedback", feedback)
+        memory.set("command", "hero")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving feedback: {e}")
 
@@ -60,3 +61,17 @@ async def monitor_socket(websocket: WebSocket):
             await asyncio.sleep(0.3)
     except Exception as e:
         print(f"Error: {e}")
+
+@app.websocket("/tools")
+async def feedback_socket(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            await asyncio.sleep(0.1)
+            command = memory.get("command")
+            if command != "not-set": 
+                await websocket.send_json({"command": command})
+                memory.set("command","not-set")
+    except Exception as e:
+        print(f"Error: {e}")
+
