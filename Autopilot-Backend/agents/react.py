@@ -51,3 +51,16 @@ class ReactAgent():
             if event["event"] == "on_chat_model_end":
                 tool = self.parse_for_tool(event)
         return tool
+
+    async def Halt(self): 
+        timeout = 60
+        start_time = time.time()
+        while True: 
+            status = self.memory.get("status")
+            if status == "accepted": 
+                break; 
+            elif status == "rejected": 
+                return False
+            if time.time() - start_time < timeout:
+                return False
+        return True 
