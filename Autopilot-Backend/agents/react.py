@@ -43,3 +43,11 @@ class ReactAgent():
 
     def get_stream(self, state): 
         return self.agent.astream_events(state, config=self.config, stream_mode="values", version='v2')
+
+    async def Invoke(self, state):
+        tool = ()
+        stream = self.get_stream(state)
+        async for event in stream: 
+            if event["event"] == "on_chat_model_end":
+                tool = self.parse_for_tool(event)
+        return tool
