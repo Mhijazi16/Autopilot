@@ -64,3 +64,10 @@ class ReactAgent():
             if time.time() - start_time < timeout:
                 return False
         return True 
+
+    async def Resume(self):
+        stream = self.get_stream(None)
+        async for event in stream: 
+            if event["event"] == "on_chat_model_end":
+                message = self.parse_for_message(event)
+                print(message.content)
