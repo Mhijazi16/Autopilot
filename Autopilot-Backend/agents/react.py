@@ -27,3 +27,16 @@ class ReactAgent():
                               interrupt_before=['tools'],
                               checkpointer=self.checkpointer,
                               state_schema=AgentState)
+
+    def parse_for_tool(self, event):
+        try:
+            function = event['data']['output'].response_metadata['message']['tool_calls'][-1]
+            return function['function']['name'], function['function']['arguments']
+        except:
+            return None
+
+    def parse_for_message(self, event): 
+        try:
+            return event['data']['output']
+        except Exception as e:
+            raise e
