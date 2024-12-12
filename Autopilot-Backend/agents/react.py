@@ -40,3 +40,6 @@ class ReactAgent():
             return event['data']['output']
         except Exception as e:
             raise e
+
+    def get_stream(self, state): 
+        return self.agent.astream_events(state, config=self.config, stream_mode="values", version='v2')
