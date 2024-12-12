@@ -55,7 +55,7 @@ def list_installed_packages():
     process = spawn(command)
     return process.read().decode()
 
-def list_dependencies():
+def list_system_wide_dependencies():
     """
         this tool is used  to list all the package 
         depandencies on the system by running 
@@ -68,6 +68,16 @@ def list_dependencies():
     command = "pacman -Qd"
     process = spawn(command)
     return process.read().decode()
+
+def show_package_information(name: str): 
+    """
+        this tool shows package information 
+        like name, size, owner, and the depandencies
+        of that package, and the packages and conflict 
+        with this packages
+        Args: 
+            name: str
+    """
 
 def remove_packages(names: list[str]):
     """
@@ -129,7 +139,8 @@ def get_package_toolkit():
             clean_package_cache,
             install_packages,
             update_packages,
-            list_dependencies,
+            list_system_wide_dependencies,
             list_installed_packages,
             remove_packages,
-            remove_full_packages]
+            remove_full_packages,
+            show_package_information]
