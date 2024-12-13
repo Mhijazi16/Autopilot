@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Toolbar from "../Toolbar/Toolbar";
+import Toolbar from "./Toolbar/Toolbar";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ResponseModal from "./ResponseModal";

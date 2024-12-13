@@ -19,8 +19,7 @@
 }
 
 .dark .sidebar {
-  /* background: linear-gradient(135deg, rgba(66, 70, 85, 0.7), rgba(31, 35, 50, 0.7)); */
-  background: linear-gradient(135deg, rgba(53, 61, 88, 0.7), rgba(3, 13, 49, 0.7));
+  background: rgb(26, 31, 49);
   border-color: #4b5563;
 }
 

@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Tooltip } from 'react-tooltip';
 import "./Toolbar.css";
 
-import packagerIcon from '../../assets/icons/packager.svg'
-import navigationIcon from '../../assets/icons/navigation.png';
-import databaseIcon from '../../assets/icons/database.png';
-import shellIcon from '../../assets/icons/shell.png';
-import networkIcon from '../../assets/icons/network.svg'
-import codeIcon from '../../assets/icons/code.svg';
-import githubIcon from '../../assets/icons/github.svg';
-import troubleShootingIcon from '../../assets/icons/troubleshooting.svg';
-import usersIcon from '../../assets/icons/users.svg';
-import feedbackIcon from "../../assets/icons/feedback.svg";
+import packagerIcon from '../../../assets/icons/packager.svg'
+import navigationIcon from '../../../assets/icons/navigation.png';
+import databaseIcon from '../../../assets/icons/database.png';
+import shellIcon from '../../../assets/icons/shell.png';
+import networkIcon from '../../../assets/icons/network.svg'
+import codeIcon from '../../../assets/icons/code.svg';
+import githubIcon from '../../../assets/icons/github.svg';
+import troubleShootingIcon from '../../../assets/icons/troubleshooting.svg';
+import usersIcon from '../../../assets/icons/users.svg';
+import feedbackIcon from "../../../assets/icons/feedback.svg";
 import ToolbarAgent from "./ToolbarAgent";
 
 const Toolbar = () => {
