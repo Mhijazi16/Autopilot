@@ -1,12 +1,18 @@
-import time
 from memory.database import get_memory
 from langchain_ollama import ChatOllama
 from langgraph.graph import MessagesState
 from langgraph.managed import IsLastStep
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
-from toolkits.package_toolkit import get_package_toolkit
 import asyncio
+
+active_sockets = {}
+async def notify_client(name: str, data): 
+    try:
+        socket = active_sockets[name]
+        await socket.send_json(str(data))
+    except Exception as e:
+        print(f"Error: {e}")
 
 class AgentState(MessagesState): 
     is_last_step: IsLastStep
@@ -53,21 +59,37 @@ class ReactAgent():
         return tool
 
     async def Halt(self): 
-        timeout = 60
-        start_time = time.time()
+        i = 0
         while True: 
+            await asyncio.sleep(1)
             status = self.memory.get("status")
             if status == "accepted": 
                 break; 
             elif status == "rejected": 
                 return False
-            if time.time() - start_time < timeout:
+            if i == 60:
                 return False
+            i += 1
         return True 
 
     async def Resume(self):
         stream = self.get_stream(None)
+        output = ""
         async for event in stream: 
             if event["event"] == "on_chat_model_end":
                 message = self.parse_for_message(event)
-                print(message.content)
+                output += message.content
+        return output
+
+    async def Run(self, prompt: str): 
+        self.memory.set("status", "not-set")
+        tool = await self.Invoke({'messages': [prompt]})
+        feedback = self.memory.get("feedback")
+        resume = True
+        if feedback == "On" and tool: 
+            await notify_client('tools', tool)
+            resume = await self.Halt()
+            self.memory.set("status", "not-set")
+        if resume: 
+            text = await self.Resume()
+            return text
