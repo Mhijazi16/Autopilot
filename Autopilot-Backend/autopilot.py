@@ -3,6 +3,8 @@ from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
 from fastapi import Body, FastAPI, HTTPException, WebSocket 
 from fastapi.middleware.cors import CORSMiddleware
+from agents.react import ReactAgent, active_sockets
+from toolkits.package_toolkit import get_package_toolkit
 import asyncio
 import json
 
@@ -16,7 +18,6 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
-
 @app.get("/toolbar")
 def get_toolbar():
     try:
@@ -45,7 +46,6 @@ async def set_toolbar(toolbar: ToolbarSchema = Body(...)):
 async def set_feedback(feedback: Literal["On", "Off"] = Body(...)): 
     try:
         memory.set("feedback", feedback)
-        memory.set("command", "hero")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving feedback: {e}")
 
@@ -62,16 +62,38 @@ async def monitor_socket(websocket: WebSocket):
     except Exception as e:
         print(f"Error: {e}")
 
+# @app.websocket("/chat")
+# async def chat(websocket: WebSocket):
+#     await websocket.accept()
+#     active_sockets['chat'] = websocket
+#     try:
+#         while True: 
+#             pass
+#     except Exception as e:
+#         print(f"Error: {e}")
+
+@app.post("/accept")
+async def accept(): 
+    try:
+        memory.set("status","accepted")
+    except Exception as e:
+        print(f"Error: {e}")
+
+@app.post("/reject")
+async def reject(): 
+    try:
+        memory.set("status","rejected")
+    except Exception as e:
+        print(f"Error: {e}")
+
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
     await websocket.accept()
+    active_sockets['tools'] = websocket
     try:
         while True:
-            await asyncio.sleep(0.1)
-            command = memory.get("command")
-            if command != "not-set": 
-                await websocket.send_json({"command": command})
-                memory.set("command","not-set")
+            await asyncio.sleep(10)
+            await websocket.send_text(".")
     except Exception as e:
         print(f"Error: {e}")
 
