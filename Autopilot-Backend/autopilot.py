@@ -4,7 +4,7 @@ from memory.database import init, ToolbarSchema
 from fastapi import Body, FastAPI, HTTPException, WebSocket 
 from fastapi.middleware.cors import CORSMiddleware
 from agents.react import ReactAgent, active_sockets
-from toolkits.package_toolkit import get_package_toolkit
+from toolkits.toolkit_factory import toolkit_factory
 import asyncio
 import json
 
@@ -62,16 +62,6 @@ async def monitor_socket(websocket: WebSocket):
     except Exception as e:
         print(f"Error: {e}")
 
-# @app.websocket("/chat")
-# async def chat(websocket: WebSocket):
-#     await websocket.accept()
-#     active_sockets['chat'] = websocket
-#     try:
-#         while True: 
-#             pass
-#     except Exception as e:
-#         print(f"Error: {e}")
-
 @app.post("/accept")
 async def accept(): 
     try:
@@ -89,9 +79,9 @@ async def reject():
 @app.post("/chat")
 async def chat(prompt: str): 
     try:
-        tools = get_package_toolkit()
-        agent = ReactAgent("llama3.1",
-                           tools,
+        toolbar = memory.hgetall("toolbar")
+        toolkit = toolkit_factory(toolbar)
+        agent = ReactAgent("llama3.2",toolkit,
                            {"configurable": {"thread_id": "1"}})
 
         res = await agent.Run(prompt)
