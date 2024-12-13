@@ -86,6 +86,19 @@ async def reject():
     except Exception as e:
         print(f"Error: {e}")
 
+@app.post("/chat")
+async def chat(prompt: str): 
+    try:
+        tools = get_package_toolkit()
+        agent = ReactAgent("llama3.1",
+                           tools,
+                           {"configurable": {"thread_id": "1"}})
+
+        res = await agent.Run(prompt)
+        return res
+    except Exception as e:
+        print(f"errror : {e}")
+
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
     await websocket.accept()
