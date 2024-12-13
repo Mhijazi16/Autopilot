@@ -3,6 +3,8 @@ from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
 from fastapi import Body, FastAPI, HTTPException, WebSocket 
 from fastapi.middleware.cors import CORSMiddleware
+from agents.react import ReactAgent, active_sockets
+from toolkits.toolkit_factory import toolkit_factory
 import asyncio
 import json
 
@@ -16,7 +18,6 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
-
 @app.get("/toolbar")
 def get_toolbar():
     try:
@@ -60,3 +61,42 @@ async def monitor_socket(websocket: WebSocket):
             await asyncio.sleep(0.3)
     except Exception as e:
         print(f"Error: {e}")
+
+@app.post("/accept")
+async def accept(): 
+    try:
+        memory.set("status","accepted")
+    except Exception as e:
+        print(f"Error: {e}")
+
+@app.post("/reject")
+async def reject(): 
+    try:
+        memory.set("status","rejected")
+    except Exception as e:
+        print(f"Error: {e}")
+
+@app.post("/chat")
+async def chat(prompt: str): 
+    try:
+        toolbar = memory.hgetall("toolbar")
+        toolkit = toolkit_factory(toolbar)
+        agent = ReactAgent("llama3.2",toolkit,
+                           {"configurable": {"thread_id": "1"}})
+
+        res = await agent.Run(prompt)
+        return res
+    except Exception as e:
+        print(f"errror : {e}")
+
+@app.websocket("/tools")
+async def feedback_socket(websocket: WebSocket):
+    await websocket.accept()
+    active_sockets['tools'] = websocket
+    try:
+        while True:
+            await asyncio.sleep(10)
+            await websocket.send_text(".")
+    except Exception as e:
+        print(f"Error: {e}")
+
