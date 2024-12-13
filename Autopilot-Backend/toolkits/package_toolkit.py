@@ -78,6 +78,9 @@ def show_package_information(name: str):
         Args: 
             name: str
     """
+    command = f"pacman -Qi {name}"
+    process = spawn(command)
+    return process.read().decode()
 
 def remove_packages(names: list[str]):
     """
