@@ -2,29 +2,29 @@ import React, { useState, useEffect } from "react";
 import { Tooltip } from 'react-tooltip';
 import "./Toolbar.css";
 
-import cryptographyIcon from "../../assets/icons/cryptography.png";
-import databaseIcon from "../../assets/icons/database.png";
-import terminalIcon from "../../assets/icons/terminal.png";
-import emailIcon from "../../assets/icons/email.png";
-import navigationIcon from "../../assets/icons/navigation.png";
-import checklistIcon from "../../assets/icons/checklist.png";
-import codeIcon from "../../assets/icons/code.png";
-import scriptIcon from "../../assets/icons/script.png";
-import searchIcon from "../../assets/icons/search.png";
+import packagerIcon from '../../assets/icons/packager.svg'
+import navigationIcon from '../../assets/icons/navigation.png';
+import databaseIcon from '../../assets/icons/database.png';
+import shellIcon from '../../assets/icons/shell.png';
+import networkIcon from '../../assets/icons/network.svg'
+import codeIcon from '../../assets/icons/code.svg';
+import githubIcon from '../../assets/icons/github.svg';
+import troubleShootingIcon from '../../assets/icons/troubleshooting.svg';
+import usersIcon from '../../assets/icons/users.svg';
 import feedbackIcon from "../../assets/icons/feedback.svg";
 import ToolbarAgent from "./ToolbarAgent";
 
 const Toolbar = () => {
   const icons = [
-    { src: databaseIcon, alt: "Users" },
-    { src: cryptographyIcon, alt: "Monitor" },
-    { src: terminalIcon, alt: "Network" },
-    { src: emailIcon, alt: "Github" },
+    { src: databaseIcon, alt: "Monitor" },
+    { src: shellIcon, alt: "Shell" },
+    { src: packagerIcon, alt: "Packager" },
     { src: navigationIcon, alt: "Navigation" },
-    { src: checklistIcon, alt: "Packages" },
+    { src: usersIcon, alt: "Users" },
     { src: codeIcon, alt: "Coder" },
-    { src: scriptIcon, alt: "Shell" },
-    { src: searchIcon, alt: "Troubleshooter" },
+    { src: networkIcon, alt: "Network" },
+    { src: troubleShootingIcon, alt: "Troubleshooter" },
+    { src: githubIcon, alt: "Github" },
   ];
 
   const [toolbarDictionary, setToolbarDictionary] = useState({});
