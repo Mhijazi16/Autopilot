@@ -18,10 +18,10 @@ const AgentModal = ({ isOpen, onClose, name, icon, description }) => {
         </div>
         <hr className="modal-divider" />
         <div className="modal-body">
-          <p>
-            The {name} Agent is one of many agents supported in Autopilot. It's
-            responsible for any tasks related to search
-            <br></br>
+            {/* The {name} Agent is one of many agents supported in Autopilot. It's */}
+            {/* responsible for any tasks related to search */}
+            {description}
+            {/* <br></br>
             <br></br>
             The following list represents the tools and actions that the
             navigation agent capable of doing:
@@ -37,8 +37,7 @@ const AgentModal = ({ isOpen, onClose, name, icon, description }) => {
           <br></br>
           <p>
             The agent can be coupled with different agents to provide accurate
-            information or missing information.
-          </p>
+            information or missing information. */}
         </div>
       </div>
     </div>

@@ -142,15 +142,17 @@ const Monitoring = () => {
   }, []);
 
   return (
+    <>
+    <h2 className="monitoring-title dark">Monitoring</h2>
     <div className="monitoring-container dark">
-      <h2 className="monitoring-title dark">Monitoring</h2>
       <ReactApexChart
         options={options}
         series={series}
         type="area"
         height={350}
-      />
+        />
     </div>
+    </>
   );
 };
 

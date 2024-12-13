@@ -13,8 +13,9 @@
     font-size: 2rem;
     font-weight: 600;
     color: #333;
-    text-align: center;
+    align-self: self-start;
     margin-bottom: 2rem;
+    margin-left: 1rem;
 }
 
 .agent-grid {
@@ -30,6 +31,7 @@
     display: flex;
     gap: 7%;
     padding: 1.5rem;
+    margin-right: 2rem;
     border-radius: 12px;
     width: 390px;
     min-height: 15rem;
@@ -105,6 +107,15 @@
     font-size: 1.5rem;
     font-weight: 500;
     color: #333;
+}
+
+.agent-card:nth-child(8) .agent-name {
+    font-size: 1.4rem;
+}
+
+.agent-card:nth-child(8) .agent-icon img {
+    width: 130px;
+    height: 130px;
 }
 
 .dark .agent-name {
