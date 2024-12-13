@@ -5,7 +5,6 @@ import redis
 import os
 import time
 
-
 class ToolbarSchema(BaseModel):
     Navigation: Literal["On","Off"] = "Off"
     Coder: Literal["On","Off"] = "Off"
@@ -18,19 +17,16 @@ class ToolbarSchema(BaseModel):
     Troubleshooter: Literal["On","Off"] = "Off"
 
 def init() -> Redis:
+    global memory
     os.system("redis-server &")
     time.sleep(2)
 
-    memory = redis.Redis(
-        host='localhost',
-        port=6379,
-        decode_responses=True
-    )
-
+    memory = get_memory() 
     populate_memory(memory)
+
     return memory
 
-def populate_memory(memory: Redis) -> None:
+def populate_memory(memory):
     toolbar = ToolbarSchema()
     memory.set("feedback", "Off")
     memory.set("command", "not-set")
