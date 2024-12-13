@@ -17,7 +17,6 @@ class ToolbarSchema(BaseModel):
     Troubleshooter: Literal["On","Off"] = "Off"
 
 def init() -> Redis:
-    global memory
     os.system("redis-server &")
     time.sleep(2)
 
