@@ -1,10 +1,10 @@
 from memory.database import ToolbarSchema
-from github_toolkit import get_github_toolkit
-from package_toolkit import get_package_toolkit
-from network_toolkit import get_network_toolkit
-from navigation_toolkit import get_navigation_toolkit
-from users_toolkit import get_users_toolkit
-from shell_toolkit import get_shell_toolkit
+from .github_toolkit import get_github_toolkit
+from .package_toolkit import get_package_toolkit
+from .network_toolkit import get_network_toolkit
+from .navigation_toolkit import get_navigation_toolkit
+from .users_toolkit import get_users_toolkit
+from .shell_toolkit import get_shell_toolkit
 
 tools = [get_github_toolkit,
          get_package_toolkit,
@@ -14,20 +14,20 @@ tools = [get_github_toolkit,
 
 def toolkit_factory(toolbar: ToolbarSchema):
     toolkit = []
-    for tool in toolbar: 
-        if tool[1] == "Off": 
+    for key, value in toolbar.items(): 
+        if value == "Off": 
             continue
-        if tool[0] == "Packages": 
+        if key == "Packages": 
             toolkit.extend(get_package_toolkit())
-        elif tool[0] == "Shell": 
+        elif key == "Shell": 
             toolkit.extend(get_shell_toolkit())
-        elif tool[0] == "Network": 
+        elif key == "Network": 
             toolkit.extend(get_network_toolkit())
-        elif tool[0] == "Github": 
+        elif key == "Github": 
             toolkit.extend(get_github_toolkit())
-        elif tool[0] == "Navigation": 
+        elif key == "Navigation": 
             toolkit.extend(get_navigation_toolkit())
-        elif tool[0] == "Users": 
+        elif key == "Users": 
             toolkit.extend(get_users_toolkit())
     return toolkit
 
@@ -40,25 +40,25 @@ def get_description(tools):
 
 def description_factory(toolbar: ToolbarSchema):
     description = ""
-    for tool in toolbar: 
-        if tool[1] == "Off": 
+    for key, value in toolbar.items(): 
+        if value == "Off": 
             continue
-        if tool[0] == "Packages": 
+        if key == "Packages": 
             description += "\nPackage Management Agent Tools:\n"
             description += get_description(get_package_toolkit())
-        elif tool[0] == "Shell": 
+        elif key == "Shell": 
             description += "\nLinux Shell Agent Tools:\n"
             description += get_description(get_shell_toolkit())
-        elif tool[0] == "Network": 
+        elif key == "Network": 
             description += "\nNetwork Agent Tools:\n"
             description += get_description(get_network_toolkit())
-        elif tool[0] == "Github": 
+        elif key == "Github": 
             description += "\nGithub Agent Tools:\n"
             description += get_description(get_github_toolkit())
-        elif tool[0] == "Navigation": 
+        elif key == "Navigation": 
             description += "\nNavigation Agent Tools:\n"
             description += get_description(get_navigation_toolkit())
-        elif tool[0] == "Users": 
+        elif key == "Users": 
             description += "\nUsers & Groups Agent Tools:\n"
             description += get_description(get_users_toolkit())
     return description

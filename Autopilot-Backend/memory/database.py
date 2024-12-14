@@ -1,10 +1,9 @@
+from redis.client import Redis
 from typing import Literal
 from pydantic import BaseModel
 import redis
-import time
 import os
-
-memory = None
+import time
 
 class ToolbarSchema(BaseModel):
     Navigation: Literal["On","Off"] = "Off"
@@ -17,28 +16,25 @@ class ToolbarSchema(BaseModel):
     Network: Literal["On","Off"] = "Off"
     Troubleshooter: Literal["On","Off"] = "Off"
 
-def init():
-    global memory
+def init() -> Redis:
     os.system("redis-server &")
     time.sleep(2)
-    memory = redis.Redis(
+
+    memory = get_memory() 
+    populate_memory(memory)
+
+    return memory
+
+def populate_memory(memory):
+    toolbar = ToolbarSchema()
+    memory.set("feedback", "Off")
+    memory.set("command", "not-set")
+    memory.set("status", "not-set")
+    memory.hset("toolbar", mapping=toolbar.model_dump())
+
+def get_memory() -> Redis:
+    return redis.Redis(
         host='localhost',
         port=6379,
         decode_responses=True
     )
-
-    populate_memory()
-    return memory
-
-def populate_memory():
-    global memory
-    toolbar = ToolbarSchema()
-
-    if memory:
-        memory.set("feedback", "Off")
-        memory.hset("toolbar", mapping=toolbar.model_dump())
-
-    return memory
-
-def get_memory():
-    return memory
