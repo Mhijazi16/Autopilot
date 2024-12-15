@@ -11,7 +11,6 @@ import troubleShootingIcon from '../../assets/icons/troubleshooting.svg';
 import usersIcon from '../../assets/icons/users.svg';
 import AgentModal from './AgentModal';
 import Monitoring from './Monitoring/Monitoring';
-import Logging from './Logs/Logs';
 import Logs from './Logs/Logs';
 
 const AgentCard = ({ name, iconPath, onClick }) => {

@@ -18,7 +18,7 @@ const Toolbar = () => {
   const icons = [
     { src: databaseIcon, alt: "Monitor" },
     { src: shellIcon, alt: "Shell" },
-    { src: packagerIcon, alt: "Packager" },
+    { src: packagerIcon, alt: "Packages" },
     { src: navigationIcon, alt: "Navigation" },
     { src: usersIcon, alt: "Users" },
     { src: codeIcon, alt: "Coder" },

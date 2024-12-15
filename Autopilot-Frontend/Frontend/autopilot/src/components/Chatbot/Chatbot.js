@@ -7,9 +7,10 @@ import "./Chatbot.css";
 
 const Chatbot = () => {
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, showModal] = useState(false);
+  const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
   
-  
+
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chatMessages");
     return savedMessages
@@ -20,6 +21,46 @@ const Chatbot = () => {
   const [loading, setLoading] = useState(false);
   const [abortController, setAbortController] = useState(null);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://127.0.0.1:8000/tools");
+    ws.onopen = () => {
+      console.log("tools connection established.");
+    };
+  
+    ws.onmessage = (event) => {
+      const line = event.data.trim();
+      if(line !== ".")
+      {
+
+        try {
+          const data = JSON.parse(event.data);
+          console.log(data);
+          setModalCommandsInfo(data);
+          showModal(true);
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      }
+    };
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+    };
+  
+    ws.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+  
+    return () => {
+      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+        ws.close();
+      }
+      console.log("WebSocket connection cleanup.");
+    };
+  }, []);
+  
+
 
   useEffect(() => {
     try  {
@@ -47,53 +88,22 @@ const Chatbot = () => {
     setAbortController(controller);
 
     try {
-      const response = await fetch("http://localhost:11434/api/generate", {
+      const response = await fetch(`http://127.0.0.1:8000/chat?prompt=${encodeURIComponent(userInput)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "llama3.2",
-          prompt: userInput,
-          stream: true,
-        }),
         signal: controller.signal,
       });
 
       if (!response.ok) throw new Error(`API error: ${response.statusText}`);
+      console.log(response);
+      const data = await response.json();
+      const botMessage = data.response || "No response";
+      setMessages((prev) => [
+        ...prev, 
+        {sender: "bot", text: botMessage},
+      ]);
 
-      if (response.headers.get("Content-Type") === "application/x-ndjson") {
-        // Streaming response
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let botMessage = "";
-        setMessages((prev) => [...prev, { sender: "bot", text: "" }]);
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value);
-          const lines = chunk.split("\n").filter(Boolean);
-
-          for (const line of lines) {
-            try {
-              const json = JSON.parse(line);
-              const text = json.response || json.choices?.[0]?.text || "";
-              botMessage += text;
-              setMessages((prev) => {
-                const updated = [...prev];
-                updated[updated.length - 1].text = botMessage;
-                return updated;
-              });
-            } catch (e) {
-              console.error("Error parsing JSON:", e);
-            }
-          }
-        }
-      } else {
-        const data = await response.json();
-        const botResponse = data.response;
-        setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
-      }
+      
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Error fetching response:", error);
@@ -118,8 +128,8 @@ const Chatbot = () => {
   return (
     <>
       <Toolbar />
-      {/* <button onClick={() => setModalOpen(true)} style={{color: "white"}}>Show modal</button> */}
-      <ResponseModal isOpen={modalOpen} setModalOpen={setModalOpen}/>
+      <ResponseModal isOpen={modalOpen} showModal={showModal} commandsInfo={modalCommandsInfo}
+      setCommandsInfo={setModalCommandsInfo}/>
       <div className="flex flex-col h-full relative">
         <MessageList messages={messages} messagesEndRef={messagesEndRef} />
         <MessageInput
