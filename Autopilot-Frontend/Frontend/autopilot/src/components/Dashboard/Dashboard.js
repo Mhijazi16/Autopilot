@@ -10,7 +10,8 @@ import githubIcon from '../../assets/icons/github.svg';
 import troubleShootingIcon from '../../assets/icons/troubleshooting.svg';
 import usersIcon from '../../assets/icons/users.svg';
 import AgentModal from './AgentModal';
-import Monitoring from '../Monitoring/Monitoring';
+import Monitoring from './Monitoring/Monitoring';
+import Logs from './Logs/Logs';
 
 const AgentCard = ({ name, iconPath, onClick }) => {
   return (
@@ -42,6 +43,7 @@ const Dashboard = () => {
     <>
     <div className='dashboard'>
     <Monitoring/>
+    <Logs/>
       <h2 className="dashboard-title text-gray-900 dark:text-gray-100">Agents</h2>
       <div className="agent-grid">
         {Object.keys(agentDetails).map((agentName) => (
