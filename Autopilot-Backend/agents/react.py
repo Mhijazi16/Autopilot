@@ -1,5 +1,6 @@
 from memory.database import get_memory
 from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langgraph.graph import MessagesState
 from langgraph.managed import IsLastStep
 from langgraph.prebuilt import create_react_agent
@@ -25,8 +26,12 @@ class ReactAgent():
         self.checkpointer = MemorySaver()
         self.config = config
 
-        self.llm = ChatOllama(model=model,
-                              temperature=0).bind_tools(tools)
+        if model == "groq": 
+            self.llm = ChatGroq(model="llama3-groq-70b-8192-tool-use-preview",
+                                temperature=0).bind_tools(tools)
+        else: 
+            self.llm = ChatOllama(model=model,
+                                  temperature=0).bind_tools(tools)
 
         self.agent = create_react_agent(model=self.llm,
                               tools=tools,

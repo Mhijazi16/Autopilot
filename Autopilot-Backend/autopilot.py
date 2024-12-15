@@ -1,4 +1,5 @@
 from typing import Literal
+from fastapi.responses import JSONResponse
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
 from fastapi import Body, FastAPI, HTTPException, WebSocket 
@@ -65,27 +66,36 @@ async def monitor_socket(websocket: WebSocket):
 @app.post("/accept")
 async def accept(): 
     try:
-        memory.set("status","accepted")
+        memory.set("status", "accepted")
+        return JSONResponse(content={"message": "Status set to accepted"}, status_code=200)
     except Exception as e:
         print(f"Error: {e}")
+        return JSONResponse(content={"message": "Error occurred"}, status_code=500)
 
 @app.post("/reject")
 async def reject(): 
     try:
-        memory.set("status","rejected")
+        memory.set("status", "rejected")
+        return JSONResponse(content={"message": "Status set to rejected"}, status_code=200)
     except Exception as e:
         print(f"Error: {e}")
+        return JSONResponse(content={"message": "Error occurred"}, status_code=500)
 
 @app.post("/chat")
 async def chat(prompt: str): 
     try:
         toolbar = memory.hgetall("toolbar")
         toolkit = toolkit_factory(toolbar)
-        agent = ReactAgent("llama3.2",toolkit,
+        # agent = ReactAgent("groq",
+        #                    toolkit,
+        #                    {"configurable": {"thread_id": "1"}})
+
+        agent = ReactAgent("llama3.2",
+                           toolkit,
                            {"configurable": {"thread_id": "1"}})
 
         res = await agent.Run(prompt)
-        return res
+        return JSONResponse(content={res}, status_code=200)
     except Exception as e:
         print(f"errror : {e}")
 
