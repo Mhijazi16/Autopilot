@@ -86,11 +86,16 @@ async def chat(prompt: str):
     try:
         toolbar = memory.hgetall("toolbar")
         toolkit = toolkit_factory(toolbar)
-        agent = ReactAgent("llama3.2",toolkit,
+        # agent = ReactAgent("groq",
+        #                    toolkit,
+        #                    {"configurable": {"thread_id": "1"}})
+
+        agent = ReactAgent("llama3.2",
+                           toolkit,
                            {"configurable": {"thread_id": "1"}})
 
         res = await agent.Run(prompt)
-        return res
+        return JSONResponse(content={res}, status_code=200)
     except Exception as e:
         print(f"errror : {e}")
 
