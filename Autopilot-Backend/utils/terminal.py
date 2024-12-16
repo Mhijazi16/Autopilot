@@ -35,14 +35,15 @@ class Terminal:
         self.text_widget.config(state="disabled")
 
     def start_socket_server(self):
+        socket_path = "/tmp/terminal_socket"
         try:
             import os
-            os.unlink("/tmp/terminal_socket")
+            os.unlink(socket_path)
         except FileNotFoundError:
             pass
 
         self.server_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.server_socket.bind("/tmp/terminal_socket")
+        self.server_socket.bind(socket_path)
         self.server_socket.listen(1)
         print("Server listening on /tmp/terminal_socket")
 
