@@ -26,3 +26,18 @@ def open_folder(path: str):
     output += run_command(f"ls {path}")
     return output
 
+def find_file(name: str): 
+    """
+    this tool is used to find where 
+    a file exists or what is the full 
+    path of the file if the same file 
+    exists in different locaitons multiple 
+    files will be returned
+    """
+
+    paths = run_command(f"locate {name}").split()
+    output = "the file exists in the following locations :\n"
+    for i, path in enumerate(paths): 
+        output += f"{i+1}) {path}\n" 
+
+    return output
