@@ -95,15 +95,11 @@ const Chatbot = () => {
       });
 
       if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-      console.log(response);
       const data = await response.json();
-      const botMessage = data.response || "No response";
-      setMessages((prev) => [
-        ...prev, 
-        {sender: "bot", text: botMessage},
-      ]);
+      const botMessage = data.message;
 
-      
+      // Simulate live generation
+      simulateLiveGeneration(botMessage);
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Error fetching response:", error);
@@ -119,11 +115,41 @@ const Chatbot = () => {
       setLoading(false);
       setAbortController(null);
     }
-  };
+};
 
-  const handleStop = () => {
-    if (abortController) abortController.abort();
-  };
+const simulateLiveGeneration = (message) => {
+  let currentIndex = 0;
+  const interval = 20; 
+
+  setMessages((prev) => [
+    ...prev,
+    { sender: "bot", text: "" } // Start with an empty bot message
+  ]);
+
+  const intervalId = setInterval(() => {
+    if (currentIndex < message.length) {
+      setMessages((prev) => {
+        const updatedMessages = [...prev];
+        const lastMessage = updatedMessages[updatedMessages.length - 1];
+
+        if (lastMessage.sender === "bot") {
+          lastMessage.text += message[currentIndex];
+        }
+
+        return updatedMessages;
+      });
+      currentIndex++;
+    } else {
+      clearInterval(intervalId); // Stop when the message is fully displayed
+    }
+  }, interval);
+};
+
+
+const handleStop = () => {
+  if (abortController) abortController.abort();
+};
+
 
   return (
     <>
