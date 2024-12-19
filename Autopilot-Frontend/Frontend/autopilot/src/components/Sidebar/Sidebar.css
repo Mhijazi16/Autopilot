@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 18rem;
+  width: 19rem;
   height: 100vh;
   background-color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
@@ -10,7 +10,7 @@
   border-radius: 0 20px 20px 0;
   border: 1px solid #d1d5db;
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
-  padding: 2.5rem 2rem;
+  padding: 2.5rem 0rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -29,6 +29,7 @@
   color: #003092;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
 }
 
@@ -37,11 +38,12 @@
 }
 
 .logo {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3.3rem;
 }
 
 .nav-links {
+  margin-left: 2rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -51,12 +53,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-weight: bold;
-  font-size: 1.5rem;
+  font-weight: 500;
+  font-size: 1.7rem;
   color: #000000;
-  text-decoration: none;
-  padding: 1rem 1.5rem;
-  border-radius: 1rem;
+  padding: 1.2rem 1.5rem;
+  border-bottom-left-radius: 1rem;
+  border-top-left-radius: 1rem;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
@@ -89,11 +91,11 @@
 
 .dark .sidebar-link.active {
   background-color: #1F68FF;
-  color: #273B4A;
+  color: white;
 }
 
 .dark .sidebar-link.active img {
-  filter: none;
+  /* filter: none; */
 }
 
 .sidebar-footer {

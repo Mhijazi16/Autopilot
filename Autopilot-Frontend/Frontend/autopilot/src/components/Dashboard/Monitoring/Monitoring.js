@@ -12,7 +12,6 @@ const Monitoring = () => {
 
   const options = {
     chart: {
-      height: 350,
       type: "area",
       animations: {
         enabled: false,
@@ -149,7 +148,7 @@ const Monitoring = () => {
         options={options}
         series={series}
         type="area"
-        height={350}
+        height={450}
         />
     </div>
     </>
