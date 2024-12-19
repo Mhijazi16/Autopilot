@@ -11,7 +11,6 @@ import json
 
 memory = init()
 app = FastAPI() 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  
@@ -95,7 +94,7 @@ async def chat(prompt: str):
                            {"configurable": {"thread_id": "1"}})
 
         res = await agent.Run(prompt)
-        return JSONResponse(content={res}, status_code=200)
+        return {"message": res}
     except Exception as e:
         print(f"errror : {e}")
 
