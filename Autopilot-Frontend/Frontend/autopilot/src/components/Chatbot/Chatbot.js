@@ -75,7 +75,9 @@ const Chatbot = () => {
   }, [messages]);
   
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault(); 
+    }
     if (!input.trim()) return;
     setMessages([...messages, { sender: "user", text: input }]);
     setInput("");
@@ -98,7 +100,7 @@ const Chatbot = () => {
       const data = await response.json();
       const botMessage = data.message;
 
-      // Simulate live generation
+      
       simulateLiveGeneration(botMessage);
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -123,7 +125,7 @@ const simulateLiveGeneration = (message) => {
 
   setMessages((prev) => [
     ...prev,
-    { sender: "bot", text: "" } // Start with an empty bot message
+    { sender: "bot", text: "" } 
   ]);
 
   const intervalId = setInterval(() => {
@@ -140,7 +142,7 @@ const simulateLiveGeneration = (message) => {
       });
       currentIndex++;
     } else {
-      clearInterval(intervalId); // Stop when the message is fully displayed
+      clearInterval(intervalId); 
     }
   }, interval);
 };
