@@ -29,6 +29,9 @@ function App() {
             </Routes>
           </div>
         </div>
+        <div className="fade-overlay"></div>
+        <div className="blue-light-top"></div>
+        <div className="blue-light-bottom"></div>
       </div>
     </Router>
   );
