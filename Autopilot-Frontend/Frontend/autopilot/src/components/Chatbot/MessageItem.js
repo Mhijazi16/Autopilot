@@ -6,8 +6,10 @@ import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import botLogo from "../../assets/icons/bot-logo.png";
 import { CopyIcon } from "@primer/octicons-react"; 
 import "./MessageItem.css";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-const MessageItem = ({ msg }) => {
+const MessageItem = React.memo(({msg}) => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     alert("Code copied to clipboard!"); 
@@ -86,11 +88,14 @@ const MessageItem = ({ msg }) => {
         </div>
       )}
       <span className="message-text">
-        {msg.sender === "bot" ? markdownText(msg.text) : <span>{msg.text}</span>}
+      {msg.loading ? (
+      <Skeleton count={4} />
+      ) : (msg.sender === "bot" ? markdownText(msg.text) : <span>{msg.text}</span>)}
       </span>
+
       {msg.sender === "user" && <div className="spacer" />}
     </div>
   );
-};
+});
 
 export default MessageItem;

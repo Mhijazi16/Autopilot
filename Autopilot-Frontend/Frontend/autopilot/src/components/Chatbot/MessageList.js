@@ -2,16 +2,19 @@
 import React from 'react';
 import MessageItem from './MessageItem';
 import './MessageList.css';
+import { SkeletonTheme } from 'react-loading-skeleton';
 
-const MessageList = ({ messages, messagesEndRef }) => {
+const MessageList = ({ messages, messagesEndRef}) => {
   return (
     <div className="message-list">
+      <SkeletonTheme baseColor="rgb(30, 40, 60)" highlightColor="rgb(50, 65, 95)">
       <div className="message-list-inner">
-        {messages.map((msg, index) => (
-          <MessageItem key={index} msg={msg} />
+        {messages.map((msg) => (
+          <MessageItem key={msg.id} msg={msg} />
         ))}
         <div ref={messagesEndRef} />
       </div>
+      </SkeletonTheme>
     </div>
   );
 };

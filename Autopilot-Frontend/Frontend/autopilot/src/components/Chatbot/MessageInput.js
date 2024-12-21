@@ -28,7 +28,7 @@ const MessageInput = ({ input, setInput, handleSubmit, loading, handleStop }) =>
             Stop
           </button>
         ) : (
-          <button type="submit" className="send-button">
+          <button type="submit" disabled={loading} className="send-button">
             Send
           </button>
         )}
