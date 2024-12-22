@@ -5,6 +5,7 @@ from .network_toolkit import get_network_toolkit
 from .navigation_toolkit import get_navigation_toolkit
 from .users_toolkit import get_users_toolkit
 from .shell_toolkit import get_shell_toolkit
+from .filesystem_toolkit import get_filesystem_toolkit
 
 tools = [get_github_toolkit,
          get_package_toolkit,
@@ -29,6 +30,8 @@ def toolkit_factory(toolbar: ToolbarSchema):
             toolkit.extend(get_navigation_toolkit())
         elif key == "Users": 
             toolkit.extend(get_users_toolkit())
+        elif key == "Troubleshooter": 
+            toolkit.extend(get_filesystem_toolkit())
     return toolkit
 
 def get_description(tools): 

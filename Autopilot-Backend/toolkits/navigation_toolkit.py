@@ -2,9 +2,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+import os
 import time
 
-service = Service(executable_path="/home/ha1st/chromedriver")
+script_dir = os.path.dirname(os.path.abspath(__file__))
+path = os.path.join(script_dir, "chromedriver")
+service = Service(executable_path=path)
+
 def close_window(engine):
     window = engine.current_window_handle
     try:
