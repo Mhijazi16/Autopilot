@@ -79,3 +79,34 @@ def open_file(file_path: str):
         print(f"Error occurred : {e}")
 
     return f"file was successfully opened to the users"
+
+# def compress_file(path:str): 
+#     """
+#     this tool is used to compress 
+#     files you should supply the path 
+#     of the fily you want to compress
+#     Args: 
+#         path: str
+#     """
+#     directory = os.path.dirname(path)
+#     base_name = os.path.basename(path) 
+#
+#     print(directory)
+#     print(base_name)
+#
+#     output_file = directory + "/" + base_name + ".tar"
+#
+#     try: 
+#         run_command(f"tar -cvf {path} {output_file}")
+#     except: 
+#         pass
+#
+#     open_folder(directory)
+#     return "file was compresssed and the user sees the compressed file"
+#
+
+def get_filesystem_toolkit():
+    return [open_folder,
+            find_file,
+            open_file,
+            compress_file]
