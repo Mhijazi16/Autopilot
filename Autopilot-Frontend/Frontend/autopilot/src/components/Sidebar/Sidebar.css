@@ -16,11 +16,13 @@
   gap: 2rem;
   overflow-y: auto;
   transition: background-color 0.3s, border-color 0.3s;
+  z-index: 3;
 }
 
 .dark .sidebar {
-  background: rgb(26, 31, 49);
-  border-color: #4b5563;
+  /* background: rgb(26, 31, 49); */
+  background: #242730;
+  border-color: #424655;
 }
 
 .sidebar-title {
@@ -94,9 +96,6 @@
   color: white;
 }
 
-.dark .sidebar-link.active img {
-  /* filter: none; */
-}
 
 .sidebar-footer {
   margin-top: auto;
