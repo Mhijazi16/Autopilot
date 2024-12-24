@@ -7,7 +7,7 @@ import { SkeletonTheme } from 'react-loading-skeleton';
 const MessageList = ({ messages, messagesEndRef}) => {
   return (
     <div className="message-list">
-      <SkeletonTheme baseColor="rgb(30, 40, 60)" highlightColor="rgb(50, 65, 95)">
+      <SkeletonTheme baseColor="#242730" highlightColor="rgb(50, 65, 95)">
       <div className="message-list-inner">
         {messages.map((msg) => (
           <MessageItem key={msg.id} msg={msg} />
@@ -19,4 +19,5 @@ const MessageList = ({ messages, messagesEndRef}) => {
   );
 };
 
+// rgb(62, 73, 94)
 export default MessageList;

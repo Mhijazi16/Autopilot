@@ -22,10 +22,6 @@
 
 :root {
   --bg-light: linear-gradient(to bottom right, #eef4ff, #dbe8ff);
-  /* --bg-dark: linear-gradient(135deg, #0A0D14, #1B2130); */
-  /* --bg-dark: linear-gradient(60deg, #0a0c11, #101b37); */
-
-
 }
 
 .fade-overlay {
@@ -35,24 +31,43 @@
   width: 100%;
   height: 100px; 
   pointer-events: none; 
-  /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.3) 100%); */
-  /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(29, 29, 108, 0.68) 100%); */
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(44, 42, 42, 0.431) 100%);
-  z-index: 1000; 
+  filter: blur(15px); 
+  z-index: 2; 
 }
 
-.blue-light-top {
+ .blue-light-top { 
   position: fixed;
-  top: -150px;
+  top: -80px;
   right: -20px;
   width: 150px; 
-  height: 575px; 
-  /* background: rgba(31, 104, 255, 0.55);  */
-    background: rgba(78, 125, 221, 0.521); 
-  filter: blur(151.05px); 
+  height: 375px; 
+  background-color: #1f6aff64;
+  filter: blur(120px); 
   border-radius: 50%; 
   pointer-events: none; 
-  z-index: -1; 
+  z-index: -2; 
+}
+
+.blue-light-pic { 
+  object-fit: fill;
+  width: 200px;
+  height: 500px;
+}
+
+
+
+.blue-light-bottom {
+  position: fixed;
+  bottom: -150px;
+  left: 50px;
+  width: 400px; 
+  height: 400px; 
+  background: #1f6aff5f;
+  filter: blur(200px); 
+  border-radius: 50%; 
+  pointer-events: none; 
+  z-index: -1;
 }
 
 

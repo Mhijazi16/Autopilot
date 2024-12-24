@@ -4,8 +4,9 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Chatbot from "./components/Chatbot/Chatbot";
 import Dashboard from "./components/Dashboard/Dashboard";
 import "./App.css";
-
+import blueLightTop from './assets/blue-light-top.svg';
 import Settings from "./components/Settings/Settings";
+
 function App() {
   const [theme, setTheme] = useState("dark");
 
@@ -29,8 +30,10 @@ function App() {
             </Routes>
           </div>
         </div>
-        <div className="fade-overlay"></div>
-        <div className="blue-light-top"></div>
+        {/* <div className="fade-overlay"></div> */}
+        <div className="blue-light-top">
+          <img src={blueLightTop} alt="blue-light" className="blue-light-pic"/>
+        </div>
         <div className="blue-light-bottom"></div>
       </div>
     </Router>

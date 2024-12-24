@@ -1,18 +1,3 @@
-@keyframes appear {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-    
-  }
-  
-  .block {
-    animation: appear linear;
-    animation-timeline: view();
-    animation-range: entry 0% cover 40%;
-  }
 
 .message-list {
     position: relative;
@@ -24,6 +9,7 @@
     overflow-y: auto;
     padding: 1rem;
     padding-bottom: 6rem;
+    z-index: 1;
 }
 
 .message-list-inner {
