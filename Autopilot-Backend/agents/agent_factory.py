@@ -8,7 +8,6 @@ from toolkits.shell_toolkit import get_shell_toolkit
 from toolkits.filesystem_toolkit import get_filesystem_toolkit
 from react import ReactAgent
 
-
 def agent_factory(agent , config):
     toolkit = []
 
