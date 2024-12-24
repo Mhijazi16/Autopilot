@@ -11,7 +11,6 @@
   }
   
   .monitoring-container.dark {
-    /* background: #242730; */
     background: linear-gradient(
         135deg,
         rgba(10, 10, 10, 0.65),
