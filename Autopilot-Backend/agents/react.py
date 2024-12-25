@@ -13,7 +13,7 @@ async def notify_client(name: str, data):
         socket = active_sockets[name]
         await socket.send_json(str(data))
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"[Error] : notify client failed {e}")
 
 class AgentState(MessagesState): 
     is_last_step: IsLastStep
@@ -41,8 +41,10 @@ class ReactAgent():
 
     def parse_for_tool(self, event):
         try:
-            function = event['data']['output'].response_metadata['message']['tool_calls'][-1]
-            return function['function']['name'], function['function']['arguments']
+            call = event['data']['output'].tool_calls[-1]
+            tool = (call['name'], call['args'])
+            print(f"[INFO] 🔨 Tool Was Called : {tool}")
+            return tool
         except:
             return None
 
@@ -56,6 +58,7 @@ class ReactAgent():
         return self.agent.astream_events(state, config=self.config, stream_mode="values", version='v2')
 
     async def Invoke(self, state):
+        print("[INFO] 🤖 Agent Was Invoked")
         tool = ()
         stream = self.get_stream(state)
         async for event in stream: 
@@ -64,6 +67,7 @@ class ReactAgent():
         return tool
 
     async def Halt(self): 
+        print("[INFO] 🤖 Agent Waiting For Feedback")
         i = 0
         while True: 
             await asyncio.sleep(1)
@@ -78,6 +82,7 @@ class ReactAgent():
         return True 
 
     async def Resume(self):
+        print("[INFO] 🤖 Agent Resuming Task")
         stream = self.get_stream(None)
         output = ""
         async for event in stream: 
