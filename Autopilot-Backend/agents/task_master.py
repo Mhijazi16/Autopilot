@@ -82,3 +82,25 @@ class TaskMaster():
 
         summary = self.summarizer.invoke(messages)
         return {'messages': state['messages'] + [summary]} 
+
+    def compile_graph(self):
+        graph = StateGraph(TaskState)
+        graph.add_node("planner", self.Plan)
+        graph.add_node("execute", self.Execute)
+        graph.add_node("summarizer", self.Summarize)
+
+        graph.add_edge(START,"planner")
+        graph.add_edge("planner", "execute")
+        graph.add_edge("execute", "summarizer")
+        graph.add_edge("summarizer", END)
+
+        # memory = MemorySaver()
+        return graph.compile()
+
+# def print_messages(data): 
+#     data['messages'][-1].pretty_print()
+
+# toolkit = description_factory({"Network": "On", "Navigation": "On"})
+# master = TaskMaster(toolkit).compile_graph()
+# for part in master.stream({'messages': 'I need you to search for batman images then list all the network interfaces and finally tell me the weather in hebron'}, stream_mode="values"): 
+#     print_messages(part)
