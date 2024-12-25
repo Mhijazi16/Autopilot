@@ -61,7 +61,7 @@ async def monitor_socket(websocket: WebSocket):
             await websocket.send_text(json.dumps(specs)) 
             await asyncio.sleep(0.3)
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"[Error]: Monitoring Socket Exited {e}")
 
 @app.post("/accept")
 async def accept(): 
