@@ -2,7 +2,7 @@ from typing import Literal
 from fastapi.responses import JSONResponse
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
-from fastapi import Body, FastAPI, HTTPException, WebSocket 
+from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect 
 from fastapi.middleware.cors import CORSMiddleware
 from agents.react import ReactAgent, active_sockets
 from toolkits.toolkit_factory import toolkit_factory
@@ -18,6 +18,7 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
+
 @app.get("/toolbar")
 def get_toolbar():
     try:
@@ -104,8 +105,12 @@ async def feedback_socket(websocket: WebSocket):
     active_sockets['tools'] = websocket
     try:
         while True:
-            await asyncio.sleep(10)
+            await asyncio.sleep(1)
             await websocket.send_text(".")
+    except WebSocketDisconnect:
+        print("WebSocket disconnected.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Unexpected error: {e}")
+    finally:
+        active_sockets.pop('tools', None)
 
