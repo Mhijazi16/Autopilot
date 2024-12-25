@@ -63,3 +63,13 @@ class TaskMaster():
             return state
         except Exception as e:
             raise e
+
+    def Execute(self, state: TaskState): 
+        plan = state['plan'].steps
+        output = ""
+        for step in plan: 
+            output += f"Result from Agent {step.agent}"
+            agent = agent_factory(step.agent, self.config)
+            output += asyncio.run(agent.Run(step.task))
+        state['messages'] += [AIMessage(output)]
+        return state
