@@ -73,3 +73,12 @@ class TaskMaster():
             output += asyncio.run(agent.Run(step.task))
         state['messages'] += [AIMessage(output)]
         return state
+
+    def Summarize(self, state: TaskState):
+        sum_prompt = """
+        I need you you sum all the previous results use 
+        beautiful markdown when writing the output """
+        messages = state['messages'] + [HumanMessage(sum_prompt)]
+
+        summary = self.summarizer.invoke(messages)
+        return {'messages': state['messages'] + [summary]} 
