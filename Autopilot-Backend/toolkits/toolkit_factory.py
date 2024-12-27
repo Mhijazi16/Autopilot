@@ -47,21 +47,24 @@ def description_factory(toolbar: ToolbarSchema):
         if value == "Off": 
             continue
         if key == "Packages": 
-            description += "\nPackage Management Agent Tools:\n"
+            description += "\nAgent Name: Packager\n Agent Tools:\n"
             description += get_description(get_package_toolkit())
         elif key == "Shell": 
-            description += "\nLinux Shell Agent Tools:\n"
+            description += "\nAgent Name: Shell\n Agent Tools:\n"
             description += get_description(get_shell_toolkit())
         elif key == "Network": 
-            description += "\nNetwork Agent Tools:\n"
+            description += "\nAgent Name: Networker\n Agent Tools:\n"
             description += get_description(get_network_toolkit())
         elif key == "Github": 
-            description += "\nGithub Agent Tools:\n"
+            description += "\nAgent Name: Github\n Agent Tools:\n"
             description += get_description(get_github_toolkit())
         elif key == "Navigation": 
-            description += "\nNavigation Agent Tools:\n"
+            description += "\nAgent Name: Navigator\n Agent Tools:\n"
             description += get_description(get_navigation_toolkit())
         elif key == "Users": 
-            description += "\nUsers & Groups Agent Tools:\n"
+            description += "\nAgent Name: Users\n Agent Tools:\n"
+            description += get_description(get_users_toolkit())
+        elif key == "Troubleshooter": 
+            description += "\nAgent Name: Filesystem\n Agent Tools:\n"
             description += get_description(get_users_toolkit())
     return description
