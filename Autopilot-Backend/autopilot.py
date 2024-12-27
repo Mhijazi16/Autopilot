@@ -1,11 +1,12 @@
 from typing import Literal
 from fastapi.responses import JSONResponse
+from agents.task_master import TaskMaster
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
 from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect 
 from fastapi.middleware.cors import CORSMiddleware
-from agents.react import ReactAgent, active_sockets
-from toolkits.toolkit_factory import toolkit_factory
+from agents.react import active_sockets
+from toolkits.toolkit_factory import description_factory
 import asyncio
 import json
 
@@ -85,19 +86,22 @@ async def reject():
 async def chat(prompt: str): 
     try:
         toolbar = memory.hgetall("toolbar")
-        toolkit = toolkit_factory(toolbar)
+        toolkit = description_factory(toolbar)
+        autopilot = TaskMaster(toolkit).compile_graph()
+
         # agent = ReactAgent("groq",
         #                    toolkit,
         #                    {"configurable": {"thread_id": "1"}})
+        # agent = ReactAgent("llama3.2",
+        #                    toolkit,
+        #                    {"configurable": {"thread_id": "1"}})
+        # res = await agent.Run(prompt)
 
-        agent = ReactAgent("llama3.2",
-                           toolkit,
-                           {"configurable": {"thread_id": "1"}})
-
-        res = await agent.Run(prompt)
-        return {"message": res}
+        output = await autopilot.ainvoke({'messages': prompt})
+        message = output['messages'][-1].content
+        return {"message": message}
     except Exception as e:
-        print(f"errror : {e}")
+        print(f"Error in chat endpoint: {e}")
 
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
