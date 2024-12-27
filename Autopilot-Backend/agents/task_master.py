@@ -5,11 +5,8 @@ from langchain_groq.chat_models import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langgraph.graph import START, MessagesState, StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
-from agent_factory import agent_factory
-from toolkits.toolkit_factory import description_factory
+from .agent_factory import agent_factory
 from states.planner import Plan
-import asyncio
 
 class TaskState(MessagesState):
     plan: Plan
@@ -20,7 +17,8 @@ class TaskMaster():
     def __init__(self, toolkit): 
         self.config = {"configurable": {"thread_id": "1"}}
         self.llm = ChatGroq(
-            model="llama3-groq-70b-8192-tool-use-preview",
+            # model="llama3-groq-70b-8192-tool-use-preview",
+            model="llama-3.3-70b-versatile",
             temperature=0, 
             stop_sequences="1", 
         ).with_structured_output(Plan)
@@ -42,8 +40,6 @@ class TaskMaster():
                      what to do or what should that agent execute Example: 
                      if the user wants to open http server inside the Videos folder 
                      you should create a Step with 
-                     agent = "Network"
-                     task = "I command you to use the tools to run an Http server inside the videos folder"
                      """
 
         self.template = ChatPromptTemplate(
@@ -64,15 +60,19 @@ class TaskMaster():
         except Exception as e:
             raise e
 
-    def Execute(self, state: TaskState): 
-        plan = state['plan'].steps
-        output = ""
-        for step in plan: 
-            output += f"Result from Agent {step.agent}"
-            agent = agent_factory(step.agent, self.config)
-            output += asyncio.run(agent.Run(step.task))
-        state['messages'] += [AIMessage(output)]
-        return state
+    async def Execute(self, state: TaskState): 
+        try:
+            plan = state['plan'].steps
+            output = ""
+            for step in plan: 
+                print(f"[STEP] current step: {step}")
+                output += f"Result from Agent {step.agent}"
+                agent = agent_factory(step.agent, self.config)
+                output += await agent.Run(step.task)
+            state['messages'] += [AIMessage(output)]
+            return state
+        except Exception as e:
+            print(f"[Error] issue in execute {e}")
 
     def Summarize(self, state: TaskState):
         sum_prompt = """
@@ -94,13 +94,12 @@ class TaskMaster():
         graph.add_edge("execute", "summarizer")
         graph.add_edge("summarizer", END)
 
-        # memory = MemorySaver()
         return graph.compile()
 
 # def print_messages(data): 
 #     data['messages'][-1].pretty_print()
-
 # toolkit = description_factory({"Network": "On", "Navigation": "On"})
 # master = TaskMaster(toolkit).compile_graph()
 # for part in master.stream({'messages': 'I need you to search for batman images then list all the network interfaces and finally tell me the weather in hebron'}, stream_mode="values"): 
 #     print_messages(part)
+

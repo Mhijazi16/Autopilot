@@ -14,6 +14,7 @@ async def notify_client(name: str, data):
         await socket.send_json(str(data))
     except Exception as e:
         print(f"[Error] : notify client failed {e}")
+
 class AgentState(MessagesState): 
     is_last_step: IsLastStep
     tool: tuple
