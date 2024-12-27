@@ -7,12 +7,53 @@ import "./Chatbot.css";
 import { v4 as uuidv4 } from 'uuid';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { debounce } from 'lodash';
+import ManualAgents from "./Toolbar/ManualAgents/ManualAgents";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import defaultIcon from "./../../assets/icons/autopilot-button.png"
 
 const Chatbot = () => {
 
+  const [manualAgents, setManualAgents] = useState([
+    { id: 1, text: "command", icon: defaultIcon, name: "default" }]);
+    // {
+    // {
+      // 
+    // }}
+  const [manualAgentsModalOpen, showManualAgentsModal] = useState(false);
   const [modalOpen, showModal] = useState(false);
   const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
   
+  function startManualAgents() {
+    // Format manualAgents into the desired structure
+    const formattedAgents = manualAgents
+    .filter((agent) => agent.icon !== defaultIcon && agent.text.toLowerCase() !== "command")
+    .map((agent) => ({
+    agent: agent.name,
+    task: agent.text,
+  }));
+
+    // Print the formatted array
+    console.log(formattedAgents);
+
+    /*
+    // Uncomment the following code to send the POST request
+    fetch('/manual', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formattedAgents),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+    */
+  }
 
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chatMessages");
@@ -225,6 +266,19 @@ const handleStop = () => {
   return (
     <>
       <Toolbar />
+      <button className="show-manual-agents" onClick={() => showManualAgentsModal(true)}>Show</button>
+      {
+      manualAgentsModalOpen && (
+        <DndProvider backend={HTML5Backend}>
+          <ManualAgents
+            manualAgents={manualAgents}
+            setManualAgents={setManualAgents}
+            showModal={showManualAgentsModal}
+            startManualAgents={startManualAgents}
+          />
+        </DndProvider>
+      )}
+      
       <ResponseModal 
         isOpen={modalOpen} 
         showModal={showModal} 
