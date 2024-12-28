@@ -19,7 +19,7 @@ def agent_factory(agent , config):
         toolkit = get_network_toolkit()
     elif agent == "Github": 
         toolkit = get_github_toolkit()
-    elif agent == "Navigator": 
+    elif agent == "Navigation": 
         toolkit = get_navigation_toolkit()
     elif agent == "Users": 
         toolkit = get_users_toolkit()

@@ -19,7 +19,7 @@ class Terminal:
             self.frame,
             wrap="word",
             bg="#1E1E1E",
-            fg="#C5C8C6",
+            fg="#0078fd",
             insertbackground="white",  # Cursor color
             font=("Fira Code", 12),
             padx=10,
