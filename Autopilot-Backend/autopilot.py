@@ -127,11 +127,11 @@ async def feedback_socket(websocket: WebSocket):
     try:
         while True:
             await asyncio.sleep(1)
-            await websocket.send_text(".")
+            # await websocket.send_text(".")
     except WebSocketDisconnect:
-        print("WebSocket disconnected.")
+        print("[ERROR] WebSocket disconnected.")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"[ERROR] Unexpected error: {e}")
     finally:
         active_sockets.pop('tools', None)
 
