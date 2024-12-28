@@ -53,6 +53,15 @@ async def set_feedback(feedback: Literal["On", "Off"] = Body(...)):
 
     return {"feedback": memory.get("feedback")}
 
+@app.post("/manual")
+async def set_toolbar(tasks = Body(...)): 
+    try: 
+        print(tasks)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving feedback: {e}")
+
+    return memory.hgetall("toolbar")
+
 @app.websocket("/monitor")
 async def monitor_socket(websocket: WebSocket):
     await websocket.accept()
