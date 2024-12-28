@@ -1,5 +1,3 @@
-from langchain_core.messages import SystemMessage
-from langchain_core.messages.ai import AIMessage
 from langchain_core.messages.human import HumanMessage
 from langchain_groq.chat_models import ChatGroq
 from langchain.prompts import ChatPromptTemplate
@@ -10,6 +8,7 @@ from states.planner import Plan
 
 class TaskState(MessagesState):
     plan: Plan
+    # output : List[str] 
 
 class TaskMaster():
     __slots__ = ("llm", "template", "config", "summarizer")
@@ -69,19 +68,23 @@ class TaskMaster():
                 output += f"Result from Agent {step.agent}"
                 agent = agent_factory(step.agent, self.config)
                 output += await agent.Run(step.task)
-            state['messages'] += [AIMessage(output)]
-            return state
+            return {'messages': state['messages'] + [HumanMessage(output)]}
         except Exception as e:
             print(f"[Error] issue in execute {e}")
 
     def Summarize(self, state: TaskState):
         sum_prompt = """
-        I need you you sum all the previous results use 
-        beautiful markdown when writing the output """
-        messages = state['messages'] + [HumanMessage(sum_prompt)]
+            I need you to summarize the following resutls 
+            from the agents please use markdown when you 
+            output the result 
+            here is the Agents results:
+         """
+        try:
+            summary = self.summarizer.invoke(state['messages'])
+            return {'messages': state['messages'] + [summary]} 
+        except Exception as e:
+            print(f"[ERROR] issue in summarizer {e}")
 
-        summary = self.summarizer.invoke(messages)
-        return {'messages': state['messages'] + [summary]} 
 
     def compile_graph(self):
         graph = StateGraph(TaskState)
@@ -95,11 +98,3 @@ class TaskMaster():
         graph.add_edge("summarizer", END)
 
         return graph.compile()
-
-# def print_messages(data): 
-#     data['messages'][-1].pretty_print()
-# toolkit = description_factory({"Network": "On", "Navigation": "On"})
-# master = TaskMaster(toolkit).compile_graph()
-# for part in master.stream({'messages': 'I need you to search for batman images then list all the network interfaces and finally tell me the weather in hebron'}, stream_mode="values"): 
-#     print_messages(part)
-
