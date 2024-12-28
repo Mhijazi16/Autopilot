@@ -1,11 +1,12 @@
-from os import environ
-from pexpect import spawn
+from shell_toolkit import read_status, start_terminal, handle_sudo
+import pexpect
+# from os import environ
 
-def handle_sudo(process: spawn): 
-    password = environ.get("PASS")
-    process.expect('password')
-    process.sendline(str(password))
-    return process
+# def handle_sudo(process: spawn): 
+#     password = environ.get("PASS")
+#     process.expect('password')
+#     process.sendline(str(password))
+#     return process
 
 def install_packages(names: list[str]): 
     """
@@ -20,9 +21,10 @@ def install_packages(names: list[str]):
             returns what happened after execution
     """
     command = f"sudo pacman --noconfirm -S {" ".join(names)}"
-    process = spawn(command)
-    process = handle_sudo(process)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    process, message = handle_sudo(process)
+    return read_status(process)
 
 def update_packages(): 
     """
@@ -36,9 +38,10 @@ def update_packages():
             returns what happened after execution
     """
     command = "sudo pacman --noconfirm -Syu"
-    process = spawn(command)
-    process = handle_sudo(process)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    process, message = handle_sudo(process)
+    return read_status(process)
 
 def list_installed_packages():
     """
@@ -52,8 +55,9 @@ def list_installed_packages():
         returns list of installed packages.
     """
     command = "pacman -Qe"
-    process = spawn(command)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    return read_status(process)
 
 def list_system_wide_dependencies():
     """
@@ -66,8 +70,9 @@ def list_system_wide_dependencies():
         returns list of package depandencies.
     """
     command = "pacman -Qd"
-    process = spawn(command)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    return read_status(process)
 
 def show_package_information(name: str): 
     """
@@ -79,8 +84,9 @@ def show_package_information(name: str):
             name: str
     """
     command = f"pacman -Qi {name}"
-    process = spawn(command)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    return read_status(process)
 
 def remove_packages(names: list[str]):
     """
@@ -92,9 +98,10 @@ def remove_packages(names: list[str]):
         returns the output of the removal process.
     """
     command = f"sudo pacman --noconfirm -R {" ".join(names)}"
-    process = spawn(command)
-    process = handle_sudo(process)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    process, message = handle_sudo(process)
+    return read_status(process)
 
 def remove_full_packages(names: list[str]):
     """
@@ -106,9 +113,10 @@ def remove_full_packages(names: list[str]):
         returns the output of the removal process.
     """
     command = f"sudo pacman --noconfirm -Rns {" ".join(names)}"
-    process = spawn(command)
-    process = handle_sudo(process)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    process, message = handle_sudo(process)
+    return read_status(process)
 
 def clean_package_cache():
     """
@@ -120,9 +128,10 @@ def clean_package_cache():
         reutrns the result
     """
     command = f"sudo pacman --noconfirm -Sc"
-    process = spawn(command)
-    process = handle_sudo(process)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    process, message = handle_sudo(process)
+    return read_status(process)
 
 def search_packages(name: str): 
     """
@@ -134,8 +143,9 @@ def search_packages(name: str):
         returns the list of similar packages
     """
     command = f"pacman -Ss {name}"
-    process = spawn(command)
-    return process.read().decode()
+    start_terminal(command)
+    process = pexpect.spawn(command)
+    return read_status(process)
 
 def get_package_toolkit():
     return [search_packages,
