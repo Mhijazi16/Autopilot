@@ -5,3 +5,13 @@
   height: 100%;
   position: relative;
 }
+
+.show-manual-agents {
+  width: 50px;
+  background-color: white;
+  color: black;
+  position: fixed;
+  top: 15px;
+  right: 50%;
+  left: 50%;
+}

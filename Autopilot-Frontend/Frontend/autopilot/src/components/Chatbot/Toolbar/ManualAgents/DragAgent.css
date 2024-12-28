@@ -1,0 +1,94 @@
+.drag-agent {
+    position: relative;
+    display: flex;
+    margin: 12px 0;
+    height: 60px;
+    background-color: #1c1c1c;
+    border-radius: 15px;
+    /*border: 1px solid #4f4f4f;*/
+    cursor: grab;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .drag-agent:hover {
+    box-shadow: 0px 4px 15px rgba(0, 122, 255, 0.5);
+  }
+  
+  .blue-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    width: 40px;
+    height: 100%;
+    background-color: #007bff;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+  
+
+  .blue-section-dots {
+    height: 85%;
+    width: 80%;
+    margin-left: 5px; 
+    background-image: radial-gradient(circle, #3336389c 2.5px, transparent 2.5px);
+    background-size: 10px 10px; 
+    background-repeat: repeat;
+
+  }
+
+  .drag-agent-content {
+    display: flex;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.5rem;
+    width: 100%;
+  }
+  
+  .manual-agent-icon {
+    height: 100%;
+    border: 1px solid #1F68FF;
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+  .manual-agent-icon img {
+    width: 30px;
+  }
+  
+  .manual-agent-description {
+    width: 500px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border: 1px solid #1F68FF;
+    border-radius: 8px;
+    flex-grow: 1;
+    font-size: 18px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #ffffff;
+    overflow: auto;
+  }
+  
+  .delete-agent-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .delete-agent-button button {
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    font-size: 16px;
+    width: 50px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .delete-agent-button button:hover {
+    background-color: #ff6f6f;
+  }

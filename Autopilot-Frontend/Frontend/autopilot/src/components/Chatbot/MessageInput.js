@@ -2,8 +2,15 @@ import React from 'react';
 import './MessageInput.css';
 
 const MessageInput = ({ input, setInput, handleSubmit, loading, handleStop }) => {
+  
+  const handleKeydown= (event) => {
+    if(event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSubmit();
+    }
+      }
   return (
-    <form onSubmit={handleSubmit} className="message-input-form" >
+    <form onSubmit={(e) => handleSubmit(e)} className="message-input-form" >
       <div className="message-input-container">
         <textarea
           type="text"
@@ -11,6 +18,7 @@ const MessageInput = ({ input, setInput, handleSubmit, loading, handleStop }) =>
           value={input}
           disabled={loading}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeydown}
           placeholder="Message Autopilot"
           className="message-input"
         >
@@ -20,7 +28,7 @@ const MessageInput = ({ input, setInput, handleSubmit, loading, handleStop }) =>
             Stop
           </button>
         ) : (
-          <button type="submit" className="send-button">
+          <button type="submit" disabled={loading} className="send-button">
             Send
           </button>
         )}

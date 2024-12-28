@@ -10,10 +10,11 @@ import asyncio
 active_sockets = {}
 async def notify_client(name: str, data): 
     try:
+        print("[INFO] sending tool notification")
         socket = active_sockets[name]
         await socket.send_json(str(data))
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"[Error] : notify client failed {e}")
 
 class AgentState(MessagesState): 
     is_last_step: IsLastStep
@@ -41,8 +42,10 @@ class ReactAgent():
 
     def parse_for_tool(self, event):
         try:
-            function = event['data']['output'].response_metadata['message']['tool_calls'][-1]
-            return function['function']['name'], function['function']['arguments']
+            call = event['data']['output'].tool_calls[-1]
+            tool = (call['name'], call['args'])
+            print(f"[INFO] 🔨 Tool Was Called : {tool}")
+            return tool
         except:
             return None
 
@@ -56,6 +59,7 @@ class ReactAgent():
         return self.agent.astream_events(state, config=self.config, stream_mode="values", version='v2')
 
     async def Invoke(self, state):
+        print("[INFO] 🤖 Agent Was Invoked")
         tool = ()
         stream = self.get_stream(state)
         async for event in stream: 
@@ -64,6 +68,7 @@ class ReactAgent():
         return tool
 
     async def Halt(self): 
+        print("[INFO] 🤖 Agent Waiting For Feedback")
         i = 0
         while True: 
             await asyncio.sleep(1)
@@ -78,6 +83,7 @@ class ReactAgent():
         return True 
 
     async def Resume(self):
+        print("[INFO] 🤖 Agent Resuming Task")
         stream = self.get_stream(None)
         output = ""
         async for event in stream: 
@@ -86,15 +92,17 @@ class ReactAgent():
                 output += message.content
         return output
 
-    async def Run(self, prompt: str): 
+    async def Run(self, prompt: str) -> str: 
         self.memory.set("status", "not-set")
         tool = await self.Invoke({'messages': [prompt]})
         feedback = self.memory.get("feedback")
         resume = True
         if feedback == "On" and tool: 
+            print("[INFO] 💈 Sending Tool Notification")
             await notify_client('tools', tool)
             resume = await self.Halt()
             self.memory.set("status", "not-set")
         if resume: 
             text = await self.Resume()
             return text
+        return "nothing was executed"
