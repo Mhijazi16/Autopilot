@@ -1,4 +1,4 @@
-from shell_toolkit import read_status, start_terminal, handle_sudo
+from .shell_toolkit import read_status, start_terminal, handle_sudo
 import pexpect
 # from os import environ
 

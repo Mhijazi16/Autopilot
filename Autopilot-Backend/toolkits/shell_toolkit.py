@@ -60,8 +60,8 @@ def execute(command):
         child, message = handle_sudo(child)
         if "denied" in message: 
             return f"process failed : {message}"
-    child.expect(pexpect.EOF)
-    output = f"the output of the command is {read_status(child)}"
+    data = read_status(child)
+    output = f"the output of the command is {data}"
     return output
 
 def get_shell_toolkit():
