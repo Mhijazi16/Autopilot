@@ -11,7 +11,7 @@ from .react import ReactAgent
 def agent_factory(agent , config):
     toolkit = []
 
-    if agent == "Packager": 
+    if agent == "Packages": 
         toolkit = get_package_toolkit()
     elif agent == "Shell": 
         toolkit = get_shell_toolkit()
@@ -19,7 +19,7 @@ def agent_factory(agent , config):
         toolkit = get_network_toolkit()
     elif agent == "Github": 
         toolkit = get_github_toolkit()
-    elif agent == "Navigator": 
+    elif agent == "Navigation": 
         toolkit = get_navigation_toolkit()
     elif agent == "Users": 
         toolkit = get_users_toolkit()
