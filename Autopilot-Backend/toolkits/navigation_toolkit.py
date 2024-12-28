@@ -14,11 +14,10 @@ def close_window(engine):
     try:
         while window in engine.window_handles:
             time.sleep(1)
+    except Exception:
         page_html = engine.page_source
         engine.quit()
         return f"search was successful here is what the user saw: {page_html}"
-    except Exception:
-        print("Window closed or browser disconnected.")
 
 def search_google(query):
     """

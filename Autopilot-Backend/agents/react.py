@@ -10,6 +10,7 @@ import asyncio
 active_sockets = {}
 async def notify_client(name: str, data): 
     try:
+        print("[INFO] sending tool notification")
         socket = active_sockets[name]
         await socket.send_json(str(data))
     except Exception as e:
@@ -91,15 +92,17 @@ class ReactAgent():
                 output += message.content
         return output
 
-    async def Run(self, prompt: str): 
+    async def Run(self, prompt: str) -> str: 
         self.memory.set("status", "not-set")
         tool = await self.Invoke({'messages': [prompt]})
         feedback = self.memory.get("feedback")
         resume = True
         if feedback == "On" and tool: 
+            print("[INFO] 💈 Sending Tool Notification")
             await notify_client('tools', tool)
             resume = await self.Halt()
             self.memory.set("status", "not-set")
         if resume: 
             text = await self.Resume()
             return text
+        return "nothing was executed"

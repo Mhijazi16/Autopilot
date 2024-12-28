@@ -28,14 +28,15 @@ def execute(command):
     Returns 
         the output of the command
     """
+    print(f"[INFO] current command about to execute {command}")
+    child = pexpect.spawn(command)
     if "sudo" in command: 
-        child = pexpect.spawn(command)
         child, message = handle_sudo(child)
         if "denied" in message: 
             return f"process failed : {message}"
-        return read_status(child) 
-
-    return os.popen(command).read()
+    child.expect(pexpect.EOF)
+    output = f"the output of the command is {read_status(child)}"
+    return output
 
 def get_shell_toolkit():
     return [execute]

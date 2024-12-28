@@ -1,11 +1,13 @@
 from typing import Literal
 from fastapi.responses import JSONResponse
+from agents.agent_factory import agent_factory
+from agents.task_master import TaskMaster
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
-from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect 
+from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect, responses 
 from fastapi.middleware.cors import CORSMiddleware
 from agents.react import ReactAgent, active_sockets
-from toolkits.toolkit_factory import toolkit_factory
+from toolkits.toolkit_factory import description_factory
 import asyncio
 import json
 
@@ -52,6 +54,22 @@ async def set_feedback(feedback: Literal["On", "Off"] = Body(...)):
 
     return {"feedback": memory.get("feedback")}
 
+@app.post("/manual")
+async def set_toolbar(tasks = Body(...)): 
+    try: 
+        print("[INFO] Starting Manual Routing.")
+        for unit in tasks: 
+            agent = unit['agent']
+            task = unit['task']
+            print(f"[INFO] current agent: {agent}")
+            runner = agent_factory(agent,{"configurable": {"thread_id": 1}})
+            response = await runner.Run(task) 
+            print(response)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving feedback: {e}")
+
+    return memory.hgetall("toolbar")
+
 @app.websocket("/monitor")
 async def monitor_socket(websocket: WebSocket):
     await websocket.accept()
@@ -61,7 +79,7 @@ async def monitor_socket(websocket: WebSocket):
             await websocket.send_text(json.dumps(specs)) 
             await asyncio.sleep(0.3)
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"[Error]: Monitoring Socket Exited {e}")
 
 @app.post("/accept")
 async def accept(): 
@@ -85,19 +103,22 @@ async def reject():
 async def chat(prompt: str): 
     try:
         toolbar = memory.hgetall("toolbar")
-        toolkit = toolkit_factory(toolbar)
+        toolkit = description_factory(toolbar)
+        autopilot = TaskMaster(toolkit).compile_graph()
+
         # agent = ReactAgent("groq",
         #                    toolkit,
         #                    {"configurable": {"thread_id": "1"}})
+        # agent = ReactAgent("llama3.2",
+        #                    toolkit,
+        #                    {"configurable": {"thread_id": "1"}})
+        # res = await agent.Run(prompt)
 
-        agent = ReactAgent("llama3.2",
-                           toolkit,
-                           {"configurable": {"thread_id": "1"}})
-
-        res = await agent.Run(prompt)
-        return {"message": res}
+        output = await autopilot.ainvoke({'messages': prompt})
+        message = output['messages'][-1].content
+        return {"message": message}
     except Exception as e:
-        print(f"errror : {e}")
+        print(f"Error in chat endpoint: {e}")
 
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
@@ -106,11 +127,11 @@ async def feedback_socket(websocket: WebSocket):
     try:
         while True:
             await asyncio.sleep(1)
-            await websocket.send_text(".")
+            # await websocket.send_text(".")
     except WebSocketDisconnect:
-        print("WebSocket disconnected.")
+        print("[ERROR] WebSocket disconnected.")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"[ERROR] Unexpected error: {e}")
     finally:
         active_sockets.pop('tools', None)
 
