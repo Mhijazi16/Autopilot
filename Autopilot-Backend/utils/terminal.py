@@ -1,6 +1,8 @@
 import tkinter as tk
 import socket
 import threading
+import re
+from GPUtil.GPUtil import os
 
 class Terminal:
     def __init__(self):
@@ -26,12 +28,15 @@ class Terminal:
             highlightthickness=0
         )
         self.text_widget.pack(expand=True, fill="both")
-        self.text_widget.config(state="disabled")  # Read-only by default
+        self.text_widget.config(state="disabled")
 
     def append_text(self, text):
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        plain_text = ansi_escape.sub('', text)
+
         self.text_widget.config(state="normal")
-        self.text_widget.insert("end", text + "\n")
-        self.text_widget.see("end")  # Scroll to the end
+        self.text_widget.insert("end", plain_text + "\n")
+        self.text_widget.see("end")
         self.text_widget.config(state="disabled")
 
     def start_socket_server(self):
@@ -63,3 +68,4 @@ class Terminal:
 
 terminal = Terminal()
 terminal.start()
+os.system("rm /tmp/terminal_socket")
