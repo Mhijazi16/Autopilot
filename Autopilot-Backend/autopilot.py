@@ -1,11 +1,12 @@
 from typing import Literal
 from fastapi.responses import JSONResponse
+from agents.agent_factory import agent_factory
 from agents.task_master import TaskMaster
 from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema
-from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect 
+from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect, responses 
 from fastapi.middleware.cors import CORSMiddleware
-from agents.react import active_sockets
+from agents.react import ReactAgent, active_sockets
 from toolkits.toolkit_factory import description_factory
 import asyncio
 import json
@@ -56,7 +57,14 @@ async def set_feedback(feedback: Literal["On", "Off"] = Body(...)):
 @app.post("/manual")
 async def set_toolbar(tasks = Body(...)): 
     try: 
-        print(tasks)
+        print("[INFO] Starting Manual Routing.")
+        for unit in tasks: 
+            agent = unit['agent']
+            task = unit['task']
+            print(f"[INFO] current agent: {agent}")
+            runner = agent_factory(agent,{"configurable": {"thread_id": 1}})
+            response = await runner.Run(task) 
+            print(response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving feedback: {e}")
 
