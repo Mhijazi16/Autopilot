@@ -5,7 +5,7 @@
     height: 60px;
     background-color: #1c1c1c;
     border-radius: 15px;
-    border: 1px solid #4f4f4f;
+    /*border: 1px solid #4f4f4f;*/
     cursor: grab;
     transition: box-shadow 0.3s ease;
   }
@@ -17,6 +17,7 @@
   .blue-section {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 5px;
     width: 40px;
     height: 100%;
@@ -27,9 +28,10 @@
   
 
   .blue-section-dots {
-    height: 100%;
+    height: 85%;
     width: 80%;
-    background-image: radial-gradient(circle, #3336389c 2px, transparent 2px);
+    margin-left: 5px; 
+    background-image: radial-gradient(circle, #3336389c 2.5px, transparent 2.5px);
     background-size: 10px 10px; 
     background-repeat: repeat;
 

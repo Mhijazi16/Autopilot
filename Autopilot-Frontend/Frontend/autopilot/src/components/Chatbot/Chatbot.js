@@ -24,7 +24,7 @@ const Chatbot = () => {
   const [modalOpen, showModal] = useState(false);
   const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
   
-  function startManualAgents() {
+  async function startManualAgents() {
     // Format manualAgents into the desired structure
     const formattedAgents = manualAgents
     .filter((agent) => agent.icon !== defaultIcon && agent.text.toLowerCase() !== "command")
@@ -36,23 +36,20 @@ const Chatbot = () => {
     // Print the formatted array
     console.log(formattedAgents);
 
-    /*
-    // Uncomment the following code to send the POST request
-    fetch('/manual', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formattedAgents),
-    })
-    .then((response) => response.json())
-    .then((data) => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/manual', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formattedAgents),
+      });
+
+      const data = await response.json();
       console.log('Success:', data);
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error('Error:', error);
-    });
-    */
+    }
   }
 
   const [messages, setMessages] = useState(() => {
