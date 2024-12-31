@@ -10,7 +10,7 @@ from .react import ReactAgent
 
 def agent_factory(agent , config):
     toolkit = []
-    if agent == "Packager": 
+    if agent == "Packages": 
         toolkit = get_package_toolkit()
     elif agent == "Shell": 
         toolkit = get_shell_toolkit()
