@@ -204,5 +204,3 @@ def get_network_toolkit():
             start_system_service,
             status_system_service,
             ssh_to_host]
-
-ssh_to_host('one','localhost','123',['uptime', 'whoami'])
