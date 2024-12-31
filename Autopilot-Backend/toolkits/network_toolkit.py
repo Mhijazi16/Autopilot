@@ -98,17 +98,31 @@ def start_http_server(directory: str):
             the output of trying to run the server
     """
 
-    return os.popen(f"cd {directory} && python -m http.server 2525 &")
+    try:
+        start_terminal(f"python -m http.server 2525 {directory}")
+        os.popen(f"cd {directory} && python -m http.server 2525 &")
+        send_to_terminal(f"✅ http server started in {directory} go to http://localhost:2525")
+    except Exception as e:
+        send_to_terminal("🚨 Failed Starting the Http server")
 
 def kill_http_server(): 
     """
         This Tool is used to kill the http srever 
         that you already started
     """
-    getProcess = "ps -aux | grep 'python -m http.server' | head -1 | tr -s ' ' | cut -d ' ' -f 2"
-    pid = os.popen(getProcess).read()
-    killProcess = f"kill {pid}"
-    return os.popen(killProcess).read()
+    try:
+        for i in range(2): 
+            getProcess = "ps -aux | grep 'python -m http.server' | head -1 | tr -s ' ' | cut -d ' ' -f 2"
+            start_terminal(getProcess)
+            pid = os.popen(getProcess).read()
+            send_to_terminal(pid)
+            killProcess = f"kill {pid}"
+            start_terminal(killProcess)
+            os.popen(killProcess).read()
+            send_to_terminal("✅ Http Server was killed")
+        return "✅ Http Server was killed"
+    except Exception as e:
+        return "🚨 Failed Killing the server"
 
 def list_network_hosts(password: str): 
     """ 
@@ -138,7 +152,12 @@ def list_interfaces():
         the available network interfaces 
         on the device 
     """
-    return os.popen("ip a").read()
+
+    command = "ip a"
+    start_terminal(command)
+    output = os.popen(command).read()
+    send_to_terminal(output)
+    return output
 
 def disable_interface(name: str):
     """
@@ -169,7 +188,9 @@ def list_wifi_networks():
     """
     
     command = "nmcli dev wifi list | cat | tr -s ' ' | cut -d ' ' -f 3"
+    start_terminal(command)
     ssid = os.popen(command).read()
+    send_to_terminal(ssid)
     return ssid
 
 def get_network_toolkit():
@@ -183,4 +204,3 @@ def get_network_toolkit():
             start_system_service,
             status_system_service,
             ssh_to_host]
-
