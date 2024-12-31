@@ -4,11 +4,12 @@ import pexpect
 from pexpect import pxssh
 import os
 
-def ssh_to_host(username: str, hostname: str, password, commands: list[str]):
+def ssh_to_host(username: str, hostname: str, password: str, commands: list[str]):
     """
         ssh_to_host is a tool that connectes and executes 
         commands to remote host or server.
         it takes in a list of commands
+        remember the password is a str
         Args: 
             username: str 
             hostname: str
