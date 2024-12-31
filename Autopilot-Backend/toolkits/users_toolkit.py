@@ -1,4 +1,5 @@
-from toolkits.shell_toolkit import handle_sudo, read_status, pexpect
+import os
+from toolkits.shell_toolkit import handle_sudo, read_status, pexpect, send_to_terminal, start_terminal
 from pexpect import pxssh, EOF
 
 def create_users(usernames: list[str], passwords: list[str]): 
@@ -23,22 +24,29 @@ def create_users(usernames: list[str], passwords: list[str]):
     successful_users = []
     command = "sudo useradd -m "
     output = ""
-    for username in usernames: 
+    for username, password in zip(usernames, passwords): 
         try: 
+            tmp = ""
             username = username.strip().lower()
             cmd = command + username 
+            start_terminal(cmd)
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
             if "granted" in message: 
                 issue = f"useradd: user '{username}' already exists"
                 if issue in read_status(child): 
-                    output += f"🚧 user by the name of {username} is already in the system.\n"
+                    tmp = f"🚧 user by the name of {username} is already in the system.\n"
                 else: 
                     successful_users.append(username)
-                    output += f"✅ user by the name of {username} was created.\n"
+                    change_password(username,password)
+                    tmp = f"✅ user by the name of {username} was created.\n"
+
         except: 
-            output += f"🚨 faild creating {username} as a user.\n"
+            tmp = f"🚨 faild creating {username} as a user.\n"
+        finally: 
+            send_to_terminal(tmp)
+            output += tmp
 
     return f"The result of the process:\n{output}"
 
@@ -61,19 +69,25 @@ def remove_users(usernames: list[str]):
 
     for username in usernames: 
         try: 
+            tmp = ""
             cmd = command + username 
+            start_terminal(cmd)
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
             if "granted" in message: 
                 issue = f"userdel: user '{username}' does not exist"
                 if  issue in read_status(child): 
-                    output += f"🚧 user by the name of {username} doesn't exist.\n"
+                    tmp = f"🚧 user by the name of {username} doesn't exist.\n"
                 else: 
+                    remove_groups([username])
                     successful_removes.append(username)
-                    output += f"✅ user by the name of {username} was removed.\n"
+                    tmp =  f"✅ user by the name of {username} was removed.\n"
         except: 
-            output += f"🚨 faild removing {username}.\n"
+            tmp = f"🚨 faild removing {username}.\n"
+        finally: 
+            send_to_terminal(tmp)
+            output += tmp
 
     return f"The result of the process:\n{output}"
 
@@ -92,18 +106,23 @@ def add_groups(names: list[str]):
     output = ""
     for group in names: 
         try: 
+            tmp = ""
             cmd = command + group 
+            start_terminal(cmd)
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
             if "granted" in message: 
                 issue = f"groupadd: group '{group}' already exists"
                 if  issue in read_status(child): 
-                    output += f"🚧 group by the name of '{group}' already exist.\n"
+                    tmp = f"🚧 group by the name of '{group}' already exist.\n"
                 else: 
-                    output += f"✅ group by the name of '{group}' was added.\n"
+                    tmp = f"✅ group by the name of '{group}' was added.\n"
         except: 
-            output += f"🚨 faild creating {group}.\n"
+            tmp = f"🚨 faild creating {group}.\n"
+        finally: 
+            send_to_terminal(tmp)
+            output += tmp
 
     return f"The result of the process:\n{output}"
 
@@ -122,18 +141,23 @@ def remove_groups(names: list[str]):
     output = ""
     for group in names: 
         try: 
+            tmp = ""
             cmd = command + group 
+            start_terminal(cmd)
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
             if "granted" in message: 
                 issue = f"groupdel: group '{group}' does not exist"
                 if  issue in read_status(child): 
-                    output += f"🚧 group by the name of '{group}' doesn't exist.\n"
+                    tmp = f"🚧 group by the name of '{group}' doesn't exist.\n"
                 else: 
-                    output += f"✅ group by the name of '{group}' was removed.\n"
+                    tmp = f"✅ group by the name of '{group}' was removed.\n"
         except: 
-            output += f"🚨 faild removing {group}.\n"
+            tmp = f"🚨 faild removing {group}.\n"
+        finally: 
+            send_to_terminal(tmp)
+            output += tmp
 
     return f"The result of the process:\n{output}"
 
@@ -148,11 +172,19 @@ def add_group_users(group: str, usernames: list[str]):
 
     names = ",".join(usernames)
     command = f"sudo gpasswd -M {names} {group}"
-    print(command)
-    child = pexpect.spawn(command)
-    child, message = handle_sudo(child)
+    start_terminal(command)
+    output = ""
 
-    return f"✅ {names} where added to group {group}"
+    try:
+        child = pexpect.spawn(command)
+        child, message = handle_sudo(child)
+        output = f"✅ {names} where added to group {group}"
+    except Exception as e:
+        output = f"🚨 faild adding {names} to group : {group}.\n"
+    finally: 
+        send_to_terminal(output)
+
+    return output
 
 def change_password(username: str, new_password: str): 
     """ 
@@ -164,20 +196,24 @@ def change_password(username: str, new_password: str):
     """
     try:
         command = f"sudo passwd {username}"
+        start_terminal(command)
         child = pexpect.spawn(command)
-        child, message = handle_sudo(child)
+        password = str(os.getenv("PASS"))
 
-        if "granted" in message: 
-            child.expect("New password: ")
-            child.sendline(new_password)
-            child.expect("Retype new password: ")
-            child.sendline(new_password)
-            child.expect(EOF)
-            return "✅ " + read_status(child).strip()
-        else: 
-            return "🚧 Access Denied." 
+        child.expect_exact("[sudo] password for ha1st: ")
+        child.sendline(password)
+
+        child.expect_exact("New password: ")
+        child.sendline(new_password)
+        child.expect_exact("Retype new password: ")
+        child.sendline(new_password)
+        child.expect(EOF)
+        output = f"✅ Password successfully chagned to {new_password}" 
     except:
-        return "🚨 faild changing the password."
+        output = "🚨 faild changing the password."
+    finally: 
+        send_to_terminal(output)
+        return output
 
 def get_users_toolkit():
     return [create_users,
@@ -186,4 +222,3 @@ def get_users_toolkit():
             remove_groups,
             add_group_users,
             change_password]
-
