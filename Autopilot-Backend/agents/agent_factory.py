@@ -10,12 +10,11 @@ from .react import ReactAgent
 
 def agent_factory(agent , config):
     toolkit = []
-
-    if agent == "Packages": 
+    if agent == "Packager": 
         toolkit = get_package_toolkit()
     elif agent == "Shell": 
         toolkit = get_shell_toolkit()
-    elif agent == "Networker": 
+    elif agent == "Network": 
         toolkit = get_network_toolkit()
     elif agent == "Github": 
         toolkit = get_github_toolkit()

@@ -41,7 +41,7 @@ def start_http_server(directory: str):
             the output of trying to run the server
     """
 
-    return os.popen(f"cd {directory} && python -m http.server")
+    return os.popen(f"cd {directory} && python -m http.server 2525 &")
 
 def kill_http_server(): 
     """
