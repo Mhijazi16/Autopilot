@@ -7,21 +7,21 @@ from GPUtil.GPUtil import os
 class Terminal:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Beautiful Terminal")
+        self.root.title("Autopilot Terminal")
 
         self.root.geometry("800x500")
-        self.root.configure(bg="#282C34")  # Dark background
+        self.root.configure(bg="#0c0c0c")
 
-        self.frame = tk.Frame(self.root, bg="#282C34")
+        self.frame = tk.Frame(self.root, bg="#0c0c0c")
         self.frame.pack(expand=True, fill="both", padx=10, pady=10)
 
         self.text_widget = tk.Text(
             self.frame,
             wrap="word",
-            bg="#1E1E1E",
+            bg="#0c0c0c",
             fg="#0078fd",
-            insertbackground="white",  # Cursor color
-            font=("Fira Code", 12),
+            insertbackground="white",
+            font=("Fira Code", 18),
             padx=10,
             pady=10,
             borderwidth=0,
@@ -35,7 +35,19 @@ class Terminal:
         plain_text = ansi_escape.sub('', text)
 
         self.text_widget.config(state="normal")
-        self.text_widget.insert("end", plain_text + "\n")
+
+        for line in plain_text.splitlines():
+            line_end_index = self.text_widget.index("end-1c")
+            self.text_widget.insert("end", "\n" + line )
+            
+            if "$" in line:
+                self.text_widget.tag_add("blue", line_end_index, self.text_widget.index("end-1c"))
+            else:
+                self.text_widget.tag_add("white", line_end_index, self.text_widget.index("end-1c"))
+
+        self.text_widget.tag_config("blue", foreground="#0078fd")
+        self.text_widget.tag_config("white", foreground="white")
+
         self.text_widget.see("end")
         self.text_widget.config(state="disabled")
 

@@ -28,9 +28,9 @@ def ssh_to_host(username: str, hostname: str, password, commands: list[str]):
             session.sendline(command)
             session.prompt()
             template = f"[{username}@{hostname}]$ {command}"
-            start_terminal(template)
+            send_to_terminal(template)
             tmp = str(session.before.decode()).split('\n')[1] 
-            send_to_terminal(tmp + '\n')
+            send_to_terminal(tmp)
             output += template + "\n" + tmp
         session.logout()
     except Exception as e:
@@ -204,3 +204,5 @@ def get_network_toolkit():
             start_system_service,
             status_system_service,
             ssh_to_host]
+
+ssh_to_host('one','localhost','123',['uptime', 'whoami'])
