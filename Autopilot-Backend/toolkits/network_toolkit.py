@@ -1,5 +1,5 @@
 from pexpect.exceptions import EOF
-from shell_toolkit import handle_sudo, read_status, send_to_terminal, start_terminal
+from .shell_toolkit import handle_sudo, read_status, send_to_terminal, start_terminal
 import pexpect
 from pexpect import pxssh
 import os
