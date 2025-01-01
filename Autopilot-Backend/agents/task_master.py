@@ -11,53 +11,49 @@ class TaskState(MessagesState):
     # output : List[str] 
 
 class TaskMaster():
-    __slots__ = ("llm", "template", "config", "summarizer")
+    __slots__ = ("llm", "template", "config", "summarizer", "toolkit")
 
     def __init__(self, toolkit): 
         self.config = {"configurable": {"thread_id": "1"}}
-        self.llm = ChatGroq(
-            # model="llama3-groq-70b-8192-tool-use-preview",
-            model="llama-3.3-70b-versatile",
-            temperature=0, 
-            stop_sequences="1", 
-        ).with_structured_output(Plan)
-
+        self.toolkit = toolkit
         self.summarizer = ChatOllama(
             model="llama3.2",
             temperature=0
         )
 
-        sys_msg = f"""your my helpful assistant your name is TaskMaster you take in 
-                     the prompt of the user and analyze it to create a Plan that should 
-                     be executed to meet the users request the plan should only consist 
-                     of steps each step consist of name of agent and the task should be 
-                     executed by that agent. the following is the available agents and thier 
-                     tools: 
-                     {toolkit}
+        self.template = f"""For the given objective, come up with a simple step by step plan. \
+                This plan should involve individual tasks and the agent that should execute that 
+                task. Do not add any superfluous steps. \
 
-                     Important Note: the task should be a prompt to the next agent about 
-                     what to do or what should that agent execute Example: 
-                     if the user wants to open http server inside the Videos folder 
-                     you should create a Step with 
-                     """
+                The task should be a long clear prompt about what 
+                the agent should do 
 
-        self.template = ChatPromptTemplate(
-            [
-                ('system',sys_msg), 
-                ('human','{input}'), 
-            ]
-        )
+                The Agents you can do that Job: 
+                {toolkit}
+            """
 
+        self.llm = ChatOllama(
+            model="llama3.1:8b-instruct-q5_0",
+            temperature=0,
+        ).with_structured_output(Plan)
+
+        # self.llm = ChatGroq(
+        #     model="llama3-groq-70b-8192-tool-use-preview",
+        #     # model="llama-3.3-70b-versatile",
+        #     temperature=0, 
+        #     stop_sequences="1", 
+        # ).with_structured_output(Plan)
 
     def Plan(self, state: TaskState) -> TaskState: 
         try:
             prompt = state['messages'][-1]
-            chain = self.template | self.llm 
-            plan = chain.invoke({'input': str(prompt)})
+            self.template += f"the objective is : {prompt.content}"
+            plan = self.llm.invoke(self.template)
             state['plan'] = plan
+            print(f"[PLAN]: {plan}")
             return state
         except Exception as e:
-            raise e
+            print(f"[ERROR] something went wrong when planning {e}")
 
     async def Execute(self, state: TaskState): 
         try:
