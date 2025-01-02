@@ -4,6 +4,7 @@ import autopilotLogo from "../../assets/icons/autopilot-logo.svg";
 import autopilotButtonLogo from "../../assets/icons/autopilot-button.png";
 import dashboardLogo from "../../assets/icons/home.png";
 import settingsLogo from "../../assets/icons/settings.svg";
+import tasksLogo from "../../assets/icons/tasksLogo.svg";
 import "./Sidebar.css";
 
 const Sidebar = () => {
@@ -22,6 +23,10 @@ const Sidebar = () => {
         <NavLink to="/" className="sidebar-link">
           <img src={autopilotButtonLogo} alt="Autopilot Button Icon" />
           <span>Autopilot</span>
+        </NavLink>
+        <NavLink to="/tasks" className="sidebar-link">
+          <img src={tasksLogo} alt="Tasks Icon" />
+          <span>Tasks</span>
         </NavLink>
         <NavLink to="/settings" className="sidebar-link">
           <img src={settingsLogo} alt="Settings Icon" />
