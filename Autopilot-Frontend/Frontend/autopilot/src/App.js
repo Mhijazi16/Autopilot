@@ -6,6 +6,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import "./App.css";
 import blueLightTop from './assets/blue-light-top.svg';
 import Settings from "./components/Settings/Settings";
+import Tasks from "./components/Tasks/Tasks"
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -27,6 +28,8 @@ function App() {
                 path="/settings"
                 element={<Settings theme={theme} setTheme={setTheme} />}
               />
+              <Route path="/tasks" element={<Tasks />} />
+
             </Routes>
           </div>
         </div>
