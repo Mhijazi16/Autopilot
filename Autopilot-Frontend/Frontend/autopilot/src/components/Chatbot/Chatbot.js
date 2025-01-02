@@ -7,51 +7,12 @@ import "./Chatbot.css";
 import { v4 as uuidv4 } from 'uuid';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { debounce } from 'lodash';
-import ManualAgents from "./Toolbar/ManualAgents/ManualAgents";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import defaultIcon from "./../../assets/icons/autopilot-button.png"
 
 const Chatbot = () => {
 
-  const [manualAgents, setManualAgents] = useState([
-    { id: 1, text: "command", icon: defaultIcon, name: "default" }]);
-    // {
-    // {
-      // 
-    // }}
-  const [manualAgentsModalOpen, showManualAgentsModal] = useState(false);
   const [modalOpen, showModal] = useState(false);
   const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
   
-  async function startManualAgents() {
-    // Format manualAgents into the desired structure
-    const formattedAgents = manualAgents
-    .filter((agent) => agent.icon !== defaultIcon && agent.text.toLowerCase() !== "command")
-    .map((agent) => ({
-    agent: agent.name,
-    task: agent.text,
-  }));
-
-    // Print the formatted array
-    console.log(formattedAgents);
-
-    try {
-      const response = await fetch('http://127.0.0.1:8000/manual', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formattedAgents),
-      });
-
-      const data = await response.json();
-      console.log('Success:', data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chatMessages");
     const parsedMessages = savedMessages
@@ -113,7 +74,6 @@ const Chatbot = () => {
       console.log("WebSocket connection cleanup.");
     };
   }, []);
-  
 
 
   useEffect(() => {
@@ -132,6 +92,11 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   
+  // **New useEffect for syncing with localStorage**
+  useEffect(() => {
+    localStorage.setItem("chatMessages", JSON.stringify(messages));
+  }, [messages]);
+
   const handleSubmit = (e) => {
     if (e && e.preventDefault) {
       e.preventDefault(); 
@@ -173,6 +138,7 @@ const Chatbot = () => {
         }
         return updatedMessages;
       });
+
       simulateLiveGeneration(botMessage);
 
     } catch (error) {
@@ -218,82 +184,69 @@ const Chatbot = () => {
       setLoading(false);
       setAbortController(null);
     }
-};
-
-const simulateLiveGeneration = useCallback((message) => {
-  let currentIndex = 0;
-  const interval = 20; 
-
-  intervalRef.current = setInterval(() => {
-    if (currentIndex < message.length) {
-      setMessages((prev) => {
-        const updatedMessages = [...prev];
-        const lastMessage = updatedMessages[updatedMessages.length - 1];
-
-        if (lastMessage.sender === "bot") {
-          updatedMessages[updatedMessages.length - 1] = {
-            ...lastMessage,
-            text: lastMessage.text + message[currentIndex],
-          };
-        }
-
-        return updatedMessages;
-      });
-      currentIndex++;
-    } else {
-      clearInterval(intervalRef.current); 
-    }
-  }, interval);
-}, []);
-
-useEffect(() => {
-  return () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
   };
-}, []);
+
+  const simulateLiveGeneration = useCallback((message) => {
+    let currentIndex = 0;
+    const interval = 20; 
+
+    intervalRef.current = setInterval(() => {
+      if (currentIndex < message.length) {
+        setMessages((prev) => {
+          const updatedMessages = [...prev];
+          const lastMessage = updatedMessages[updatedMessages.length - 1];
+
+          if (lastMessage.sender === "bot") {
+            updatedMessages[updatedMessages.length - 1] = {
+              ...lastMessage,
+              text: lastMessage.text + message[currentIndex],
+            };
+          }
+
+          return updatedMessages;
+        });
+        currentIndex++;
+      } else {
+        clearInterval(intervalRef.current); 
+      }
+    }, interval);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
 
-const handleStop = () => {
-  if (abortController) abortController.abort();
-};
+  const handleStop = () => {
+    if (abortController) abortController.abort();
+  };
 
 
-  return (
-    <>
-      <Toolbar />
-      <button className="show-manual-agents" onClick={() => showManualAgentsModal(true)}>Show</button>
-      {
-      manualAgentsModalOpen && (
-        <DndProvider backend={HTML5Backend}>
-          <ManualAgents
-            manualAgents={manualAgents}
-            setManualAgents={setManualAgents}
-            showModal={showManualAgentsModal}
-            startManualAgents={startManualAgents}
-          />
-        </DndProvider>
-      )}
-      
-      <ResponseModal 
-        isOpen={modalOpen} 
-        showModal={showModal} 
-        commandsInfo={modalCommandsInfo}
-        setCommandsInfo={setModalCommandsInfo}
-      />
-      <div className="flex flex-col h-full relative">
-        <MessageList messages={messages} messagesEndRef={messagesEndRef}/>
-        <MessageInput
-          input={input}
-          setInput={setInput}
-          handleSubmit={handleSubmit}
-          loading={loading}
-          handleStop={handleStop}
+    return (
+      <>
+        <Toolbar />
+        <ResponseModal 
+          isOpen={modalOpen} 
+          showModal={showModal} 
+          commandsInfo={modalCommandsInfo}
+          setCommandsInfo={setModalCommandsInfo}
         />
-      </div>
-    </>
-  );
+        <div className="flex flex-col h-full relative">
+          <MessageList messages={messages} messagesEndRef={messagesEndRef}/>
+          <MessageInput
+            input={input}
+            setInput={setInput}
+            handleSubmit={handleSubmit}
+            loading={loading}
+            handleStop={handleStop}
+          />
+        </div>
+      </>
+    );
 };
 
 export default Chatbot;
