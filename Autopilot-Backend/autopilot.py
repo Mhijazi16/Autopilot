@@ -127,8 +127,21 @@ async def create_task(task: Task):
 
 @app.post("/tasks/{id}/start")
 async def start_task(id: int): 
-    task: Task = memory.get(f"task:{id}")
-    print(f"[INFO] Running : {task.name}")
+    try:
+        data = memory.get(f"task:{id}")
+        jobs = json.loads(data)
+        socket = active_sockets['notification']
+        for job in jobs['commands']: 
+            await socket.send_text('running')
+            agent = job['agent']
+            task = job['task']
+            print(f"[INFO] current agent: {agent}")
+            runner = agent_factory(agent,{"configurable": {"thread_id": 1}})
+            response = await runner.Run(task) 
+            await socket.send_text('finished')
+    except Exception as e:
+        print(f"[ERROR] Issue in Starting Task {e}")
+
 
 @app.post("/tasks/{id}/stop")
 async def stop_task(id: int): 
