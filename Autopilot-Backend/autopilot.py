@@ -127,7 +127,9 @@ async def create_task(task: Task):
 
 @app.post("/tasks/{id}/start")
 async def start_task(id: int): 
-    pass
+    task: Task = memory.get(f"task:{id}")
+    print(f"[INFO] Running : {task.name}")
+
 @app.post("/tasks/{id}/stop")
 async def stop_task(id: int): 
     pass
@@ -143,7 +145,11 @@ async def get_all_tasks():
 @app.delete("/tasks/{id}")
 async def delete_task(id: int):
     memory.delete(f"task:{id}")
-    return {"message": "Task successfully deleted"}
+    tasks = []
+    for key in memory.scan_iter(match="task:*"):
+        task = memory.get(key)
+        tasks.append(json.loads(task))
+    return tasks
 
 @app.websocket("/notification")
 async def notification_socket(websocket: WebSocket): 
