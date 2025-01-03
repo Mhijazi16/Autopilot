@@ -3,10 +3,10 @@ from fastapi.responses import JSONResponse
 from agents.agent_factory import agent_factory
 from agents.task_master import TaskMaster
 from utils.monitor import get_specs
-from memory.database import init, ToolbarSchema
-from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect, responses 
+from memory.database import init, ToolbarSchema, Task
+from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect 
 from fastapi.middleware.cors import CORSMiddleware
-from agents.react import ReactAgent, active_sockets
+from agents.react import active_sockets
 from toolkits.toolkit_factory import description_factory
 import asyncio
 import json
@@ -119,6 +119,32 @@ async def chat(prompt: str):
         return {"message": message}
     except Exception as e:
         print(f"Error in chat endpoint: {e}")
+
+@app.post("/tasks")
+async def create_task(task: Task): 
+    memory.set(f"task:{task.id}", json.dumps(task.dict()))
+    return {"message": "Task stored successfully"}
+
+@app.post("/tasks/{id}/start")
+async def start_task(id: int): 
+    pass
+
+@app.post("/tasks/{id}/stop")
+async def stop_task(id: int): 
+    pass
+
+@app.get("/tasks")
+async def get_all_tasks():
+    tasks = []
+    for key in memory.scan_iter(match="task:*"):
+        task = memory.get(key)
+        tasks.append(json.loads(task))
+    return tasks
+
+@app.delete("/tasks/{id}")
+async def delete_task(id: int):
+    memory.delete(f"task:{id}")
+    return {"message": "Task successfully deleted"}
 
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
