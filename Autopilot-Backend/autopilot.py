@@ -128,7 +128,6 @@ async def create_task(task: Task):
 @app.post("/tasks/{id}/start")
 async def start_task(id: int): 
     pass
-
 @app.post("/tasks/{id}/stop")
 async def stop_task(id: int): 
     pass
@@ -145,6 +144,19 @@ async def get_all_tasks():
 async def delete_task(id: int):
     memory.delete(f"task:{id}")
     return {"message": "Task successfully deleted"}
+
+@app.websocket("/notification")
+async def notification_socket(websocket: WebSocket): 
+    try:
+        await websocket.accept()
+        print("[INFO] Notification websocket Recieved Connection")
+        active_sockets['notification'] = websocket
+        while True: 
+            await asyncio.sleep(1)
+    except WebSocketDisconnect:
+        print("[WARNING] Notification WebSocket disconnected.")
+    except Exception as e:
+        print(f"[ERROR] Notification WebSocket Failed : {e}")
 
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
