@@ -1,9 +1,18 @@
 from redis.client import Redis
-from typing import Literal
+from typing import List, Literal
 from pydantic import BaseModel
 import redis
 import os
 import time
+
+class Job(BaseModel):
+    agent: str
+    task: str
+
+class Task(BaseModel):
+    id: int
+    name: str
+    Jobs: List[Job]
 
 class ToolbarSchema(BaseModel):
     Navigation: Literal["On","Off"] = "Off"
