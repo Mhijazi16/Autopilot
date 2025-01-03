@@ -142,14 +142,23 @@ async def get_all_tasks():
         tasks.append(json.loads(task))
     return tasks
 
+@app.get("/tasks/{id}")
+async def get_task(id: int):
+    task = memory.get(f"task:{id}")
+    return json.loads(task)
+
 @app.delete("/tasks/{id}")
 async def delete_task(id: int):
-    memory.delete(f"task:{id}")
-    tasks = []
-    for key in memory.scan_iter(match="task:*"):
-        task = memory.get(key)
-        tasks.append(json.loads(task))
-    return tasks
+    try:
+        removed = memory.delete(f"task:{id}")
+        if removed:  
+            tasks = []
+            for key in memory.scan_iter(match="task:*"):
+                task = memory.get(key)
+                tasks.append(json.loads(task))
+            return tasks
+    except Exception as e:
+        print("[ERROR] failed deleting task")
 
 @app.websocket("/notification")
 async def notification_socket(websocket: WebSocket): 
