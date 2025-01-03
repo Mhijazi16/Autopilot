@@ -5,14 +5,14 @@ import redis
 import os
 import time
 
-class Job(BaseModel):
+class Command(BaseModel):
     agent: str
     task: str
 
 class Task(BaseModel):
     id: int
     name: str
-    Jobs: List[Job]
+    commands: List[Command]
 
 class ToolbarSchema(BaseModel):
     Navigation: Literal["On","Off"] = "Off"
