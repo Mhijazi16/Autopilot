@@ -34,12 +34,21 @@ def init() -> Redis:
 
     return memory
 
-def populate_memory(memory):
+def populate_memory(memory: Redis):
     toolbar = ToolbarSchema()
     memory.set("feedback", "Off")
     memory.set("command", "not-set")
     memory.set("status", "not-set")
     memory.hset("toolbar", mapping=toolbar.model_dump())
+
+    # used to delete the tasks 
+    # cursor = 0
+    # while True:
+    #     cursor, keys = memory.scan(cursor=cursor, match="task:*", count=100)
+    #     if keys:
+    #         memory.delete(*keys)
+    #     if cursor == 0:
+    #         break
 
 def get_memory() -> Redis:
     return redis.Redis(
