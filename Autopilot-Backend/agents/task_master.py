@@ -1,6 +1,4 @@
-from langchain_core.messages.human import HumanMessage
-from langchain_groq.chat_models import ChatGroq
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.messages import ToolMessage
 from langchain_ollama import ChatOllama
 from langgraph.graph import START, MessagesState, StateGraph, END
 from .agent_factory import agent_factory
@@ -13,8 +11,7 @@ class TaskState(MessagesState):
 class TaskMaster():
     __slots__ = ("llm", "template", "config", "summarizer", "toolkit")
 
-    def __init__(self, toolkit): 
-        self.config = {"configurable": {"thread_id": "1"}}
+    def __init__(self, toolkit): self.config = {"configurable": {"thread_id": "1"}}
         self.toolkit = toolkit
         self.summarizer = ChatOllama(
             model="llama3.2",
@@ -50,23 +47,24 @@ class TaskMaster():
             self.template += f"the objective is : {prompt.content}"
             plan = self.llm.invoke(self.template)
             state['plan'] = plan
-            print(f"[PLAN]: {plan}")
             return state
         except Exception as e:
             print(f"[ERROR] something went wrong when planning {e}")
 
     async def Execute(self, state: TaskState): 
+        output = ""
         try:
             plan = state['plan'].steps
-            output = ""
             for step in plan: 
                 print(f"[STEP] current step: {step}")
                 output += f"Result from Agent {step.agent}"
                 agent = agent_factory(step.agent, self.config)
                 output += await agent.Run(step.task)
-            return {'messages': state['messages'] + [HumanMessage(output)]}
+            print(output)
         except Exception as e:
             print(f"[Error] issue in execute {e}")
+        finally: 
+            return {'messages': state['messages'] + [ToolMessage(output)]}
 
     def Summarize(self, state: TaskState):
         sum_prompt = """
@@ -94,3 +92,12 @@ class TaskMaster():
         graph.add_edge("summarizer", END)
 
         return graph.compile()
+
+    def compile_planner_graph(self): 
+        graph = StateGraph(TaskState)
+        graph.add_node("planner", self.Plan)
+        graph.add_edge(START,"planner")
+        graph.add_edge("planner", END)
+
+        return graph.compile()
+
