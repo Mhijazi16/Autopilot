@@ -1,12 +1,5 @@
 from .shell_toolkit import read_status, start_terminal, handle_sudo
 import pexpect
-# from os import environ
-
-# def handle_sudo(process: spawn): 
-#     password = environ.get("PASS")
-#     process.expect('password')
-#     process.sendline(str(password))
-#     return process
 
 def install_packages(names: list[str]): 
     """
@@ -20,11 +13,15 @@ def install_packages(names: list[str]):
         Returns: 
             returns what happened after execution
     """
-    command = f"sudo pacman --noconfirm -S {" ".join(names)}"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    process, message = handle_sudo(process)
-    return read_status(process)
+    try:
+        command = f"sudo pacman --noconfirm -S {' '.join(names)}"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        process, message = handle_sudo(process)
+        read_status(process)
+        return f"✅ Successfully installed packages with names : {names}."
+    except Exception as e:
+        return f"⚠️ Failed to install packages: {e}"
 
 def update_packages(): 
     """
@@ -37,11 +34,15 @@ def update_packages():
         Returns: 
             returns what happened after execution
     """
-    command = "sudo pacman --noconfirm -Syu"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    process, message = handle_sudo(process)
-    return read_status(process)
+    try:
+        command = "sudo pacman --noconfirm -Syu"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        process, message = handle_sudo(process)
+        read_status(process)
+        return "✅ Successfully updated packages."
+    except Exception as e:
+        return f"⚠️ Failed to update packages: {e}"
 
 def list_installed_packages():
     """
@@ -54,10 +55,14 @@ def list_installed_packages():
     Returns: 
         returns list of installed packages.
     """
-    command = "pacman -Qe"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    return read_status(process)
+    try:
+        command = "pacman -Qe"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        read_status(process)
+        return "✅ Successfully listed installed packages."
+    except Exception as e:
+        return f"⚠️ Failed to list installed packages: {e}"
 
 def list_system_wide_dependencies():
     """
@@ -69,10 +74,14 @@ def list_system_wide_dependencies():
     Returns: 
         returns list of package depandencies.
     """
-    command = "pacman -Qd"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    return read_status(process)
+    try:
+        command = "pacman -Qd"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        info = read_status(process)
+        return f"✅ Successfully retrieve dependencies Result:\n {info}."
+    except Exception as e:
+        return f"⚠️ Failed to list system-wide dependencies: {e}"
 
 def show_package_information(name: str): 
     """
@@ -83,10 +92,14 @@ def show_package_information(name: str):
         Args: 
             name: str
     """
-    command = f"pacman -Qi {name}"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    return read_status(process)
+    try:
+        command = f"pacman -Qi {name}"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        info = read_status(process)
+        return f"✅ Successfully retrieved information for package Result: '{info}'."
+    except Exception as e:
+        return f"⚠️ Failed to retrieve information for package '{name}': {e}"
 
 def remove_packages(names: list[str]):
     """
@@ -97,11 +110,15 @@ def remove_packages(names: list[str]):
     Returns: 
         returns the output of the removal process.
     """
-    command = f"sudo pacman --noconfirm -R {" ".join(names)}"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    process, message = handle_sudo(process)
-    return read_status(process)
+    try:
+        command = f"sudo pacman --noconfirm -R {' '.join(names)}"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        process, message = handle_sudo(process)
+        read_status(process)
+        return f"✅ Successfully removed the follwing packages: {names}."
+    except Exception as e:
+        return f"⚠️ Failed to remove packages: {e}"
 
 def remove_full_packages(names: list[str]):
     """
@@ -112,11 +129,15 @@ def remove_full_packages(names: list[str]):
     Returns: 
         returns the output of the removal process.
     """
-    command = f"sudo pacman --noconfirm -Rns {" ".join(names)}"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    process, message = handle_sudo(process)
-    return read_status(process)
+    try:
+        command = f"sudo pacman --noconfirm -Rns {' '.join(names)}"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        process, message = handle_sudo(process)
+        read_status(process)
+        return "✅ Successfully removed packages and their dependencies."
+    except Exception as e:
+        return f"⚠️ Failed to remove packages and their dependencies: {e}"
 
 def clean_package_cache():
     """
@@ -127,11 +148,15 @@ def clean_package_cache():
     Returns: 
         reutrns the result
     """
-    command = f"sudo pacman --noconfirm -Sc"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    process, message = handle_sudo(process)
-    return read_status(process)
+    try:
+        command = f"sudo pacman --noconfirm -Sc"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        process, message = handle_sudo(process)
+        read_status(process)
+        return "✅ Successfully cleaned package cache."
+    except Exception as e:
+        return f"⚠️ Failed to clean package cache: {e}"
 
 def search_packages(name: str): 
     """
@@ -142,10 +167,14 @@ def search_packages(name: str):
     Returns: 
         returns the list of similar packages
     """
-    command = f"pacman -Ss {name}"
-    start_terminal(command)
-    process = pexpect.spawn(command)
-    return read_status(process)
+    try:
+        command = f"pacman -Ss {name}"
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        result = read_status(process)
+        return f"✅ Successfully searched for package '{name}\n Result:\n {result}'."
+    except Exception as e:
+        return f"⚠️ Failed to search for package '{name}': {e}"
 
 def get_package_toolkit():
     return [search_packages,

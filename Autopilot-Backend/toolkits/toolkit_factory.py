@@ -38,7 +38,7 @@ def get_description(tools):
     description = ""
     for tool in tools: 
         description += tool.__name__ + '\n'
-        description += tool.__doc__ + '\n'
+        # description += tool.__doc__ + '\n'
     return description
 
 def description_factory(toolbar: ToolbarSchema):
@@ -47,19 +47,19 @@ def description_factory(toolbar: ToolbarSchema):
         if value == "Off": 
             continue
         if key == "Packages": 
-            description += "\nAgent Name: Packager\n Agent Tools:\n"
+            description += "\nAgent Name: Packages\n Agent Tools:\n"
             description += get_description(get_package_toolkit())
         elif key == "Shell": 
             description += "\nAgent Name: Shell\n Agent Tools:\n"
             description += get_description(get_shell_toolkit())
         elif key == "Network": 
-            description += "\nAgent Name: Networker\n Agent Tools:\n"
+            description += "\nAgent Name: Network\n Agent Tools:\n"
             description += get_description(get_network_toolkit())
         elif key == "Github": 
             description += "\nAgent Name: Github\n Agent Tools:\n"
             description += get_description(get_github_toolkit())
         elif key == "Navigation": 
-            description += "\nAgent Name: Navigator\n Agent Tools:\n"
+            description += "\nAgent Name: Navigation\n Agent Tools:\n"
             description += get_description(get_navigation_toolkit())
         elif key == "Users": 
             description += "\nAgent Name: Users\n Agent Tools:\n"

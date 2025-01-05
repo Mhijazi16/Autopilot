@@ -1,9 +1,18 @@
 from redis.client import Redis
-from typing import Literal
+from typing import List, Literal
 from pydantic import BaseModel
 import redis
 import os
 import time
+
+class Command(BaseModel):
+    agent: str
+    task: str
+
+class Task(BaseModel):
+    id: int
+    name: str
+    commands: List[Command]
 
 class ToolbarSchema(BaseModel):
     Navigation: Literal["On","Off"] = "Off"
@@ -25,12 +34,21 @@ def init() -> Redis:
 
     return memory
 
-def populate_memory(memory):
+def populate_memory(memory: Redis):
     toolbar = ToolbarSchema()
     memory.set("feedback", "Off")
     memory.set("command", "not-set")
     memory.set("status", "not-set")
     memory.hset("toolbar", mapping=toolbar.model_dump())
+
+    # used to delete the tasks 
+    # cursor = 0
+    # while True:
+    #     cursor, keys = memory.scan(cursor=cursor, match="task:*", count=100)
+    #     if keys:
+    #         memory.delete(*keys)
+    #     if cursor == 0:
+    #         break
 
 def get_memory() -> Redis:
     return redis.Redis(
