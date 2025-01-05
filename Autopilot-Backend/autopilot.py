@@ -151,6 +151,7 @@ async def chat(prompt: str):
 
 @app.post("/tasks")
 async def create_task(task: Task): 
+    task.id = get_task_id()
     memory.set(f"task:{get_task_id()}", json.dumps(task.dict()))
     return {"message": "Task stored successfully"}
 
