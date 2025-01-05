@@ -11,7 +11,9 @@ class TaskState(MessagesState):
 class TaskMaster():
     __slots__ = ("llm", "template", "config", "summarizer", "toolkit")
 
-    def __init__(self, toolkit): self.config = {"configurable": {"thread_id": "1"}}
+    def __init__(self, toolkit): 
+        self.toolkit = toolkit
+        self.config = {"configurable": {"thread_id": "1"}}
         self.toolkit = toolkit
         self.summarizer = ChatOllama(
             model="llama3.2",
@@ -47,6 +49,7 @@ class TaskMaster():
             self.template += f"the objective is : {prompt.content}"
             plan = self.llm.invoke(self.template)
             state['plan'] = plan
+            print(f"[PLAN]: {plan}")
             return state
         except Exception as e:
             print(f"[ERROR] something went wrong when planning {e}")
@@ -100,4 +103,3 @@ class TaskMaster():
         graph.add_edge("planner", END)
 
         return graph.compile()
-
