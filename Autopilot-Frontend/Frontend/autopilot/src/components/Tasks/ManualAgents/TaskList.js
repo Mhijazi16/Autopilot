@@ -3,20 +3,19 @@ import "./TaskList.css";
 import DragAgent from "./DragAgent";
 import defaultIcon from "../../../assets/icons/autopilot-button.png";
 
-const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, updateTaskName }) => {
+const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, updateTaskName, isTaskRunning }) => {
   const [taskList, setTaskList] = useState(commands || []);
   const [pickerPosition, setPickerPosition] = useState(null);
   const [name, setName] = useState(taskName || "");
   const [isEditing, setIsEditing] = useState(false);
 
-
   const closePicker = () => setPickerPosition(null);
+
   const openPickerForAgent = (position) => {
     setPickerPosition(position);
   };
 
-  const syncWithParent =   
-  (updatedArray) => {
+  const syncWithParent = (updatedArray) => {
     setTaskList(updatedArray);
     updateTaskCommands(updatedArray);
   };
@@ -41,7 +40,7 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
         text: "command",
         icon: defaultIcon,
         name: "default",
-        status: "Idle",
+        status: "idle",
       },
     ]);
   };
@@ -63,8 +62,7 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
   }, [name, updateTaskName]);
 
   const handleNameChange = (e) => {
-    const value = e.target.value;
-    setName(value);
+    setName(e.target.value);
   };
 
   const saveName = () => {
@@ -87,7 +85,7 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
       id: taskId,
       name: name,
       commands: taskList
-        .filter((cmd) => cmd.text !== "command" && cmd.icon !== defaultIcon) 
+        .filter((cmd) => cmd.text !== "command" && cmd.icon !== defaultIcon)
         .map((cmd) => ({
           agent: cmd.name,
           task: cmd.text,
@@ -96,7 +94,7 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
 
     try {
       const response = await fetch("http://127.0.0.1:8000/tasks", {
-        method: "POST", 
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -110,6 +108,10 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
       console.error("Error updating task:", err);
     }
   };
+
+  const isAnyCommandActive = taskList.some(
+    (cmd) => cmd.status === "pending" || cmd.status === "running"
+  );
 
   return (
     <div className="task-modal-overlay" onClick={() => showModal(false)}>
@@ -159,11 +161,21 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
           ))}
         </div>
 
-        <div className="task-agents-actions">
-          <button className="add-agent-button" onClick={addtasksAgent}>
+        <div 
+          className="task-agents-actions"
+          style={{ display: isTaskRunning ? "none" : "flex" }}
+        >
+          <button
+            className="add-agent-button"
+            onClick={addtasksAgent}
+            disabled={isAnyCommandActive || isTaskRunning}
+          >
             +
           </button>
-          <button className="save-task-button" onClick={handleSave}>
+          <button
+            className="save-task-button"
+            onClick={handleSave}
+            disabled={isAnyCommandActive || isTaskRunning}>
             Save
           </button>
         </div>

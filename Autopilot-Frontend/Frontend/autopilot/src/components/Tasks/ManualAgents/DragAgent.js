@@ -1,26 +1,27 @@
 import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import packagerIcon from "../../../assets/icons/packager.svg";
-import navigationIcon from "../../../assets/icons/navigation.png";
-import databaseIcon from "../../../assets/icons/database.png";
-import shellIcon from "../../../assets/icons/shell.png";
-import networkIcon from "../../../assets/icons/network.svg";
-import codeIcon from "../../../assets/icons/code.svg";
-import githubIcon from "../../../assets/icons/github.svg";
-import troubleShootingIcon from "../../../assets/icons/troubleshooting.svg";
-import usersIcon from "../../../assets/icons/users.svg";
+import Packages from "../../../assets/icons/packager.svg";
+import Navigation from "../../../assets/icons/navigation.png";
+import Database from "../../../assets/icons/database.png";
+import Shell from "../../../assets/icons/shell.png";
+import Network from "../../../assets/icons/network.svg";
+import Coder from "../../../assets/icons/code.svg";
+import Github from "../../../assets/icons/github.svg";
+import Troubleshooter from "../../../assets/icons/troubleshooting.svg";
+import Users from "../../../assets/icons/users.svg";
+import defaultIcon from "../../../assets/icons/autopilot-button.png";
 import "./DragAgent.css";
 
 const icons = [
-  { src: databaseIcon, alt: "Database" },
-  { src: shellIcon, alt: "Shell" },
-  { src: packagerIcon, alt: "Packages" },
-  { src: navigationIcon, alt: "Navigation" },
-  { src: usersIcon, alt: "Users" },
-  { src: codeIcon, alt: "Coder" },
-  { src: networkIcon, alt: "Network" },
-  { src: troubleShootingIcon, alt: "Troubleshooter" },
-  { src: githubIcon, alt: "Github" },
+  { src: Database, alt: "Database" },
+  { src: Shell, alt: "Shell" },
+  { src: Packages, alt: "Packages" },
+  { src: Navigation, alt: "Navigation" },
+  { src: Users, alt: "Users" },
+  { src: Coder, alt: "Coder" },
+  { src: Network, alt: "Network" },
+  { src: Troubleshooter, alt: "Troubleshooter" },
+  { src: Github, alt: "Github" },
 ];
 
 const DragAgent = ({
@@ -39,10 +40,16 @@ const DragAgent = ({
   const dragAgentRef = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newText, setNewText] = useState(text);
+  const resolvedIcon =
+    icons.find((icon) => icon.alt === src)?.src || defaultIcon;
 
-  const [, ref] = useDrag({
+  const [{ isDragging }, dragRef] = useDrag({
     type: ItemType,
     item: { id, index },
+    canDrag: status === "idle", 
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
 
   const [, drop] = useDrop({
@@ -83,54 +90,55 @@ const DragAgent = ({
   };
 
   const selectIcon = (icon) => {
-    updateAgent(id, { icon: icon.src, name: icon.alt });
+    updateAgent(id, { icon: icon.alt, name: icon.alt });
     closePicker();
-  };
-
-  const getButtonStyle = () => {
-    switch (status) {
-      case "Running":
-        return { backgroundColor: "#007bff", animation: "loading-animation 1.5s infinite" };
-      case "Finished":
-        return { backgroundColor: "#198754" };
-      default:
-        return { backgroundColor: "#dc3545" };
-    }
   };
 
   const getButtonSymbol = () => {
     switch (status) {
-      case "Running":
-        return "🔄";
-      case "Finished":
+      case "running":
+        return ""; 
+      case "finished":
         return "✔";
+      case "pending":
+        return "";
       default:
         return "-";
     }
   };
 
+  const getButtonStyle = () => {
+    switch (status) {
+      case "running":
+        return { backgroundColor: "#007bff" };
+      case "finished":
+        return { backgroundColor: "#198754" };
+      case "pending":
+        return { backgroundColor: "#ffc107" };
+      default:
+        return { backgroundColor: "#dc3545" };
+    }
+  };
+
   return (
     <div
-      className="drag-agent"
+      className={`drag-agent ${status}`}
       ref={(node) => {
-        ref(drop(node));
+        dragRef(drop(node));
         dragAgentRef.current = node;
       }}
     >
-      <div className="blue-section">
+      <div className={`blue-section ${status}`}>
         <div className="blue-section-dots"></div>
       </div>
       <div className="drag-agent-content">
-        <div className="task-agent-icon" onClick={openIconPicker}>
-          <img src={src} alt={text} />
+        <div className={`task-agent-icon ${status.toLowerCase()}`} onClick={openIconPicker}>
+          <img src={resolvedIcon} alt={text} />
         </div>
         {pickerPosition?.id === id && (
           <div
             className="icon-picker"
-            style={{
-              top: pickerPosition.top,
-              left: pickerPosition.left,
-            }}
+            style={{ top: pickerPosition.top, left: pickerPosition.left }}
           >
             {icons.map((icon) => (
               <img
@@ -143,7 +151,7 @@ const DragAgent = ({
             ))}
           </div>
         )}
-        <div className="task-agent-description">
+        <div className={`task-agent-description ${status.toLowerCase()}`}>
           {isEditing ? (
             <input
               type="text"
@@ -158,9 +166,14 @@ const DragAgent = ({
           )}
         </div>
         <div className="delete-agent-button">
-          <button style={getButtonStyle()}
+          <button
+            style={getButtonStyle()}
             onClick={() => updateAgent(id, { remove: true })}
-          >{getButtonSymbol()}</button>
+            disabled={status !== "idle"}
+          >
+            {status === "running" && <span className="spinner"></span>}
+            {getButtonSymbol()}
+          </button>
         </div>
       </div>
     </div>
