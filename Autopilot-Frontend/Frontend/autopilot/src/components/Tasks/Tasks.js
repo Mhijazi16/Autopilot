@@ -246,7 +246,7 @@ const Tasks = () => {
   };
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`/tasks/${selectedTaskId}`, {
+      const response = await fetch(`http://127.0.0.1:8000/tasks/${selectedTaskId}`, {
         method: "DELETE",
       });
 
