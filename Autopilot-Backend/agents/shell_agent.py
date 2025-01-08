@@ -2,7 +2,8 @@ from langchain_core.messages import AIMessage
 from langgraph.graph import END, START, StateGraph
 from langchain_ollama.chat_models import ChatOllama
 from states.graph_state import ShellState
-from agent_factory import agent_factory
+from toolkits.shell_toolkit import get_shell_toolkit
+from agents.react import ReactAgent
 import asyncio
 
 class ShellAgent(): 
@@ -42,7 +43,8 @@ class ShellAgent():
         {state['messages'][-1].content}
         """
 
-        pilot = agent_factory("Shell",{"configurable": {"thread_id": 1}})
+        tools = get_shell_toolkit()
+        pilot = ReactAgent("llama3.2",tools,{"configurable": {"thread_id": 1}})
         result = asyncio.run(pilot.Run(prompt))
         return {'messages': AIMessage(result)}
 
