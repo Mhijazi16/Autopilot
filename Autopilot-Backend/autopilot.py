@@ -169,19 +169,23 @@ async def start_task(id: int):
         jobs = json.loads(data)
         socket = active_sockets['notification']
         memory.set("halt", "no")
-        for job in jobs['commands']: 
+
+        for job in jobs['commands']:
             halt = memory.get("halt")
-            if halt == "yes": 
+            if halt == "yes":
                 print("[INFO] Job was interrupted")
                 memory.set("halt", "no")
-                break;
-            await socket.send_text('running')
+                break
+            
+            await socket.send_json({"status": "running"})
+
             agent = job['agent']
             task = job['task']
             print(f"[INFO] current agent: {agent}")
-            runner = agent_factory(agent,{"configurable": {"thread_id": 1}})
-            response = await runner.Run(task) 
-            await socket.send_text('finished')
+            runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
+            response = await runner.Run(task)
+
+            await socket.send_json({"status": "finished"})
     except Exception as e:
         print(f"[ERROR] Issue in Starting Task {e}")
 
