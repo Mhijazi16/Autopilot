@@ -45,3 +45,14 @@ class ShellAgent():
         pilot = agent_factory("Shell",{"configurable": {"thread_id": 1}})
         result = asyncio.run(pilot.Run(prompt))
         return {'messages': AIMessage(result)}
+
+    def compile_graph(self):
+        graph = StateGraph(ShellState)
+        graph.add_node("expert", self.expert)
+        graph.add_node("runner", self.runner)
+
+        graph.add_edge(START,"expert")
+        graph.add_edge("expert","runner")
+        graph.add_edge("runner", END)
+
+        return graph.compile()
