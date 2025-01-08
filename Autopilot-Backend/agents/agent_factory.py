@@ -1,4 +1,3 @@
-from memory.database import ToolbarSchema
 from toolkits.github_toolkit import get_github_toolkit
 from toolkits.package_toolkit import get_package_toolkit
 from toolkits.network_toolkit import get_network_toolkit
@@ -6,6 +5,7 @@ from toolkits.navigation_toolkit import get_navigation_toolkit
 from toolkits.users_toolkit import get_users_toolkit
 from toolkits.shell_toolkit import get_shell_toolkit
 from toolkits.filesystem_toolkit import get_filesystem_toolkit
+from .shell_agent import ShellAgent
 from .react import ReactAgent
 
 def agent_factory(agent , config):
@@ -13,7 +13,7 @@ def agent_factory(agent , config):
     if agent == "Packages": 
         toolkit = get_package_toolkit()
     elif agent == "Shell": 
-        toolkit = get_shell_toolkit()
+        return ShellAgent()
     elif agent == "Network": 
         toolkit = get_network_toolkit()
     elif agent == "Github": 
