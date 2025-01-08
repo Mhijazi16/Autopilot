@@ -29,3 +29,19 @@ class ShellAgent():
         llm = ChatOllama(model="unsloth",temperature=0)
         response = llm.invoke(prompt)
         return {'messages': response, 'prompt': state['messages'][-1].content}
+
+    def runner(self, state: ShellState): 
+        prompt = f"""
+### Linux Shell Agent
+        Your a linux shell Agent you execute 
+        linux commands on the shell based on 
+        what users prompt and the recommendations
+        your supplied with. 
+
+        the user prompt is : {state['prompt']}
+        {state['messages'][-1].content}
+        """
+
+        pilot = agent_factory("Shell",{"configurable": {"thread_id": 1}})
+        result = asyncio.run(pilot.Run(prompt))
+        return {'messages': AIMessage(result)}
