@@ -43,12 +43,15 @@ class ShellAgent():
         {state['messages'][-1].content}
         """
 
-        tools = get_shell_toolkit()
-        pilot = ReactAgent("llama3.2",tools,{"configurable": {"thread_id": 1}})
-        result = asyncio.run(pilot.Run(prompt))
-        return {'messages': AIMessage(result)}
+        try:
+            tools = get_shell_toolkit()
+            pilot = ReactAgent("llama3.2",tools,{"configurable": {"thread_id": 1}})
+            result = asyncio.run(pilot.Run(prompt))
+            return {'messages': AIMessage(result)}
+        except Exception as e:
+            print(f"issue in runner {e}")
 
-    def compile_graph(self):
+    def Run(self, prompt):
         graph = StateGraph(ShellState)
         graph.add_node("expert", self.expert)
         graph.add_node("runner", self.runner)
@@ -57,4 +60,6 @@ class ShellAgent():
         graph.add_edge("expert","runner")
         graph.add_edge("runner", END)
 
-        return graph.compile()
+        pilot = graph.compile()
+        result = pilot.ainvoke({'messages': prompt})
+        return result
