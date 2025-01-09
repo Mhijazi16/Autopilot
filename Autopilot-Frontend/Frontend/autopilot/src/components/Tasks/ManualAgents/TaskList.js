@@ -3,7 +3,18 @@ import "./TaskList.css";
 import DragAgent from "./DragAgent";
 import defaultIcon from "../../../assets/icons/autopilot-button.png";
 
-const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, updateTaskName, isTaskRunning }) => {
+const TaskList = ({ 
+  showModal, 
+  taskId, 
+  taskName, 
+  commands, 
+  updateTaskCommands, 
+  updateTaskName, 
+  isTaskRunning, 
+  setSuccessMessage,
+  successMessageShown,
+  fetchTasks,
+}) => {
   const [taskList, setTaskList] = useState(commands || []);
   const [pickerPosition, setPickerPosition] = useState(null);
   const [name, setName] = useState(taskName || "");
@@ -83,9 +94,9 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
   const handleSave = async () => {
     const payload = {
       id: taskId,
-      name: name,
+      name: name || "Task",
       commands: taskList
-        .filter((cmd) => cmd.text !== "command" && cmd.icon !== defaultIcon)
+        .filter((cmd) => cmd.text !== "command" && cmd.text !== "" && cmd.icon !== defaultIcon)
         .map((cmd) => ({
           agent: cmd.name,
           task: cmd.text,
@@ -102,10 +113,19 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
       if (!response.ok) {
         throw new Error("Failed to update task");
       }
-
-      console.log("Task updated successfully");
+      await fetchTasks();
+      showModal(false);
+      if (!successMessageShown.current) {
+        setSuccessMessage("Task saved successfully!");
+        successMessageShown.current = true;
+      }
     } catch (err) {
       console.error("Error updating task:", err);
+    } finally {
+      setTimeout(() => {
+        setSuccessMessage("");
+        successMessageShown.current = false;
+      }, 3000);
     }
   };
 
@@ -138,7 +158,7 @@ const TaskList = ({ showModal, taskId, taskName, commands, updateTaskCommands, u
               className="task-name-description"
               onClick={() => setIsEditing(true)}
             >
-              {name}
+              {name || "Enter Task Name"}
             </div>
           )}
         </div>

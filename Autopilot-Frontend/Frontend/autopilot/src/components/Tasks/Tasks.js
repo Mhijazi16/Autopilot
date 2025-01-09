@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import autopilotIcon from "../../assets/icons/autopilot.svg";
 import "./Tasks.css";
 import startButton from "../../assets/icons/start-button.svg";
@@ -16,8 +16,13 @@ const Tasks = () => {
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [ws, setWs] = useState(null);
+  const [generateTaskModal, showGenerateTaskModal] = useState(false);
+  const [generateTaskPrompt, setGenerateTaskPrompt] = useState(""); 
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const mapTasks = (data) => {
+  const successMessageShown = useRef(false);
+
+  const mapTasks = useCallback((data) => {
     const loadedTasks = data.map((task) => ({
       id: task.id,
       name: task.name || `Untitled Task`,
@@ -30,23 +35,24 @@ const Tasks = () => {
       })),
     }));
     setTasks(loadedTasks);
-  };
+  }, [setTasks]);
+
+  const fetchTasks = useCallback(async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/tasks");
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+      const data = await response.json();
+      mapTasks(data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  }, [mapTasks]); 
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8000/tasks");
-        if (!response.ok) {
-          throw new Error("Failed to fetch tasks");
-        }
-        const data = await response.json();
-        mapTasks(data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   const openModal = (taskId) => {
     setCurrentModalTaskId(taskId);
@@ -57,6 +63,12 @@ const Tasks = () => {
   };
 
   const startTask = async (task) => {
+
+    if(task.id === -1) 
+    {
+      setSuccessMessage("Task not saved!");
+      return;
+    }
     try {
       setRunningTaskId(task.id);
   
@@ -212,10 +224,10 @@ const Tasks = () => {
   };
 
   const handleAddTask = () => {
-    const newTaskId = Date.now();
+    const newTaskId = -1;
     const newTask = {
       id: newTaskId,
-      name: `Task ${tasks.length + 1}`,
+      name: `Task Name`,
       commands: [
         {
           id: newTaskId + 1,
@@ -226,7 +238,9 @@ const Tasks = () => {
         },
       ],
     };
+    setCurrentModalTaskId(newTaskId);
     setTasks((prev) => [...prev, newTask]);
+
   };
 
   const updateTaskName = (taskId, newName) => {
@@ -245,6 +259,12 @@ const Tasks = () => {
     }
   };
   const handleConfirmDelete = async () => {
+    if(selectedTaskId === -1) {
+      setSuccessMessage("Task not saved!");
+      setShowDeleteConfirm(false);
+      setSelectedTaskId(null);
+      return;
+    }
     try {
       const response = await fetch(`http://127.0.0.1:8000/tasks/${selectedTaskId}`, {
         method: "DELETE",
@@ -273,6 +293,36 @@ const Tasks = () => {
     );
   };
 
+  const handleGenerateTask = async () => {
+    if (generateTaskPrompt.length < 5) return;
+    try {
+      const response = await fetch("http://127.0.0.1:8000/generate-task/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: generateTaskPrompt }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to generate task");
+      }
+  
+      await fetchTasks();
+  
+      if (!successMessageShown.current) {
+        setSuccessMessage("Task generated successfully!");
+        successMessageShown.current = true; 
+      }
+  
+      showGenerateTaskModal(false);
+  
+      setGenerateTaskPrompt("");
+    } catch (error) {
+      console.error("Error generating task:", error);
+    } finally {
+      setTimeout(() => setSuccessMessage(""), 3000);
+      successMessageShown.current = false;
+    }
+  };
   return (
     <>
       <div className={`delete-confirm-overlay ${showDeleteConfirm ? "show" : ""}`}>
@@ -319,13 +369,26 @@ const Tasks = () => {
           </div>
         ))}
         <div className="task-actions">
-          <button className="add-btn" onClick={handleAddTask} disabled={isDisabled()}>
-            +
-          </button>
-          <button className="remove-btn" onClick={handleRemoveTaskRequest}>
-            -
-          </button>
+          <button className="task-generate-button" onClick={() => showGenerateTaskModal(true)}>generate task</button>
+          <button className="add-btn" onClick={handleAddTask} disabled={isDisabled()}>new task</button>
+          <button className="remove-btn" onClick={handleRemoveTaskRequest}>remove task</button>
         </div>
+        {generateTaskModal && (
+          <div className="generate-task-modal" onClick={() => showGenerateTaskModal(false)}>
+            <div className="generate-task-input"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <textarea
+                value={generateTaskPrompt}
+                onChange={(e) => setGenerateTaskPrompt(e.target.value)}
+                placeholder="Enter your prompt here..."
+              ></textarea>
+              <button onClick={handleGenerateTask}>Generate</button>
+            </div>
+          </div>
+        )}
+
+        {successMessage && <div className="success-message">{successMessage}</div>}
 
         {currentModalTaskId && (
           <DndProvider backend={HTML5Backend}>
@@ -341,6 +404,9 @@ const Tasks = () => {
                 updateTaskName(currentModalTaskId, newName);
               }}
               isTaskRunning={runningTaskId === currentModalTaskId}
+              setSuccessMessage={setSuccessMessage}
+              successMessageShown={successMessageShown}
+              fetchTasks={fetchTasks}
             />
           </DndProvider>
         )}
