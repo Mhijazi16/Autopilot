@@ -2,7 +2,9 @@
   position: relative;
   display: flex;
   margin: 12px 0;
-  height: 60px;
+  height: auto;
+  min-height: 60px;
+  max-height: none;
   background-color: #1c1c1c;
   border-radius: 15px;
   cursor: grab;
@@ -19,7 +21,7 @@
   align-items: center;
   padding: 5px;
   width: 40px;
-  height: 100%;
+  height: auto;
   background-color: #007bff;
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
@@ -44,6 +46,7 @@
 
 .task-agent-icon {
   height: 100%;
+  max-height: 45px;
   border: 1px solid #1f68ff;
   border-radius: 8px;
   padding: 5px 10px;
@@ -57,7 +60,9 @@
   width: 500px;
   display: flex;
   align-items: center;
-  height: 100%;
+  min-height: 44px;
+  height: auto;
+  max-height: none;
   border: 1px solid #1f68ff;
   border-radius: 8px;
   flex-grow: 1;
@@ -66,11 +71,16 @@
   padding-right: 10px;
   color: #ffffff;
   background-color: transparent;
-  overflow: auto;
+  overflow: visible;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .task-agent-description input {
   width: 100%;
+  min-width: 50%;
   height: 100%;
   border: none;
   border-radius: 8px;
@@ -136,13 +146,26 @@
 
 
 .blue-section.finished {
-  background-color: green;
+  background-color: #198754;
 }
 
 .task-agent-icon.finished {
-  border-color: green !important;
+  border-color: #198754 !important;
 }
 
 .task-agent-description.finished {
-  border-color: green !important;
+  border-color: #198754 !important;
+}
+
+
+.blue-section.pending {
+  background-color: #D3D3D3;
+}
+
+.task-agent-icon.pending {
+  border-color: #D3D3D3 !important;
+}
+
+.task-agent-description.pending {
+  border-color: #D3D3D3 !important;
 }
