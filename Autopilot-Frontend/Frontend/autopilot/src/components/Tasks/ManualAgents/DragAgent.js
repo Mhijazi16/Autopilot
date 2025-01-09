@@ -62,7 +62,9 @@ const DragAgent = ({
     },
   });
 
-  const handleTextChange = (e) => setNewText(e.target.value);
+  const handleTextChange = (e) => {
+    setNewText(e.target.value);
+  };
 
   const saveText = () => {
     updateAgent(id, { text: newText });
@@ -114,7 +116,7 @@ const DragAgent = ({
       case "finished":
         return { backgroundColor: "#198754" };
       case "pending":
-        return { backgroundColor: "#ffc107" };
+        return { backgroundColor: "#D3D3D3" };
       default:
         return { backgroundColor: "#dc3545" };
     }
@@ -162,7 +164,7 @@ const DragAgent = ({
               autoFocus
             />
           ) : (
-            <span onClick={() => setIsEditing(true)}>{text}</span>
+            <span onClick={() => setIsEditing(true)}> {text || "Enter command..."}</span>
           )}
         </div>
         <div className="delete-agent-button">
