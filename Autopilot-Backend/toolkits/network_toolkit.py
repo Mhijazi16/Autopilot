@@ -151,6 +151,4 @@ def get_network_toolkit():
             disable_interface,
             start_http_server,
             kill_http_server,
-            start_system_service,
-            status_system_service,
             ssh_to_host]

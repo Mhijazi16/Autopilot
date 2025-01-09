@@ -10,6 +10,7 @@ from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from agents.react import active_sockets
 from toolkits.toolkit_factory import description_factory
+from pydantic import BaseModel
 import asyncio
 import json
 
@@ -23,6 +24,24 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
+
+def init_task_id():
+    global stored_tasks
+    largest_id = -1
+    cursor = '0'
+
+    while cursor != 0:
+        cursor, keys = memory.scan(cursor=cursor, match='task:*', count=100)
+        for key in keys:
+            try:
+                task_id = int(key.split(':')[1])
+                largest_id = max(largest_id, task_id)
+            except (IndexError, ValueError):
+                continue
+
+    stored_tasks = largest_id
+
+init_task_id()
 
 def get_task_id(): 
     global stored_tasks
@@ -62,10 +81,14 @@ async def set_feedback(feedback: Literal["On", "Off"] = Body(...)):
 
     return {"feedback": memory.get("feedback")}
 
-@app.post("/generate-task/")
-async def set_toolbar(prompt: str = Body(...)): 
+class PromptRequest(BaseModel):
+    prompt: str
+
+@app.post("/generate-task")
+async def generate_task(request: PromptRequest): 
     global stored_tasks
     try: 
+        prompt = request.prompt
         print("[INFO] Generate Task Started.")
         active = ToolbarSchema(
             Navigation="On",
