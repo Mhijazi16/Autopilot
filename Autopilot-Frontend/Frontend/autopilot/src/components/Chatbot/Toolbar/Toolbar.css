@@ -16,10 +16,9 @@
     align-items: center;
     gap: 0.8rem;
     padding: 1rem 0.5rem;
-    /* border: 1px solid rgba(0, 123, 255, 0.5); */
-    border: 1.5px solid #424655;
+    border: 1px solid #4246559d;
     border-radius: 12px;
-    background-color: #24273099;
+    background-color: #191919;
 }
 
 .feedback-dev {
@@ -28,9 +27,9 @@
     justify-content: center;
     align-items: center;
     padding: 0.3rem 0.5rem;
-    border: 1.5px solid #424655;
+    border: 1px solid #4246559d;
     border-radius: 12px;
-    background-color: #24273099;
+    background-color: #191919;
 }
 
 .toolbar-icon {

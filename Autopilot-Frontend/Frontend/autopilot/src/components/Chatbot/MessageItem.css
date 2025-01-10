@@ -45,7 +45,7 @@
 }
 
 .dark .message-item.user .message-text {
-    background-color: rgba(31, 41, 55, 0.7);
+    background-color: rgba(45, 48, 51, 0.55);
     border-color: #4b5563;
     color: #f0f0f0;
 }

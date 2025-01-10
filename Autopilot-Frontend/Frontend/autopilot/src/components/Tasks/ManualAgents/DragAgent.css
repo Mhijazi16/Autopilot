@@ -169,3 +169,15 @@
 .task-agent-description.pending {
   border-color: #D3D3D3 !important;
 }
+
+.blue-section.failed {
+  background-color: #DC3545;
+}
+
+.task-agent-icon.failed {
+  border-color: #DC3545 !important;
+}
+
+.task-agent-description.failed {
+  border-color: #DC3545 !important;
+}

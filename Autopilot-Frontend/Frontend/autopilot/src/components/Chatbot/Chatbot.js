@@ -121,7 +121,7 @@ const Chatbot = () => {
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
       });
-
+      console.log(response);
       if (!response.ok) throw new Error(`API error: ${response.statusText}`);
 
       const data = await response.json();
@@ -221,7 +221,17 @@ const Chatbot = () => {
 
 
   const handleStop = () => {
-    if (abortController) abortController.abort();
+    if (abortController) {
+      abortController.abort();
+      setLoading(false);
+  
+      setMessages((prevMessages) => {
+        const updatedMessages = prevMessages.filter(
+          (msg) => !(msg.sender === "bot" && msg.loading)
+        );
+        return updatedMessages;
+      });
+    }
   };
 
 
