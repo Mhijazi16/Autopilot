@@ -19,6 +19,7 @@ const Tasks = () => {
   const [generateTaskModal, showGenerateTaskModal] = useState(false);
   const [generateTaskPrompt, setGenerateTaskPrompt] = useState(""); 
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const successMessageShown = useRef(false);
 
@@ -295,8 +296,9 @@ const Tasks = () => {
 
   const handleGenerateTask = async () => {
     if (generateTaskPrompt.length < 5) return;
+    setLoading(true); 
     try {
-      const response = await fetch("http://127.0.0.1:8000/generate-task", {
+      const response = await fetch("http://127.0.0.1:8000/generate-task/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: generateTaskPrompt }),
@@ -319,10 +321,12 @@ const Tasks = () => {
     } catch (error) {
       console.error("Error generating task:", error);
     } finally {
+      setLoading(false); // End loading
       setTimeout(() => setSuccessMessage(""), 3000);
       successMessageShown.current = false;
     }
   };
+  
   return (
     <>
       <div className={`delete-confirm-overlay ${showDeleteConfirm ? "show" : ""}`}>
@@ -375,16 +379,26 @@ const Tasks = () => {
         </div>
         {generateTaskModal && (
           <div className="generate-task-modal" onClick={() => showGenerateTaskModal(false)}>
-            <div className="generate-task-input"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <textarea
-                value={generateTaskPrompt}
-                onChange={(e) => setGenerateTaskPrompt(e.target.value)}
-                placeholder="Enter your prompt here..."
-              ></textarea>
-              <button onClick={handleGenerateTask}>Generate</button>
-            </div>
+            <div className="generate-task-input" onClick={(e) => e.stopPropagation()}>
+            <textarea
+              value={generateTaskPrompt}
+              onChange={(e) => setGenerateTaskPrompt(e.target.value)}
+              placeholder="Enter your prompt here..."
+            ></textarea>
+            {loading ? (
+              <div className="spinner-container">
+                <div className="spinner"></div>
+              </div>
+            ) : (
+              <button
+                onClick={handleGenerateTask}
+                disabled={loading}
+                style={{ backgroundColor: loading ? "#ccc" : "#004de6" }}
+              >
+                Generate
+              </button>
+            )}
+          </div>
           </div>
         )}
 

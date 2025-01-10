@@ -54,11 +54,12 @@
 }
 
 .dark .agent-card {
-    background: linear-gradient(
+    /* background: linear-gradient(
         135deg,
         rgba(10, 10, 10, 0.65),
         rgba(9, 3, 23, 0.7)
-    );
+    ); */
+    background: #11111129;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 

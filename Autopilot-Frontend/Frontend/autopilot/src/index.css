@@ -17,8 +17,7 @@ body {
 }
 
 .dark body, .dark html {
-  /* background: rgb(15, 22, 37); */
-  background: #242730;
+  background: #121212;
   transition: background 0.3s;
 }
 

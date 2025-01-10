@@ -104,6 +104,8 @@ const DragAgent = ({
         return "✔";
       case "pending":
         return "";
+      case "failed":
+        return "✖";
       default:
         return "-";
     }
