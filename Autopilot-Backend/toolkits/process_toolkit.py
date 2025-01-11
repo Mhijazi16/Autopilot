@@ -27,3 +27,49 @@ def command_factory(name, action):
     finally:
         return command
 
+def system_service_control(name:str, action: str): 
+    """
+        This tool is used to control system service 
+        it starts/stops/reloads/enables/disables/shows status
+        of the service 
+        Args: 
+            name: str which is the name of service 
+            action: str action performed
+        Important Notes: 
+            action can only be one of the following values: 
+            start 
+            stop
+            restart
+            reload
+            status 
+            enable
+            disable
+    """
+    try:
+        output = ""
+        command = command_factory(name, action)
+        if command == "": 
+            raise ValueError(f"Unsupported action: {action}")
+
+        start_terminal(command)
+        process = pexpect.spawn(command)
+        process = handle_sudo(process)
+        message = read_status(process)
+        if "Failed" in message or "error" in message: 
+            raise Exception
+
+        if "status" not in action: 
+            output = f"✅ {name} Service Successfull {action}.\n"
+            send_to_terminal(output)
+            status = f"systemctl status {name} | head -30"
+            send_to_terminal(os.popen(status).read())
+        else: 
+            status = f"systemctl status {name} | head -30"
+            send_to_terminal(os.popen(status).read())
+
+    except: 
+        output = f"🚨 faild Starting {name} service.\n"
+        send_to_terminal(output)
+        print(f"[INFO] {output}")
+    finally: 
+        return output
