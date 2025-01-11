@@ -105,9 +105,30 @@ def kill_process(name: str):
     except Exception:
         send_to_terminal("🚨 Failed Killing the process.")
 
+def get_service_logs(name: str): 
+    """
+    this tool is used to display the 
+    latest 30 logs of some service 
+    Args: 
+        name: str
+    Returns: 
+        logs of the system
+    """
+    result = ""
+    try:
+        command = f"journalctl -u {name}.service | tail -30"
+        result = os.popen(command).read()
+        start_terminal(command)
+        send_to_terminal(result)
+    except Exception:
+        send_to_terminal("🚨 Failed Killing the process.")
+    finally: 
+        return result
+
 def get_process_toolkit():
     return [
         system_service_control,
         list_process,
         kill_process,
+        get_service_logs,
     ]
