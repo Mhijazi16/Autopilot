@@ -73,3 +73,8 @@ def system_service_control(name:str, action: str):
         print(f"[INFO] {output}")
     finally: 
         return output
+
+def get_process_toolkit():
+    return [
+        system_service_control
+    ]
