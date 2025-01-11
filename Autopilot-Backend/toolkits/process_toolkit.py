@@ -74,7 +74,23 @@ def system_service_control(name:str, action: str):
     finally: 
         return output
 
+def list_process():
+    """
+        This tool is used to list 
+        the process running on the system
+        it execute the command ps -aux
+    """
+    try:
+        command = "ps -aux"
+        result = os.popen(command).read()
+        start_terminal(command)
+        send_to_terminal(result)
+        return result
+    except Exception:
+        send_to_terminal("🚨 Failed listing the Processes.")
+
 def get_process_toolkit():
     return [
-        system_service_control
+        system_service_control,
+        list_process,
     ]
