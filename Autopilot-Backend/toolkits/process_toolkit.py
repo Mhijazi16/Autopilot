@@ -89,8 +89,25 @@ def list_process():
     except Exception:
         send_to_terminal("🚨 Failed listing the Processes.")
 
+def kill_process(name: str): 
+    """
+    this tool is used to kill a 
+    process on the linux system 
+    it runs pkill <process_name> 
+    command 
+    """
+    try:
+        command = f"pkill {name}"
+        result = os.popen(command).read()
+        start_terminal(command)
+        send_to_terminal("✅ Process was killed")
+        return result
+    except Exception:
+        send_to_terminal("🚨 Failed Killing the process.")
+
 def get_process_toolkit():
     return [
         system_service_control,
         list_process,
+        kill_process,
     ]
