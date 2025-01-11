@@ -193,7 +193,9 @@ async def start_task(id: int):
         socket = active_sockets['notification']
         memory.set("halt", "no")
 
+        result = []
         for job in jobs['commands']:
+            response = f"The result from {job['agent']} Agent: \n"
             halt = memory.get("halt")
             if halt == "yes":
                 print("[INFO] Job was interrupted")
@@ -206,8 +208,8 @@ async def start_task(id: int):
             task = job['task']
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
-            response = await runner.Run(task)
-
+            response += str(await runner.Run(task))
+            result.append(response)
             await socket.send_json({"status": "finished"})
     except Exception as e:
         print(f"[ERROR] Issue in Starting Task {e}")
@@ -257,6 +259,11 @@ async def notification_socket(websocket: WebSocket):
         print("[WARNING] Notification WebSocket disconnected.")
     except Exception as e:
         print(f"[ERROR] Notification WebSocket Failed : {e}")
+
+@app.websocket("/chat")
+async def chatting_socket(websocket: WebSocket): 
+    await websocket.accept()
+    pass
 
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):

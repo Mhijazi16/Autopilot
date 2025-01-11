@@ -119,6 +119,8 @@ const DragAgent = ({
         return { backgroundColor: "#198754" };
       case "pending":
         return { backgroundColor: "#D3D3D3" };
+      case "failed": 
+        return { backgroundColor: "#dc3545" };
       default:
         return { backgroundColor: "#dc3545" };
     }

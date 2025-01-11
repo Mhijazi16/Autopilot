@@ -130,7 +130,7 @@ const TaskList = ({
   };
 
   const isAnyCommandActive = taskList.some(
-    (cmd) => cmd.status === "pending" || cmd.status === "running"
+    (cmd) => cmd.status === "pending" || cmd.status === "running" || cmd.status === "failed"
   );
 
   return (
