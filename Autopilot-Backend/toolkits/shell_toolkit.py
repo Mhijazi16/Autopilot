@@ -19,7 +19,7 @@ def send_to_terminal(data):
     except Exception as e:
         print(f"Error sending data to socket: {e}")
 
-def read_status(process):
+def read_status(process) -> str:
     try:
         process.expect(EOF)
         data = process.before.decode()
@@ -27,6 +27,7 @@ def read_status(process):
         return data
     except Exception as e: 
         print(f"[ERROR] no data was sent to terminal: {e}")
+        return "error"
 
 def handle_sudo(process: pexpect.spawn, password: str = ""):
     if password == "":

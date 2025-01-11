@@ -42,10 +42,16 @@ class Terminal:
             
             if "$" in line:
                 self.text_widget.tag_add("blue", line_end_index, self.text_widget.index("end-1c"))
+            elif "✅" in line: 
+                self.text_widget.tag_add("green", line_end_index, self.text_widget.index("end-1c"))
+            elif "🚨" in line: 
+                self.text_widget.tag_add("red", line_end_index, self.text_widget.index("end-1c"))
             else:
                 self.text_widget.tag_add("white", line_end_index, self.text_widget.index("end-1c"))
 
         self.text_widget.tag_config("blue", foreground="#0078fd")
+        self.text_widget.tag_config("green", foreground="#198754")
+        self.text_widget.tag_config("red", foreground="#DC3545")
         self.text_widget.tag_config("white", foreground="white")
 
         self.text_widget.see("end")
