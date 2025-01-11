@@ -137,7 +137,8 @@ const Tasks = () => {
   
               if (data.status === "running" && firstPendingIndex !== -1) {
                 updatedCommands[firstPendingIndex].status = "running";
-              } else if (data.status === "finished") {
+              } 
+              else if (data.status === "finished") {
                 const firstRunningIndex = updatedCommands.findIndex(
                   (cmd) => cmd.status === "running"
                 );
@@ -145,10 +146,19 @@ const Tasks = () => {
                   updatedCommands[firstRunningIndex].status = "finished";
                 }
               }
+              else if (data.status === "failed") {
+                const firstRunningIndex = updatedCommands.findIndex(
+                  (cmd) => cmd.status === "running"
+                );
+                if (firstRunningIndex !== -1) {
+                  updatedCommands[firstRunningIndex].status = "failed";
+                }
+              }
   
               const allFinished = updatedCommands.every(
-                (cmd) => cmd.status === "finished"
+                (cmd) => cmd.status === "finished" || cmd.status === "failed"
               );
+
               if (allFinished) {
                 updatedCommands = updatedCommands.map((cmd) => ({
                   ...cmd,
