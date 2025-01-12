@@ -1,4 +1,4 @@
-from .shell_toolkit import handle_sudo, read_status, send_to_terminal, start_terminal
+from shell_toolkit import handle_sudo, read_status, send_to_terminal, start_terminal
 import pexpect
 import os
 
@@ -125,6 +125,25 @@ def get_service_logs(name: str):
     finally: 
         return result
 
+def run_command_in_background(command: str): 
+    """
+    this tool is used to run 
+    command in the background 
+    Args: 
+        command: str
+    """
+    result = ""
+    try:
+        command = f"{command} &; exit;"
+        result = os.popen(command).read()
+        start_terminal(command)
+        result += "✅ The Process is running in the Background."
+    except Exception:
+        result += "🚨 Failed Running Process in the Background."
+    finally: 
+        send_to_terminal(result)
+        return result
+
 def get_process_toolkit():
     return [
         system_service_control,
@@ -132,3 +151,5 @@ def get_process_toolkit():
         kill_process,
         get_service_logs,
     ]
+
+kill_process("redis-server")
