@@ -1,4 +1,4 @@
-from shell_toolkit import handle_sudo, read_status, send_to_terminal, start_terminal
+from .shell_toolkit import handle_sudo, read_status, send_to_terminal, start_terminal
 import pexpect
 import os
 
@@ -150,6 +150,5 @@ def get_process_toolkit():
         list_process,
         kill_process,
         get_service_logs,
+        run_command_in_background,
     ]
-
-kill_process("redis-server")
