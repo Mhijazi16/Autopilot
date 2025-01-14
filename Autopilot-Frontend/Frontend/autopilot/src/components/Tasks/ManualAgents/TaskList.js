@@ -117,6 +117,7 @@ const TaskList = ({
       showModal(false);
       if (!successMessageShown.current) {
         setSuccessMessage("Task saved successfully!");
+        setTimeout(() => setSuccessMessage(""), 3000);
         successMessageShown.current = true;
       }
     } catch (err) {
@@ -124,6 +125,7 @@ const TaskList = ({
     } finally {
       setTimeout(() => {
         setSuccessMessage("");
+        setTimeout(() => setSuccessMessage(""), 3000);
         successMessageShown.current = false;
       }, 3000);
     }

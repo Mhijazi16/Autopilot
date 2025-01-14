@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import './Dashboard.css';
 import packagerIcon from '../../assets/icons/packager.svg'
 import navigationIcon from '../../assets/icons/navigation.png';
-import databaseIcon from '../../assets/icons/database.png';
+import processIcon from '../../assets/icons/database.png';
 import shellIcon from '../../assets/icons/shell.png';
 import networkIcon from '../../assets/icons/network.svg'
 import codeIcon from '../../assets/icons/code.svg';
 import githubIcon from '../../assets/icons/github.svg';
-import troubleShootingIcon from '../../assets/icons/troubleshooting.svg';
+import filesystemIcon from '../../assets/icons/troubleshooting.svg';
 import usersIcon from '../../assets/icons/users.svg';
 import AgentModal from './AgentModal';
 import Monitoring from './Monitoring/Monitoring';
@@ -127,7 +127,7 @@ const agentDetails = {
     ),
   },
   Database: {
-    icon: databaseIcon,
+    icon: processIcon,
     description: <><p>
     The Database Agent manages data storage and retrieval,
     ensuring efficient access to databases and structured data.
@@ -172,7 +172,7 @@ const agentDetails = {
     ),
   },
   Troubleshooting: {
-    icon: troubleShootingIcon,
+    icon: filesystemIcon,
     description: <>  
     <p>The Troubleshooting Agent helps identify and resolve technical issues within 
     the system, ensuring smooth operations.

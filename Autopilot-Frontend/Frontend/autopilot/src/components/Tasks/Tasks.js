@@ -9,7 +9,10 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import TaskList from "./ManualAgents/TaskList";
 import defaultIcon from "../../assets/icons/autopilot-button.png";
 
-const Tasks = () => {
+const Tasks = ({
+  setNotificationMessage,
+  setNotifications,
+}) => {
   const [tasks, setTasks] = useState([]);
   const [currentModalTaskId, setCurrentModalTaskId] = useState(null);
   const [runningTaskId, setRunningTaskId] = useState(null);
@@ -68,6 +71,7 @@ const Tasks = () => {
     if(task.id === -1) 
     {
       setSuccessMessage("Task not saved!");
+      setTimeout(() => setSuccessMessage(""), 3000);
       return;
     }
     try {
@@ -125,40 +129,45 @@ const Tasks = () => {
           const data = JSON.parse(event.data);
           console.log(data);
           if (!data.status) return;
-  
+      
           setTasks((prevTasks) =>
             prevTasks.map((t) => {
               if (t.id !== task.id) return t;
-  
+      
               let updatedCommands = [...t.commands];
               const firstPendingIndex = updatedCommands.findIndex(
                 (cmd) => cmd.status === "pending"
               );
-  
+      
               if (data.status === "running" && firstPendingIndex !== -1) {
                 updatedCommands[firstPendingIndex].status = "running";
-              } 
-              else if (data.status === "finished") {
+                updateNotification("Job Running", "running");
+                                
+              } else if (data.status === "finished") {
+                updateNotification("Job Completed", "finished");
                 const firstRunningIndex = updatedCommands.findIndex(
                   (cmd) => cmd.status === "running"
                 );
+
                 if (firstRunningIndex !== -1) {
                   updatedCommands[firstRunningIndex].status = "finished";
                 }
-              }
-              else if (data.status === "failed") {
+
+              } else if (data.status === "failed") {
+                updateNotification("Job Failed", "failed");
                 const firstRunningIndex = updatedCommands.findIndex(
                   (cmd) => cmd.status === "running"
                 );
+
                 if (firstRunningIndex !== -1) {
                   updatedCommands[firstRunningIndex].status = "failed";
                 }
               }
-  
+      
               const allFinished = updatedCommands.every(
                 (cmd) => cmd.status === "finished" || cmd.status === "failed"
               );
-
+      
               if (allFinished) {
                 updatedCommands = updatedCommands.map((cmd) => ({
                   ...cmd,
@@ -167,7 +176,7 @@ const Tasks = () => {
                 setRunningTaskId(null);
                 console.log("All commands finished, resetting to idle");
               }
-  
+      
               return { ...t, commands: updatedCommands };
             })
           );
@@ -175,6 +184,8 @@ const Tasks = () => {
           console.error("Error parsing WebSocket message:", err);
         }
       };
+      
+      
   
       newWs.onclose = () => {
         console.log("WebSocket closed for notifications");
@@ -184,6 +195,59 @@ const Tasks = () => {
       setRunningTaskId(null);
     }
   };
+  
+  const updateNotification = (message, status) => {
+    setNotifications((prevNotifications) => {
+      const now = Date.now();
+  
+      // If we're marking a "running" notification as "finished" or "failed", find the first "running"
+      if (status === "finished" || status === "failed") {
+        const runningIndex = prevNotifications.findIndex(
+            (notif) => notif.status === "running"
+        );
+  
+        // If found, update that "running" notification instead of adding a new one
+        if (runningIndex !== -1) {
+          const updatedNotifications = [...prevNotifications];
+          updatedNotifications[runningIndex] = {
+            ...updatedNotifications[runningIndex],
+            message, 
+            status
+          };
+  
+          // Schedule removal for 4s
+          setTimeout(() => {
+            setNotifications((current) =>
+              current.filter(
+                (n) => n !== updatedNotifications[runningIndex]
+              )
+            );
+          }, 4000);
+  
+          return updatedNotifications;
+        }
+      }
+  
+      const newNotification = {
+        id: now,
+        message,
+        status
+      };
+      const updatedNotifications = [...prevNotifications, newNotification];
+  
+      // Remove after 4s if not "running"
+      if (status !== "running") {
+        setTimeout(() => {
+          setNotifications((current) =>
+            current.filter((n) => n.id !== now)
+          );
+        }, 5000);
+      }
+  
+      return updatedNotifications;
+    });
+  };
+  
   
   
 
@@ -211,6 +275,16 @@ const Tasks = () => {
             : t
         )
       );
+
+      setNotifications((prevNotifications) =>
+        prevNotifications.filter(
+          (notif) =>
+            !task.commands.some(
+              (cmd) => cmd.name === notif.message && notif.status === "running"
+            )
+        )
+      );
+      
       setRunningTaskId(null);
 
       if (ws) {
@@ -274,6 +348,7 @@ const Tasks = () => {
       setSuccessMessage("Task not saved!");
       setShowDeleteConfirm(false);
       setSelectedTaskId(null);
+      setTimeout(() => setSuccessMessage(""), 3000);
       return;
     }
     try {
@@ -323,6 +398,7 @@ const Tasks = () => {
       if (!successMessageShown.current) {
         setSuccessMessage("Task generated successfully!");
         successMessageShown.current = true; 
+        setTimeout(() => setSuccessMessage(""), 3000);
       }
   
       showGenerateTaskModal(false);
@@ -331,7 +407,7 @@ const Tasks = () => {
     } catch (error) {
       console.error("Error generating task:", error);
     } finally {
-      setLoading(false); // End loading
+      setLoading(false); 
       setTimeout(() => setSuccessMessage(""), 3000);
       successMessageShown.current = false;
     }
