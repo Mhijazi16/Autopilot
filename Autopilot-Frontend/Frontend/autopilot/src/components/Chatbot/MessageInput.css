@@ -13,17 +13,12 @@
 .message-input-container {
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(19, 22, 27, 0.7);
   backdrop-filter: blur(10px);
-  border: 1px solid #d1d5db;
+  border: 1px solid #4b5563;
   border-radius: 9999px;
   padding: 0.5rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark .message-input-container {
-  background-color: rgba(19, 22, 27, 0.7);
-  border-color: #4b5563;
 }
 
 .message-input {
@@ -31,7 +26,7 @@
   resize: none;
   flex-grow: 1;
   background-color: transparent;
-  color: #1f2937;
+  color: #d1d5db;
   font-size: 1.3rem;
   padding: 0.5rem;
   border: none;
@@ -49,9 +44,6 @@
 
 .message-input::-webkit-scrollbar-thumb {
   background: transparent; 
-}
-.dark .message-input {
-  color: #d1d5db;
 }
 
 .send-button,

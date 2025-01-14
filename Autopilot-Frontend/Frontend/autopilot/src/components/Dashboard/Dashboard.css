@@ -12,7 +12,7 @@
 .dashboard-title {
     font-size: 2rem;
     font-weight: 600;
-    color: #333;
+    color: white;
     align-self: self-start;
     margin-bottom: 2rem;
     margin-left: 1rem;
@@ -39,12 +39,8 @@
         transform 0.3s,
         box-shadow 0.3s;
     cursor: pointer;
-    border: 1px solid whitesmoke;
-    background: linear-gradient(
-        135deg,
-        rgba(46, 68, 114, 0.65),
-        rgba(72, 128, 177, 0.7)
-    );
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #11111129;
     background-origin: border-box;
     background-clip: padding-box, border-box;
 }
@@ -53,15 +49,6 @@
     padding: 1rem;
 }
 
-.dark .agent-card {
-    /* background: linear-gradient(
-        135deg,
-        rgba(10, 10, 10, 0.65),
-        rgba(9, 3, 23, 0.7)
-    ); */
-    background: #11111129;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
 
 .agent-card:hover {
     transform: scale(1.05);
@@ -89,6 +76,7 @@
 }
 
 .agent-info {
+    color: white;
     justify-content: center;
     display: flex;
     flex-direction: column;
@@ -107,7 +95,7 @@
 .agent-name {
     font-size: 1.5rem;
     font-weight: 500;
-    color: #333;
+    color: #f0f0f0;
 }
 
 .agent-card:nth-child(8) .agent-name {
@@ -119,6 +107,3 @@
     height: 130px;
 }
 
-.dark .agent-name {
-    color: #f0f0f0;
-}

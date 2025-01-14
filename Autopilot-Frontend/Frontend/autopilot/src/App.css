@@ -8,20 +8,12 @@
   min-height: 100vh;
   margin-left: 18rem; 
   padding: 2rem;
-  background: var(--bg-light);
-  transition: background 0.3s;
-}
-
-.dark .content {
   background: var(--bg-dark);
+  transition: background 0.3s;
 }
 
 .main-content {
   margin-top: 1.5rem;
-}
-
-:root {
-  --bg-light: linear-gradient(to bottom right, #eef4ff, #dbe8ff);
 }
 
 .fade-overlay {

@@ -1,37 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import ReconnectingWebSocket from "reconnecting-websocket";
+import { debounce } from "lodash";
+import { v4 as uuidv4 } from "uuid";
+
 import Toolbar from "./Toolbar/Toolbar";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ResponseModal from "./ResponseModal";
-import "./Chatbot.css";
-import { v4 as uuidv4 } from "uuid";
-import ReconnectingWebSocket from "reconnecting-websocket";
-import { debounce } from "lodash";
 
-const Chatbot = ({ chatWs, setChatWs }) => {
+import "./Chatbot.css";
+
+const Chatbot = ({ chatWs, messages, setMessages }) => {
   const [modalOpen, showModal] = useState(false);
   const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
 
-  const [messages, setMessages] = useState(() => {
-    const savedMessages = localStorage.getItem("chatMessages");
-    const parsedMessages = savedMessages
-      ? JSON.parse(savedMessages).map((msg) => ({
-          ...msg,
-          id: msg.id || uuidv4(),
-        }))
-      : [
-          {
-            id: uuidv4(),
-            sender: "bot",
-            text: "Hello! How can I assist you today?",
-            loading: false,
-          },
-        ];
-    return parsedMessages;
-  });
 
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [abortController, setAbortController] = useState(null);
 
   const messagesEndRef = useRef(null);
@@ -39,6 +23,7 @@ const Chatbot = ({ chatWs, setChatWs }) => {
 
   useEffect(() => {
     const wsTools = new ReconnectingWebSocket("ws://127.0.0.1:8000/tools");
+
     wsTools.onopen = () => {
       console.log("tools connection established.");
     };
@@ -51,17 +36,17 @@ const Chatbot = ({ chatWs, setChatWs }) => {
           setModalCommandsInfo(data);
           showModal(true);
         } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
+          console.error("Error parsing tools WebSocket message:", error);
         }
       }
     };
 
     wsTools.onerror = (error) => {
-      console.error("WebSocket Error:", error);
+      console.error("tools WebSocket Error:", error);
     };
 
     wsTools.onclose = () => {
-      console.log("WebSocket connection closed for tools.");
+      console.log("tools WebSocket connection closed.");
     };
 
     return () => {
@@ -69,48 +54,62 @@ const Chatbot = ({ chatWs, setChatWs }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!chatWs) return;
+  
 
-    chatWs.onmessage = (event) => {
-      const chunk = event.data.trim();
-      console.log("Received chunk from WebSocket:", chunk);
+  const simulateLiveGeneration = useCallback((message) => {
+    let currentIndex = 0;
+    const interval = 20; 
 
-      if (chunk) {
+    intervalRef.current = setInterval(() => {
+      if (currentIndex < message.length) {
         setMessages((prev) => {
           const updatedMessages = [...prev];
-          const lastMessageIndex = updatedMessages.findIndex(
-            (msg) => msg.sender === "bot" && msg.loading
-          );
+          const lastMessage = updatedMessages[updatedMessages.length - 1];
 
-          if (lastMessageIndex !== -1) {
-            simulateLiveGeneration(lastMessageIndex, chunk);
-          } 
-          else {
-            updatedMessages.push({
-              id: uuidv4(),
-              sender: "bot",
-              text: "",
-              loading: true,
-            });
-            simulateLiveGeneration(updatedMessages.length - 1, chunk);
+          if (lastMessage.sender === "bot") {
+            updatedMessages[updatedMessages.length - 1] = {
+              ...lastMessage,
+              text: lastMessage.text + message[currentIndex],
+            };
           }
 
           return updatedMessages;
         });
+        currentIndex++;
+      } else {
+        clearInterval(intervalRef.current); 
       }
-    };
+    }, interval);
+  }, [setMessages]);
 
+  useEffect(() => {
+    if (!chatWs) return;
+  
+     chatWs.onmessage = (event) => {
+
+      const fullResponse = event.data.trim();
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const lastIndex = updatedMessages.length - 1;
+        if (updatedMessages[lastIndex].sender === "bot" && updatedMessages[lastIndex].loading) {
+          updatedMessages[lastIndex].loading = false;
+        }
+        return updatedMessages;
+      });
+          simulateLiveGeneration(fullResponse);
+        };
+  
     chatWs.onerror = (err) => {
       console.error("Chat WebSocket error:", err);
     };
-
+  
     return () => {
-      // Don’t close chatWs globally unless you want to end the session
+      chatWs.onmessage = null;
+      chatWs.onerror = null;
     };
-  }, [chatWs]);
+  }, [chatWs, simulateLiveGeneration, setMessages]);
+  
 
-  // Auto-scroll to bottom when messages update
   useEffect(() => {
     const scrollToBottom = debounce(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -124,52 +123,42 @@ const Chatbot = ({ chatWs, setChatWs }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Persist messages to localStorage
   useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
-  }, [messages]);
-
-  // Helper: ensures there's a "loading" bot message if none exists
-  const startBotMessageIfNeeded = () => {
-    setMessages((prev) => {
-      const lastMsg = prev[prev.length - 1];
-      // If there's no lastMsg OR it's not a bot msg OR it's not loading
-      if (!lastMsg || lastMsg.sender !== "bot" || !lastMsg.loading) {
-        return [
-          ...prev,
-          { id: uuidv4(), sender: "bot", text: "", loading: true },
-        ];
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
-      return prev;
-    });
-  };
+    };
+  }, []);
 
-  // User pressed "send"
   const handleSubmit = (e) => {
     if (e?.preventDefault) e.preventDefault();
     if (!input.trim()) return;
 
-    // Show user’s message
     setMessages((prev) => [
       ...prev,
       { id: uuidv4(), sender: "user", text: input },
     ]);
 
     setInput("");
-
     fetchResponse(input);
   };
 
-  // POST the prompt to /chat, AI output arrives via chatWs
+  
   const fetchResponse = async (userInput) => {
     const controller = new AbortController();
     setAbortController(controller);
 
-    // Immediately add a loading bot message
     setMessages((prev) => [
       ...prev,
-      { id: uuidv4(), sender: "bot", text: "", loading: true },
+      {
+        id: uuidv4(),
+        sender: "bot",
+        text: "",
+        loading: true,
+      },
     ]);
+
 
     try {
       await fetch(
@@ -187,67 +176,14 @@ const Chatbot = ({ chatWs, setChatWs }) => {
     }
   };
 
-  const simulateLiveGeneration = useCallback((messageIndex, chunk) => {
-    // Clear any existing interval to avoid overlaps
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-  
-    let currentIndex = 0;
-    const sanitizedChunk = chunk.trim(); // Sanitize input to avoid whitespace issues
-    const interval = 20; // Typing speed
-  
-    intervalRef.current = setInterval(() => {
-      if (currentIndex < sanitizedChunk.length) {
-        setMessages((prev) => {
-          const updatedMessages = [...prev];
-          const target = updatedMessages[messageIndex];
-          if (target && target.sender === "bot") {
-            updatedMessages[messageIndex] = {
-              ...target,
-              text: target.text + sanitizedChunk[currentIndex],
-            };
-          }
-          return updatedMessages;
-        });
-        currentIndex++;
-      } else {
-        clearInterval(intervalRef.current);
-        setMessages((prev) => {
-          const updatedMessages = [...prev];
-          const target = updatedMessages[messageIndex];
-          if (target && target.loading) {
-            updatedMessages[messageIndex] = {
-              ...target,
-              loading: false, 
-            };
-          }
-          return updatedMessages;
-        });
-      }
-    }, interval);
-  }, []);
-  
-
-  // Cleanup intervals on unmount
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
-
   const handleStop = () => {
     if (abortController) {
       abortController.abort();
-      setLoading(false);
-      setMessages((prevMessages) =>
-        prevMessages.filter(
-          (msg) => !(msg.sender === "bot" && msg.loading)
-        )
-      );
     }
+
+    setMessages((prev) =>
+      prev.filter((msg) => !(msg.sender === "bot" && msg.loading))
+    );
   };
 
   return (
@@ -265,7 +201,7 @@ const Chatbot = ({ chatWs, setChatWs }) => {
           input={input}
           setInput={setInput}
           handleSubmit={handleSubmit}
-          loading={loading}
+          loading={messages.some((m) => m.sender === "bot" && m.loading)}
           handleStop={handleStop}
         />
       </div>

@@ -58,9 +58,6 @@ const ResponseModal = ({ isOpen, showModal, commandsInfo, setCommandsInfo }) => 
           <button id="approve-button" onClick={approve}>
             Approve
           </button>
-          {/* <button id="rethink-button">
-            Rethink
-          </button> */}
           <button id="reject-button" onClick={reject}>
             Reject
           </button>

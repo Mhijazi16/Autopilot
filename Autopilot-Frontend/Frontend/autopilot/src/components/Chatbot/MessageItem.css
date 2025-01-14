@@ -5,14 +5,11 @@
 .message-item.user {
     justify-content: flex-end;
     padding-left: 8em;
-    /* padding-right: 1rem; */
 }
 
 .message-item.bot {
     justify-content: flex-start;
     width: 90%;
-    /* padding-right: 2rem; */
-    /* margin-right: 2rem; */
 }
 
 .avatar {
@@ -37,26 +34,17 @@
 
 
 .message-item.user .message-text {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: rgba(45, 48, 51, 0.55);
+    color: #f0f0f0;
     border-radius: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #4b5563;
 }
 
-.dark .message-item.user .message-text {
-    background-color: rgba(45, 48, 51, 0.55);
-    border-color: #4b5563;
-    color: #f0f0f0;
-}
 
 .message-item.bot .message-text {
-    padding-right: 2rem;
-    color: #333333;
-}
-
-.dark .message-item.bot .message-text {
     width: 95%;
+    padding-right: 2rem;
     color: #f0f0f0;
 }
 
@@ -66,7 +54,6 @@
     flex-shrink: 0;
     margin-left: 0.5rem;
 }
-
 
 
 .message-table {

@@ -4,12 +4,12 @@ import "./Toolbar.css";
 
 import packagerIcon from '../../../assets/icons/packager.svg'
 import navigationIcon from '../../../assets/icons/navigation.png';
-import processIcon from '../../../assets/icons/database.png';
+import processIcon from '../../../assets/icons/processes.svg';
 import shellIcon from '../../../assets/icons/shell.png';
 import networkIcon from '../../../assets/icons/network.svg'
 import codeIcon from '../../../assets/icons/code.svg';
 import githubIcon from '../../../assets/icons/github.svg';
-import filesystemIcon from '../../../assets/icons/troubleshooting.svg';
+import filesystemIcon from '../../../assets/icons/filesystem.svg';
 import usersIcon from '../../../assets/icons/users.svg';
 import feedbackIcon from "../../../assets/icons/feedback.svg";
 import ToolbarAgent from "./ToolbarAgent";

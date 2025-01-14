@@ -10,7 +10,7 @@ const MessageList = ({ messages, messagesEndRef}) => {
       <SkeletonTheme baseColor="#242730" highlightColor="rgb(50, 65, 95)">
       <div className="message-list-inner">
         {messages.map((msg) => (
-          <MessageItem key={msg.id} msg={msg} />
+          <MessageItem key={msg.id} msg={msg}/>
         ))}
         <div ref={messagesEndRef} />
       </div>

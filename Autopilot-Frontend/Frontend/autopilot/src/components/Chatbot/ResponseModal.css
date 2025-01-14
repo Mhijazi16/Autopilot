@@ -76,15 +76,6 @@
     background-color: #16a34a;
   }
   
-  #rethink-button {
-    background-color: #1F60E3;
-    color: #fff;
-  }
-  
-  #rethink-button:hover {
-    background-color: #0b65f5;
-  }
-  
   #reject-button {
     background-color: transparent;
     color: #ef4444;
