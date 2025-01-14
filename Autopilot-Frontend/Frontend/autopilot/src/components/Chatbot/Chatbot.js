@@ -4,21 +4,20 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ResponseModal from "./ResponseModal";
 import "./Chatbot.css";
-import { v4 as uuidv4 } from 'uuid';
-import ReconnectingWebSocket from 'reconnecting-websocket';
-import { debounce } from 'lodash';
+import { v4 as uuidv4 } from "uuid";
+import ReconnectingWebSocket from "reconnecting-websocket";
+import { debounce } from "lodash";
 
-const Chatbot = () => {
-
+const Chatbot = ({ chatWs, setChatWs }) => {
   const [modalOpen, showModal] = useState(false);
   const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
-  
+
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chatMessages");
     const parsedMessages = savedMessages
       ? JSON.parse(savedMessages).map((msg) => ({
           ...msg,
-          id: msg.id || uuidv4(), 
+          id: msg.id || uuidv4(),
         }))
       : [
           {
@@ -28,31 +27,27 @@ const Chatbot = () => {
             loading: false,
           },
         ];
-    console.log("Initialized messages:", parsedMessages); 
     return parsedMessages;
   });
-  
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [abortController, setAbortController] = useState(null);
+
   const messagesEndRef = useRef(null);
   const intervalRef = useRef(null);
 
-
   useEffect(() => {
-    const ws = new ReconnectingWebSocket("ws://127.0.0.1:8000/tools");
-    ws.onopen = () => {
+    const wsTools = new ReconnectingWebSocket("ws://127.0.0.1:8000/tools");
+    wsTools.onopen = () => {
       console.log("tools connection established.");
     };
-  
-    ws.onmessage = (event) => {
-      const line = event.data.trim();
-      if(line !== ".")
-      {
 
+    wsTools.onmessage = (event) => {
+      const line = event.data.trim();
+      if (line !== ".") {
         try {
           const data = JSON.parse(event.data);
-          console.log(data);
           setModalCommandsInfo(data);
           showModal(true);
         } catch (error) {
@@ -60,157 +55,181 @@ const Chatbot = () => {
         }
       }
     };
-  
-    ws.onerror = (error) => {
+
+    wsTools.onerror = (error) => {
       console.error("WebSocket Error:", error);
     };
-  
-    ws.onclose = () => {
-      console.log("WebSocket connection closed.");
+
+    wsTools.onclose = () => {
+      console.log("WebSocket connection closed for tools.");
     };
-  
+
     return () => {
-      ws.close();
-      console.log("WebSocket connection cleanup.");
+      wsTools.close();
     };
   }, []);
 
+  useEffect(() => {
+    if (!chatWs) return;
 
+    chatWs.onmessage = (event) => {
+      const chunk = event.data.trim();
+      console.log("Received chunk from WebSocket:", chunk);
+
+      if (chunk) {
+        setMessages((prev) => {
+          const updatedMessages = [...prev];
+          const lastMessageIndex = updatedMessages.findIndex(
+            (msg) => msg.sender === "bot" && msg.loading
+          );
+
+          if (lastMessageIndex !== -1) {
+            simulateLiveGeneration(lastMessageIndex, chunk);
+          } 
+          else {
+            updatedMessages.push({
+              id: uuidv4(),
+              sender: "bot",
+              text: "",
+              loading: true,
+            });
+            simulateLiveGeneration(updatedMessages.length - 1, chunk);
+          }
+
+          return updatedMessages;
+        });
+      }
+    };
+
+    chatWs.onerror = (err) => {
+      console.error("Chat WebSocket error:", err);
+    };
+
+    return () => {
+      // Don’t close chatWs globally unless you want to end the session
+    };
+  }, [chatWs]);
+
+  // Auto-scroll to bottom when messages update
   useEffect(() => {
     const scrollToBottom = debounce(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
-  
+
     scrollToBottom();
-  
-    return () => {
-      scrollToBottom.cancel();
-    };
+    return () => scrollToBottom.cancel();
   }, [messages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  
+
+  // Persist messages to localStorage
   useEffect(() => {
     localStorage.setItem("chatMessages", JSON.stringify(messages));
   }, [messages]);
 
+  // Helper: ensures there's a "loading" bot message if none exists
+  const startBotMessageIfNeeded = () => {
+    setMessages((prev) => {
+      const lastMsg = prev[prev.length - 1];
+      // If there's no lastMsg OR it's not a bot msg OR it's not loading
+      if (!lastMsg || lastMsg.sender !== "bot" || !lastMsg.loading) {
+        return [
+          ...prev,
+          { id: uuidv4(), sender: "bot", text: "", loading: true },
+        ];
+      }
+      return prev;
+    });
+  };
+
+  // User pressed "send"
   const handleSubmit = (e) => {
-    if (e && e.preventDefault) {
-      e.preventDefault(); 
-    }
+    if (e?.preventDefault) e.preventDefault();
     if (!input.trim()) return;
-    setMessages((prevMessages) => [
-      ...prevMessages,
+
+    // Show user’s message
+    setMessages((prev) => [
+      ...prev,
       { id: uuidv4(), sender: "user", text: input },
-      { id: uuidv4(), sender: "bot", text: "", loading: true }, 
     ]);
+
     setInput("");
-    setLoading(true);
+
     fetchResponse(input);
   };
 
+  // POST the prompt to /chat, AI output arrives via chatWs
   const fetchResponse = async (userInput) => {
     const controller = new AbortController();
     setAbortController(controller);
 
+    // Immediately add a loading bot message
+    setMessages((prev) => [
+      ...prev,
+      { id: uuidv4(), sender: "bot", text: "", loading: true },
+    ]);
+
     try {
-      const response = await fetch(`http://127.0.0.1:8000/chat?prompt=${encodeURIComponent(userInput)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: controller.signal,
-      });
-      console.log(response);
-      if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-
-      const data = await response.json();
-      if (!data || !data.message) {
-        throw new Error("Invalid response format or missing 'message' property.");
-      }
-      const botMessage = data.message;
-      setMessages((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const lastIndex = updatedMessages.length - 1;
-        if (updatedMessages[lastIndex].sender === "bot" && updatedMessages[lastIndex].loading) {
-          updatedMessages[lastIndex].loading = false;
+      await fetch(
+        `http://127.0.0.1:8000/chat?prompt=${encodeURIComponent(userInput)}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
         }
-        return updatedMessages;
-      });
-
-      simulateLiveGeneration(botMessage);
-
+      );
     } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Error fetching response:", error);
-      
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          const lastIndex = updatedMessages.length - 1;
-      
-          if (updatedMessages[lastIndex]?.sender === "bot" && updatedMessages[lastIndex]?.loading) {
-            updatedMessages[lastIndex] = {
-              ...updatedMessages[lastIndex],
-              text: "", 
-              loading: true,
-            };
-          } else {
-            
-            updatedMessages.push({
-              id: uuidv4(),
-              sender: "bot",
-              text: "", 
-              loading: true,
-            });
-          }
-      
-          return updatedMessages;
-        });
-      
-        simulateLiveGeneration("Oops! Something went wrong while fetching the response. Please try again.");
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          const lastIndex = updatedMessages.length - 1;
-    
-          if (updatedMessages[lastIndex]?.sender === "bot" && updatedMessages[lastIndex]?.loading) {
-            updatedMessages[lastIndex].loading = false;
-          }
-    
-          return updatedMessages;
-        });
-      }
+      console.error("Error sending prompt to /chat:", error);
     } finally {
-      setLoading(false);
       setAbortController(null);
     }
   };
 
-  const simulateLiveGeneration = useCallback((message) => {
+  const simulateLiveGeneration = useCallback((messageIndex, chunk) => {
+    // Clear any existing interval to avoid overlaps
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  
     let currentIndex = 0;
-    const interval = 20; 
-
+    const sanitizedChunk = chunk.trim(); // Sanitize input to avoid whitespace issues
+    const interval = 20; // Typing speed
+  
     intervalRef.current = setInterval(() => {
-      if (currentIndex < message.length) {
+      if (currentIndex < sanitizedChunk.length) {
         setMessages((prev) => {
           const updatedMessages = [...prev];
-          const lastMessage = updatedMessages[updatedMessages.length - 1];
-
-          if (lastMessage.sender === "bot") {
-            updatedMessages[updatedMessages.length - 1] = {
-              ...lastMessage,
-              text: lastMessage.text + message[currentIndex],
+          const target = updatedMessages[messageIndex];
+          if (target && target.sender === "bot") {
+            updatedMessages[messageIndex] = {
+              ...target,
+              text: target.text + sanitizedChunk[currentIndex],
             };
           }
-
           return updatedMessages;
         });
         currentIndex++;
       } else {
-        clearInterval(intervalRef.current); 
+        clearInterval(intervalRef.current);
+        setMessages((prev) => {
+          const updatedMessages = [...prev];
+          const target = updatedMessages[messageIndex];
+          if (target && target.loading) {
+            updatedMessages[messageIndex] = {
+              ...target,
+              loading: false, 
+            };
+          }
+          return updatedMessages;
+        });
       }
     }, interval);
   }, []);
+  
 
+  // Cleanup intervals on unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -219,43 +238,39 @@ const Chatbot = () => {
     };
   }, []);
 
-
   const handleStop = () => {
     if (abortController) {
       abortController.abort();
       setLoading(false);
-  
-      setMessages((prevMessages) => {
-        const updatedMessages = prevMessages.filter(
+      setMessages((prevMessages) =>
+        prevMessages.filter(
           (msg) => !(msg.sender === "bot" && msg.loading)
-        );
-        return updatedMessages;
-      });
+        )
+      );
     }
   };
 
-
-    return (
-      <>
-        <Toolbar />
-        <ResponseModal 
-          isOpen={modalOpen} 
-          showModal={showModal} 
-          commandsInfo={modalCommandsInfo}
-          setCommandsInfo={setModalCommandsInfo}
+  return (
+    <>
+      <Toolbar />
+      <ResponseModal
+        isOpen={modalOpen}
+        showModal={showModal}
+        commandsInfo={modalCommandsInfo}
+        setCommandsInfo={setModalCommandsInfo}
+      />
+      <div className="flex flex-col h-full relative">
+        <MessageList messages={messages} messagesEndRef={messagesEndRef} />
+        <MessageInput
+          input={input}
+          setInput={setInput}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          handleStop={handleStop}
         />
-        <div className="flex flex-col h-full relative">
-          <MessageList messages={messages} messagesEndRef={messagesEndRef}/>
-          <MessageInput
-            input={input}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            loading={loading}
-            handleStop={handleStop}
-          />
-        </div>
-      </>
-    );
+      </div>
+    </>
+  );
 };
 
 export default Chatbot;

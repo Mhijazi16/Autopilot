@@ -19,5 +19,4 @@ const MessageList = ({ messages, messagesEndRef}) => {
   );
 };
 
-// rgb(62, 73, 94)
 export default MessageList;
