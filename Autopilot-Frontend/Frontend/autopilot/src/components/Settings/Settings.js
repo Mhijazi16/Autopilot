@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from "react";
-import ThemeSwitch from "../../components/Theme/ThemeSwitch";
+import React, { useState } from "react";
 import "./Settings.css";
 
-const Settings = ({ theme, setTheme }) => {
+const Settings = ( ) => {
   const [logging, setLogging] = useState(false);
   const [feedback, setFeedback] = useState(false);
 
   return (
     <div className="settings-container">
       <div className="settings-panel">
-        <div className="settings-item">
-          <div>
-            <h3 className="settings-label">Dark Mode</h3>
-          </div>
-          <ThemeSwitch theme={theme} setTheme={setTheme} />
-        </div>
 
         <div className="settings-item">
           <div>

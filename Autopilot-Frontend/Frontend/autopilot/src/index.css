@@ -11,14 +11,9 @@ body {
   font-family: 'Poppins','Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #eef4ff, #dbe8ff); 
   transition: background 0.3s;
-  height: 100%;
-}
-
-.dark body, .dark html {
   background: #121212;
-  transition: background 0.3s;
+  height: 100%;
 }
 
 :root {

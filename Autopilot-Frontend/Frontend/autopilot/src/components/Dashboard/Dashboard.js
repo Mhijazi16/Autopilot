@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import './Dashboard.css';
 import packagerIcon from '../../assets/icons/packager.svg'
 import navigationIcon from '../../assets/icons/navigation.png';
-import processIcon from '../../assets/icons/database.png';
+import processIcon from '../../assets/icons/processes.svg';
 import shellIcon from '../../assets/icons/shell.png';
 import networkIcon from '../../assets/icons/network.svg'
 import codeIcon from '../../assets/icons/code.svg';
 import githubIcon from '../../assets/icons/github.svg';
-import filesystemIcon from '../../assets/icons/troubleshooting.svg';
+import filesystemIcon from '../../assets/icons/filesystem.svg';
 import usersIcon from '../../assets/icons/users.svg';
 import AgentModal from './AgentModal';
 import Monitoring from './Monitoring/Monitoring';
@@ -20,8 +20,8 @@ const AgentCard = ({ name, iconPath, onClick }) => {
         <img src={iconPath} alt={`${name} Icon`} />
       </div>
       <div className="agent-info">
-        <h3 className="agent-name text-gray-900 dark:text-gray-100">{name}</h3>
-        <h4 className="text-gray-700 dark:text-gray-100">Agent</h4> 
+        <h3 className="agent-name">{name}</h3>
+        <h4>Agent</h4> 
       </div>
     </div>
   );
@@ -44,7 +44,7 @@ const Dashboard = () => {
     <div className='dashboard'>
     <Monitoring/>
     <Logs/>
-      <h2 className="dashboard-title text-gray-900 dark:text-gray-100">Agents</h2>
+      <h2 className="dashboard-title">Agents</h2>
       <div className="agent-grid">
         {Object.keys(agentDetails).map((agentName) => (
           <AgentCard
@@ -126,7 +126,7 @@ const agentDetails = {
       </>
     ),
   },
-  Database: {
+  Processes: {
     icon: processIcon,
     description: <><p>
     The Database Agent manages data storage and retrieval,
@@ -171,7 +171,7 @@ const agentDetails = {
       </>
     ),
   },
-  Troubleshooting: {
+  Filesystem: {
     icon: filesystemIcon,
     description: <>  
     <p>The Troubleshooting Agent helps identify and resolve technical issues within 
