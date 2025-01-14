@@ -2,25 +2,25 @@ import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import Packages from "../../../assets/icons/packager.svg";
 import Navigation from "../../../assets/icons/navigation.png";
-import Database from "../../../assets/icons/database.png";
+import Process from "../../../assets/icons/database.png";
 import Shell from "../../../assets/icons/shell.png";
 import Network from "../../../assets/icons/network.svg";
 import Coder from "../../../assets/icons/code.svg";
 import Github from "../../../assets/icons/github.svg";
-import Troubleshooter from "../../../assets/icons/troubleshooting.svg";
+import Filesystem from "../../../assets/icons/troubleshooting.svg";
 import Users from "../../../assets/icons/users.svg";
 import defaultIcon from "../../../assets/icons/autopilot-button.png";
 import "./DragAgent.css";
 
 const icons = [
-  { src: Database, alt: "Database" },
+  { src: Process, alt: "Process" },
   { src: Shell, alt: "Shell" },
   { src: Packages, alt: "Packages" },
   { src: Navigation, alt: "Navigation" },
   { src: Users, alt: "Users" },
   { src: Coder, alt: "Coder" },
   { src: Network, alt: "Network" },
-  { src: Troubleshooter, alt: "Troubleshooter" },
+  { src: Filesystem, alt: "Filesystem" },
   { src: Github, alt: "Github" },
 ];
 
