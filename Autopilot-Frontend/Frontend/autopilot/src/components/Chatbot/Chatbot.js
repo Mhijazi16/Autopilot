@@ -8,7 +8,6 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ResponseModal from "./ResponseModal";
 
-import "./Chatbot.css";
 
 const Chatbot = ({ chatWs, messages, setMessages }) => {
   const [modalOpen, showModal] = useState(false);
@@ -57,25 +56,36 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
   
 
   const simulateLiveGeneration = useCallback((message) => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  
     let currentIndex = 0;
     const interval = 20; 
-
+  
     intervalRef.current = setInterval(() => {
       if (currentIndex < message.length) {
-        setMessages((prev) => {
-          const updatedMessages = [...prev];
-          const lastMessage = updatedMessages[updatedMessages.length - 1];
-
-          if (lastMessage.sender === "bot") {
-            updatedMessages[updatedMessages.length - 1] = {
-              ...lastMessage,
-              text: lastMessage.text + message[currentIndex],
-            };
-          }
-
-          return updatedMessages;
-        });
-        currentIndex++;
+        const currentChar = message[currentIndex];
+        
+        if (currentChar !== undefined) {
+          setMessages((prev) => {
+            const updatedMessages = [...prev];
+            const lastMessage = updatedMessages[updatedMessages.length - 1];
+  
+            if (lastMessage.sender === "bot") {
+              updatedMessages[updatedMessages.length - 1] = {
+                ...lastMessage,
+                text: lastMessage.text + currentChar,
+              };
+            }
+  
+            return updatedMessages;
+          });
+          currentIndex++;
+        } else {
+          // If undefined, stop the interval
+          clearInterval(intervalRef.current);
+        }
       } else {
         clearInterval(intervalRef.current); 
       }
@@ -87,7 +97,8 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
   
      chatWs.onmessage = (event) => {
 
-      const fullResponse = event.data.trim();
+      const data = JSON.parse(event.data.trim());
+      console.log(data.message);
       setMessages((prevMessages) => {
         const updatedMessages = [...prevMessages];
         const lastIndex = updatedMessages.length - 1;
@@ -96,7 +107,7 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
         }
         return updatedMessages;
       });
-          simulateLiveGeneration(fullResponse);
+          simulateLiveGeneration(data.message);
         };
   
     chatWs.onerror = (err) => {

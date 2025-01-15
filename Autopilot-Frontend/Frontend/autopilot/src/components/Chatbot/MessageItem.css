@@ -44,7 +44,8 @@
 
 .message-item.bot .message-text {
     width: 95%;
-    padding-right: 2rem;
+    max-width: 95%;
+    padding-right: 5rem;
     color: #f0f0f0;
 }
 

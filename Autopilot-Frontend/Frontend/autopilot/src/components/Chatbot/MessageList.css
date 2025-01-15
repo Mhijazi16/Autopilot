@@ -1,20 +1,41 @@
-
 .message-list {
     position: relative;
-    left: 60%;
-    transform: translateX(-65%);
-    width: calc(100% - 1rem);
-    max-width: 72%;
+    left: 50%; 
+    transform: translateX(-53%); 
+    width: 90%; 
+    max-width: 1150px;
+    height: 100%; 
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; 
+    overflow-x: hidden; 
     padding: 1rem;
     padding-bottom: 6rem;
     z-index: 1;
+    box-sizing: border-box; 
 }
 
 .message-list-inner {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    width: 100%;
+    width: 100%; 
+    max-width: 100%; 
+    height: auto; 
+    box-sizing: border-box; 
+}
+
+@media (max-width: 768px) {
+    .message-list {
+        width: 95%; 
+        padding: 0.8rem;
+        padding-bottom: 4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .message-list {
+        width: 100%; 
+        padding: 0.5rem;
+        padding-bottom: 3rem;
+    }
 }
