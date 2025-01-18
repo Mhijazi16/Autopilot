@@ -20,10 +20,10 @@ class ToolbarSchema(BaseModel):
     Shell: Literal["On","Off"] = "Off"
     Github: Literal["On","Off"] = "Off"
     Users: Literal["On","Off"] = "Off"
-    Monitor: Literal["On","Off"] = "Off"
+    Process: Literal["On","Off"] = "Off"
     Packages: Literal["On","Off"] = "Off"
     Network: Literal["On","Off"] = "Off"
-    Troubleshooter: Literal["On","Off"] = "Off"
+    Filesystem: Literal["On","Off"] = "Off"
 
 def init() -> Redis:
     os.system("redis-server &")

@@ -1,5 +1,4 @@
 from typing import Literal
-from GPUtil.GPUtil import random
 from fastapi.responses import JSONResponse
 from agents.agent_factory import agent_factory
 from agents.task_master import TaskMaster
@@ -8,6 +7,7 @@ from utils.monitor import get_specs
 from memory.database import init, ToolbarSchema, Task
 from fastapi import Body, FastAPI, HTTPException, WebSocket, WebSocketDisconnect 
 from fastapi.middleware.cors import CORSMiddleware
+from langchain_ollama.chat_models import ChatOllama
 from agents.react import active_sockets
 from toolkits.toolkit_factory import description_factory
 from pydantic import BaseModel
@@ -47,6 +47,18 @@ def get_task_id():
     global stored_tasks
     stored_tasks += 1
     return stored_tasks
+
+async def send_job_failed():
+    socket = active_sockets['notification']
+    await socket.send_json({"status": "failed"})
+
+async def send_job_running():
+    socket = active_sockets['notification']
+    await socket.send_json({"status": "running"})
+
+async def send_job_finished():
+    socket = active_sockets['notification']
+    await socket.send_json({"status": "finished"})
 
 @app.get("/toolbar")
 def get_toolbar():
@@ -96,10 +108,10 @@ async def generate_task(request: PromptRequest):
             Shell="On",
             Github="On",
             Users="On",
-            Monitor="On",
+            Filesystem="On",
             Packages="On",
             Network="On",
-            Troubleshooter="On"
+            Process="On"
 
         )
 
@@ -168,7 +180,7 @@ async def chat(prompt: str):
 
         output = await autopilot.ainvoke({'messages': prompt})
         message = output['messages'][-1].content
-        return {"message": message}
+        return json.dumps({'message': message})
     except Exception as e:
         print(f"Error in chat endpoint: {e}")
 
@@ -192,9 +204,11 @@ async def start_task(id: int):
         jobs = json.loads(data)
         socket = active_sockets['notification']
         memory.set("halt", "no")
+        memory.set("feedback", "Off")
 
-        result = []
+        result = ""
         for job in jobs['commands']:
+            response = f"Agent Was Tasked to {job['agent']}"
             response = f"The result from {job['agent']} Agent: \n"
             halt = memory.get("halt")
             if halt == "yes":
@@ -209,8 +223,26 @@ async def start_task(id: int):
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
             response += str(await runner.Run(task))
-            result.append(response)
+            result += response
             await socket.send_json({"status": "finished"})
+
+        sum_prompt = f"""
+            I have multiple Agents that run commands 
+            on my linux system your responsible for 
+            taking the results of those agents and 
+            after that summarize what they did on the 
+            system please use markdown when you summarize
+
+            Here is the Agents results:
+            {result}
+         """
+        summarizer = ChatOllama(
+                    model="llama3.2",
+                    temperature=0
+                )
+
+        message = summarizer.invoke(sum_prompt)
+        return json.dumps({'message': message.content})
     except Exception as e:
         print(f"[ERROR] Issue in Starting Task {e}")
 
@@ -260,11 +292,6 @@ async def notification_socket(websocket: WebSocket):
     except Exception as e:
         print(f"[ERROR] Notification WebSocket Failed : {e}")
 
-@app.websocket("/chat")
-async def chatting_socket(websocket: WebSocket): 
-    await websocket.accept()
-    pass
-
 @app.websocket("/tools")
 async def feedback_socket(websocket: WebSocket):
     await websocket.accept()
@@ -278,5 +305,6 @@ async def feedback_socket(websocket: WebSocket):
     except Exception as e:
         print(f"[ERROR] Unexpected error: {e}")
     finally:
+        await websocket.close()
         active_sockets.pop('tools', None)
 
