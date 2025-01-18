@@ -51,3 +51,26 @@ def compile_program(pathname: str):
         send_to_terminal(output)
 
     return final + output
+
+def run_python_script(pathname: str):
+    """
+    This tool is used to run python scripts
+    Args: 
+        pathname (str) : the path to the file
+    Return: 
+        the output of the file
+    """
+    try:
+        command = f"python {pathname}"
+        start_terminal(command)
+        result = os.popen(command).read()
+        if "error" in result.lower():
+            raise Exception()
+        send_to_terminal("✅ Successfully Executed, program output: \n\n ")
+    except Exception:
+        send_to_terminal("🚨 Failed Executing, program output: \n\n ")
+    finally:
+        send_to_terminal(result)
+
+
+run_python_script("/home/ha1st/test.py")
