@@ -60,6 +60,7 @@ def run_python_script(pathname: str):
     Return: 
         the output of the file
     """
+    result = ""
     try:
         command = f"python {pathname}"
         start_terminal(command)
@@ -72,5 +73,23 @@ def run_python_script(pathname: str):
     finally:
         send_to_terminal(result)
 
-
-run_python_script("/home/ha1st/test.py")
+def run_bash_script(pathname: str):
+    """
+    this tool is used to run bash scripts
+    Args: 
+        pathname (str): the path to the file
+    Returns: 
+        the output of executing script
+    """
+    result = ""
+    try:
+        command = f"sh {pathname}"
+        start_terminal(command)
+        result = os.popen(command).read()
+        if "error" in result.lower(): 
+            raise Exception()
+        send_to_terminal("✅ Successfully Executed, program output: \n\n ")
+    except Exception:
+        send_to_terminal("🚨 Failed Executing, program output: \n\n ")
+    finally:
+        send_to_terminal(result)
