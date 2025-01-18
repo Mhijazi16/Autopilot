@@ -67,7 +67,10 @@ def description_factory(toolbar: ToolbarSchema):
         elif key == "Users": 
             description += "\nAgent Name: Users\n Agent Tools:\n"
             description += get_description(get_users_toolkit())
-        elif key == "Troubleshooter": 
+        elif key == "Process": 
+            description += "\nAgent Name: Process\n Agent Tools:\n"
+            description += get_description(get_process_toolkit())
+        elif key == "Filesystem": 
             description += "\nAgent Name: Filesystem\n Agent Tools:\n"
-            description += get_description(get_users_toolkit())
+            description += get_description(get_filesystem_toolkit())
     return description

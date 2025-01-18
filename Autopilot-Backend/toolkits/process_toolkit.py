@@ -53,7 +53,7 @@ def system_service_control(name:str, action: str):
 
         start_terminal(command)
         process = pexpect.spawn(command)
-        process = handle_sudo(process)
+        process, message = handle_sudo(process)
         message = read_status(process)
         if "Failed" in message or "error" in message: 
             raise Exception

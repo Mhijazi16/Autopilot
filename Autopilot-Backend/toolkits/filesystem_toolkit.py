@@ -109,4 +109,5 @@ def get_filesystem_toolkit():
     return [open_folder,
             find_file,
             open_file,
-            compress_file]
+            # compress_file
+            ]
