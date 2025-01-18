@@ -1,4 +1,4 @@
-from langchain_core.messages import ToolMessage
+from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 from langchain_ollama import ChatOllama
 from langgraph.graph import START, MessagesState, StateGraph, END
 from .agent_factory import agent_factory
@@ -6,12 +6,13 @@ from states.planner import Plan
 
 class TaskState(MessagesState):
     plan: Plan
-    # output : List[str] 
+    output : list[str] 
 
 class TaskMaster():
-    __slots__ = ("llm", "template", "config", "summarizer", "toolkit")
+    __slots__ = ("llm", "template", "config", "summarizer", "toolkit", "outputs")
 
     def __init__(self, toolkit): 
+        self.outputs:  str = ""
         self.toolkit = toolkit
         self.config = {"configurable": {"thread_id": "1"}}
         self.toolkit = toolkit
@@ -55,29 +56,38 @@ class TaskMaster():
             print(f"[ERROR] something went wrong when planning {e}")
 
     async def Execute(self, state: TaskState): 
-        output = ""
         try:
             plan = state['plan'].steps
-            for step in plan: 
+            for i,step in enumerate(plan): 
                 print(f"[STEP] current step: {step}")
-                output += f"Result from Agent {step.agent}"
+                output = f"""## {i+1}) {step.agent} Agent\n 
+                The Task assigned to Agent is:\n {step.task}\n
+                The Result from This Agent:\n
+                {self.outputs}
+                """
+
                 agent = agent_factory(step.agent, self.config)
-                output += await agent.Run(step.task)
-            print(output)
+                output += str(await agent.Run(step.task))
+                self.outputs += output + "\n"
         except Exception as e:
             print(f"[Error] issue in execute {e}")
         finally: 
-            return {'messages': state['messages'] + [ToolMessage(output)]}
+            return {'messages': state['messages']}
 
     def Summarize(self, state: TaskState):
-        sum_prompt = """
-            I need you to summarize the following resutls 
-            from the agents please use markdown when you 
-            output the result 
-            here is the Agents results:
-         """
         try:
-            summary = self.summarizer.invoke(state['messages'])
+            sum_prompt = f"""
+                I have multiple Agents that run commands 
+                on my linux system your responsible for 
+                taking the results of those agents and 
+                after that summarize what they did on the 
+                system please use markdown when you summarize
+
+                Here is the Agents results:
+                {self.outputs}
+             """
+
+            summary = self.summarizer.invoke(sum_prompt)
             return {'messages': state['messages'] + [summary]} 
         except Exception as e:
             print(f"[ERROR] issue in summarizer {e}")
