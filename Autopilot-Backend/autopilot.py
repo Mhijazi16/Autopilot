@@ -216,15 +216,17 @@ async def start_task(id: int):
                 memory.set("halt", "no")
                 break
             
-            await socket.send_json({"status": "running"})
-
+            await send_job_running()
             agent = job['agent']
             task = job['task']
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
             response += str(await runner.Run(task))
+            if "failed" in response.lower(): 
+                await send_job_failed()
+            else: 
+                await send_job_finished()
             result += response
-            await socket.send_json({"status": "finished"})
 
         sum_prompt = f"""
             I have multiple Agents that run commands 
