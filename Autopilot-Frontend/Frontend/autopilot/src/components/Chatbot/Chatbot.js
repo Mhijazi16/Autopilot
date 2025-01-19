@@ -9,16 +9,17 @@ import MessageInput from "./MessageInput";
 import ResponseModal from "./ResponseModal";
 
 
-const Chatbot = ({ chatWs, messages, setMessages }) => {
+const Chatbot = ({ messages, setMessages }) => {
   const [modalOpen, showModal] = useState(false);
   const [modalCommandsInfo, setModalCommandsInfo] = useState("npm start");
-
 
   const [input, setInput] = useState("");
   const [abortController, setAbortController] = useState(null);
 
   const messagesEndRef = useRef(null);
   const intervalRef = useRef(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
 
   useEffect(() => {
     const wsTools = new ReconnectingWebSocket("ws://127.0.0.1:8000/tools");
@@ -55,11 +56,12 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
 
   
 
-  const simulateLiveGeneration = useCallback((message) => {
+  const simulateLiveGeneration = useCallback((message, onComplete) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
   
+    setIsGenerating(true);
     let currentIndex = 0;
     const interval = 20; 
   
@@ -83,43 +85,15 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
           });
           currentIndex++;
         } else {
-          // If undefined, stop the interval
           clearInterval(intervalRef.current);
         }
       } else {
-        clearInterval(intervalRef.current); 
+        clearInterval(intervalRef.current);
+        setIsGenerating(false);
+        if (onComplete) onComplete();
       }
     }, interval);
   }, [setMessages]);
-
-  useEffect(() => {
-    if (!chatWs) return;
-  
-     chatWs.onmessage = (event) => {
-
-      const data = JSON.parse(event.data.trim());
-      console.log(data.message);
-      setMessages((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const lastIndex = updatedMessages.length - 1;
-        if (updatedMessages[lastIndex].sender === "bot" && updatedMessages[lastIndex].loading) {
-          updatedMessages[lastIndex].loading = false;
-        }
-        return updatedMessages;
-      });
-          simulateLiveGeneration(data.message);
-        };
-  
-    chatWs.onerror = (err) => {
-      console.error("Chat WebSocket error:", err);
-    };
-  
-    return () => {
-      chatWs.onmessage = null;
-      chatWs.onerror = null;
-    };
-  }, [chatWs, simulateLiveGeneration, setMessages]);
-  
 
   useEffect(() => {
     const scrollToBottom = debounce(() => {
@@ -172,7 +146,7 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
 
 
     try {
-      await fetch(
+      const response = await fetch(
         `http://127.0.0.1:8000/chat?prompt=${encodeURIComponent(userInput)}`,
         {
           method: "POST",
@@ -180,8 +154,56 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
           signal: controller.signal,
         }
       );
+      
+      if (!response.ok) throw new Error(`API error: ${response.statusText}`);
+
+      const data = await response.json();
+      if (!data || !data.message) {
+        throw new Error("Invalid response format or missing 'message' property.");
+      }
+      const botMessage = data.message;
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const lastIndex = updatedMessages.length - 1;
+
+        if (updatedMessages[lastIndex].sender === "bot" && updatedMessages[lastIndex].loading) {
+          updatedMessages[lastIndex].loading = false;
+          
+          }
+        return updatedMessages;
+      });
+      simulateLiveGeneration(botMessage);
     } catch (error) {
-      console.error("Error sending prompt to /chat:", error);
+      if (error.name !== "AbortError") {
+        console.error("Error fetching response:", error);
+      
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          const lastIndex = updatedMessages.length - 1;
+      
+          if (updatedMessages[lastIndex]?.sender === "bot" && updatedMessages[lastIndex]?.loading) {
+            updatedMessages[lastIndex] = {
+              ...updatedMessages[lastIndex],
+              text: "", 
+              loading: false,
+            };
+          } 
+      
+          return updatedMessages;
+        });
+      
+        simulateLiveGeneration("Oops! Something went wrong while fetching the response. Please try again.");
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          const lastIndex = updatedMessages.length - 1;
+    
+          if (updatedMessages[lastIndex]?.sender === "bot" && updatedMessages[lastIndex]?.loading) {
+            updatedMessages[lastIndex].loading = false;
+          }
+    
+          return updatedMessages;
+        });
+      }
     } finally {
       setAbortController(null);
     }
@@ -191,7 +213,11 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
     if (abortController) {
       abortController.abort();
     }
-
+    
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current); 
+    }
+    setIsGenerating(false);
     setMessages((prev) =>
       prev.filter((msg) => !(msg.sender === "bot" && msg.loading))
     );
@@ -212,7 +238,7 @@ const Chatbot = ({ chatWs, messages, setMessages }) => {
           input={input}
           setInput={setInput}
           handleSubmit={handleSubmit}
-          loading={messages.some((m) => m.sender === "bot" && m.loading)}
+          loading={isGenerating}
           handleStop={handleStop}
         />
       </div>

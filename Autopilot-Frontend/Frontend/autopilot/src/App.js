@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import ReconnectingWebSocket from "reconnecting-websocket";
 import { v4 as uuidv4 } from "uuid";
 
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -13,6 +12,7 @@ import "./App.css";
 import blueLightTop from "./assets/blue-light-top.svg";
 
 function App() {
+  const [runningTaskId, setRunningTaskId] = useState(null);
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chatMessages");
     if (savedMessages) {
@@ -36,28 +36,6 @@ function App() {
   const [taskNotificationStatus, setTaskNotificationStatus] = useState("");
   const [notifications, setNotifications] = useState([]);
 
-  // Maintain a single WebSocket for chat
-  const [chatWs, setChatWs] = useState(null);
-  useEffect(() => {
-    const ws2 = new ReconnectingWebSocket("ws://127.0.0.1:8000/chat");
-
-    setChatWs(ws2);
-
-    ws2.onopen = () => {
-      console.log("Chat WebSocket connection established.");
-    };
-
-    ws2.onerror = (err) => {
-      console.error("Chat WebSocket error:", err);
-    };
-
-    // Cleanup on unmount
-    return () => {
-      console.log("Cleaning up WebSocket connection.");
-      ws2.close();
-    };
-  }, []);
-
   return (
     <Router>
       <div className="app-container">
@@ -70,7 +48,6 @@ function App() {
                 path="/"
                 element={
                   <Chatbot
-                    chatWs={chatWs}
                     messages={messages}
                     setMessages={setMessages}
                   />
@@ -83,8 +60,9 @@ function App() {
                 element={
                   <Tasks
                     setNotifications={setNotifications}
-                    notifications={notifications}
-                    setTaskNotificationStatus={setTaskNotificationStatus}
+                    setMessages={setMessages}
+                    runningTaskId={runningTaskId}
+                    setRunningTaskId={setRunningTaskId}
                   />
                 }
               />

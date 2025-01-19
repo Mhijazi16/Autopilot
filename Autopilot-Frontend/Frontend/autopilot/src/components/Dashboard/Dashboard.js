@@ -11,7 +11,6 @@ import filesystemIcon from '../../assets/icons/filesystem.svg';
 import usersIcon from '../../assets/icons/users.svg';
 import AgentModal from './AgentModal';
 import Monitoring from './Monitoring/Monitoring';
-import Logs from './Logs/Logs';
 
 const AgentCard = ({ name, iconPath, onClick }) => {
   return (
@@ -43,7 +42,6 @@ const Dashboard = () => {
     <>
     <div className='dashboard'>
     <Monitoring/>
-    <Logs/>
       <h2 className="dashboard-title">Agents</h2>
       <div className="agent-grid">
         {Object.keys(agentDetails).map((agentName) => (
