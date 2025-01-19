@@ -1,6 +1,6 @@
 import os
 from toolkits.shell_toolkit import handle_sudo, read_status, pexpect, send_to_terminal, start_terminal
-from pexpect import pxssh, EOF
+from pexpect import EOF
 
 def create_users(usernames: list[str], passwords: list[str]): 
     """
@@ -215,8 +215,19 @@ def change_password(username: str, new_password: str):
         send_to_terminal(output)
         return output
 
+def list_system_users():
+    """
+    this tool is used to list system users
+    """
+    command = "awk -F: '$6 ~ /^\\/home\\// {print $1}' /etc/passwd"
+    start_terminal(command)
+    output = os.popen(command).read()
+    send_to_terminal(output)
+    return "The following are the users on the system: \n {output}"
+
 def get_users_toolkit():
-    return [create_users,
+    return [list_system_users,
+            create_users,
             remove_users,
             add_groups,
             remove_groups,
