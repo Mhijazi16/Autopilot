@@ -8,14 +8,17 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import TaskList from "./ManualAgents/TaskList";
 import defaultIcon from "../../assets/icons/autopilot-button.png";
+import { v4 as uuidv4 } from "uuid";
+
 
 const Tasks = ({
-  setNotificationMessage,
   setNotifications,
+  setMessages,
+  runningTaskId,
+  setRunningTaskId,
 }) => {
   const [tasks, setTasks] = useState([]);
   const [currentModalTaskId, setCurrentModalTaskId] = useState(null);
-  const [runningTaskId, setRunningTaskId] = useState(null);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [ws, setWs] = useState(null);
@@ -111,17 +114,46 @@ const Tasks = ({
               })),
             }),
           });
-  
-          if (!response.ok) {
-            setRunningTaskId(null); 
-            throw new Error("Failed to start task");
+          
+          if (response.ok) {
+            const data = await response.json(); 
+            console.log(response.data);
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              {
+                id: uuidv4(), 
+                sender: "bot",
+                text: data.message, 
+                loading: false,
+              },
+            ]);
+          } else {
+            console.error("Task start request failed:", response.statusText);
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              {
+                id: uuidv4(),
+                sender: "bot",
+                text: "Failed to start task. Please try again.",
+                loading: false,
+              },
+            ]);
           }
-  
         } catch (fetchError) {
           console.error("Error sending task start request:", fetchError);
-          newWs.close();
-          setRunningTaskId(null); 
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: uuidv4(),
+              sender: "bot",
+              text: "An error occurred while starting the task.",
+              loading: false,
+            },
+          ]);
+        } finally {
+          setRunningTaskId(null);
         }
+        
       };
   
       newWs.onmessage = (event) => {
