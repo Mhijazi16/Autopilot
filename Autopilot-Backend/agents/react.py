@@ -28,7 +28,9 @@ class ReactAgent():
         self.checkpointer = MemorySaver()
         self.config = config
 
-        prompt = hub.pull("ih/ih-react-agent-executor")
+        # prompt = hub.pull("ih/ih-react-agent-executor")
+        # prompt = hub.pull("wfh/react-agent-executor")
+        # prompt = hub.pull("hwchase17/react")
 
         if model == "groq": 
             self.llm = ChatGroq(model="llama3-groq-70b-8192-tool-use-preview",
@@ -42,7 +44,8 @@ class ReactAgent():
                               interrupt_before=['tools'],
                               checkpointer=self.checkpointer,
                               state_schema=AgentState,
-                              state_modifier=prompt)
+                              # state_modifier=prompt
+                                        )
 
     def parse_for_tool(self, event):
         try:

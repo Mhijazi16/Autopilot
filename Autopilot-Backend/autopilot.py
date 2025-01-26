@@ -60,6 +60,10 @@ async def send_job_finished():
     socket = active_sockets['notification']
     await socket.send_json({"status": "finished"})
 
+async def send_summarizing():
+    socket = active_sockets['notification']
+    await socket.send_json({"status": "summarizing"})
+
 @app.get("/toolbar")
 def get_toolbar():
     try:
@@ -216,35 +220,47 @@ async def start_task(id: int):
                 memory.set("halt", "no")
                 break
             
-            await socket.send_json({"status": "running"})
-
+            await send_job_running()
             agent = job['agent']
             task = job['task']
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
             response += str(await runner.Run(task))
+            if "failed" in response.lower(): 
+                await send_job_failed()
+            else: 
+                await send_job_finished()
             result += response
-            await socket.send_json({"status": "finished"})
+
+        await send_summarizing()
 
         sum_prompt = f"""
             I have multiple Agents that run commands 
             on my linux system your responsible for 
             taking the results of those agents and 
             after that summarize what they did on the 
-            system please use markdown when you summarize
+            system please use markdown and emoji
+            when you summarize. 
+
+            please don't add anything extra over 
+            the agents result I just need you to 
+            rephrashe it and make it look better.
 
             Here is the Agents results:
             {result}
          """
         summarizer = ChatOllama(
-                    model="llama3.2",
+                    model="deepseek-r1:7b",
                     temperature=0
                 )
 
-        message = summarizer.invoke(sum_prompt)
-        return json.dumps({'message': message.content})
+        response = summarizer.invoke(sum_prompt)
+        message = str(response.content).split("</think>")[1]
+        return {'message': message}
     except Exception as e:
+        await send_job_failed()
         print(f"[ERROR] Issue in Starting Task {e}")
+        return {'message': "failed executing Jobs"}
 
 @app.post("/tasks/stop")
 async def stop_task(): 
