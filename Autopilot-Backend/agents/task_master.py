@@ -17,7 +17,7 @@ class TaskMaster():
         self.config = {"configurable": {"thread_id": "1"}}
         self.toolkit = toolkit
         self.summarizer = ChatOllama(
-            model="llama3.2",
+            model="deepseek-r1:7b",
             temperature=0
         )
 

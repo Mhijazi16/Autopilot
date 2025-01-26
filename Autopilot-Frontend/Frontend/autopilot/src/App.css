@@ -100,6 +100,10 @@
   border-color: #296FFF;
 }
 
+.notification-message.summarizing{
+  border-color: #ffca29
+}
+
 .notification-message.failed {
   border-color: #DC3545;
 }

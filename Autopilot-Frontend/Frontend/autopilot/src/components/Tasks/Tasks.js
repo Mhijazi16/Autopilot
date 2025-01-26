@@ -162,6 +162,7 @@ const Tasks = ({
           console.log(data);
           if (!data.status) return;
       
+          console.log(data.status);
           setTasks((prevTasks) =>
             prevTasks.map((t) => {
               if (t.id !== task.id) return t;
@@ -194,6 +195,8 @@ const Tasks = ({
                 if (firstRunningIndex !== -1) {
                   updatedCommands[firstRunningIndex].status = "failed";
                 }
+              } else if (data.status === "summarizing"){
+                updateNotification("Summarizing", "summarizing");
               }
       
               const allFinished = updatedCommands.every(
