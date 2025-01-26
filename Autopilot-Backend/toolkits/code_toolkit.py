@@ -1,6 +1,6 @@
 import os
 import subprocess
-from shell_toolkit import start_terminal, send_to_terminal
+from .shell_toolkit import start_terminal, send_to_terminal
 
 def compile_program(pathname: str):
     """
@@ -93,3 +93,10 @@ def run_bash_script(pathname: str):
         send_to_terminal("🚨 Failed Executing, program output: \n\n ")
     finally:
         send_to_terminal(result)
+
+def get_coding_toolkit():
+    return [
+            run_bash_script,
+            compile_program,
+            run_python_script,
+        ]

@@ -7,6 +7,7 @@ from .users_toolkit import get_users_toolkit
 from .shell_toolkit import get_shell_toolkit
 from .filesystem_toolkit import get_filesystem_toolkit
 from .process_toolkit import get_process_toolkit
+from .code_toolkit import get_coding_toolkit
 
 tools = [get_github_toolkit,
          get_package_toolkit,
@@ -35,6 +36,8 @@ def toolkit_factory(toolbar: ToolbarSchema):
             toolkit.extend(get_process_toolkit())
         elif key == "Filesystem": 
             toolkit.extend(get_filesystem_toolkit())
+        elif key == "Coder": 
+            toolkit.extend(get_coding_toolkit())
     return toolkit
 
 def get_description(tools): 
@@ -73,4 +76,7 @@ def description_factory(toolbar: ToolbarSchema):
         elif key == "Filesystem": 
             description += "\nAgent Name: Filesystem\n Agent Tools:\n"
             description += get_description(get_filesystem_toolkit())
+        elif key == "Coder": 
+            description += "\nAgent Name: Coder\n Agent Tools:\n"
+            description += get_description(get_coding_toolkit())
     return description
