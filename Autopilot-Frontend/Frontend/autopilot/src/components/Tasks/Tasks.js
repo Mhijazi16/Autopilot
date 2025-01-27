@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import autopilotIcon from "../../assets/icons/autopilot.svg";
 import "./Tasks.css";
 import startButton from "../../assets/icons/start-button.svg";
@@ -9,7 +14,6 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import TaskList from "./ManualAgents/TaskList";
 import defaultIcon from "../../assets/icons/autopilot-button.png";
 import { v4 as uuidv4 } from "uuid";
-
 
 const Tasks = ({
   setNotifications,
@@ -23,26 +27,32 @@ const Tasks = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [ws, setWs] = useState(null);
   const [generateTaskModal, showGenerateTaskModal] = useState(false);
-  const [generateTaskPrompt, setGenerateTaskPrompt] = useState(""); 
+  const [generateTaskPrompt, setGenerateTaskPrompt] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
   const successMessageShown = useRef(false);
 
-  const mapTasks = useCallback((data) => {
-    const loadedTasks = data.map((task) => ({
-      id: task.id,
-      name: task.name || `Untitled Task`,
-      commands: (task.commands || []).map((cmd, j) => ({
-        id: `${task.id}-cmd-${j}`,
-        name: cmd.agent || "default",
-        text: cmd.task || "command",
-        icon: cmd.agent,
-        status: "idle",
-      })),
-    }));
-    setTasks(loadedTasks);
-  }, [setTasks]);
+  const [localNotificationsQueue, setLocalNotificationsQueue] = useState([]);
+  const [removalQueue, setRemovalQueue] = useState([]);
+  const [clearAllNotifications, setClearAllNotifications] = useState(false);
+
+  const mapTasks = useCallback(
+    (data) => {
+      const loadedTasks = data.map((task) => ({
+        id: task.id,
+        name: task.name || `Untitled Task`,
+        commands: (task.commands || []).map((cmd, j) => ({
+          id: `${task.id}-cmd-${j}`,
+          name: cmd.agent || "default",
+          text: cmd.task || "command",
+          icon: cmd.agent,
+          status: "idle",
+        })),
+      }));
+      setTasks(loadedTasks);
+    },
+    [setTasks]
+  );
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -52,7 +62,8 @@ const Tasks = ({
       }
       const data = await response.json();
       mapTasks(data);
-      if(runningTaskId != null) {
+
+      if (runningTaskId != null) {
         setTasks((prevTasks) =>
           prevTasks.map((t) =>
             t.id === runningTaskId
@@ -72,7 +83,7 @@ const Tasks = ({
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  }, [mapTasks, runningTaskId]); 
+  }, [mapTasks]);
 
   useEffect(() => {
     fetchTasks();
@@ -86,19 +97,15 @@ const Tasks = ({
     setCurrentModalTaskId(null);
   };
 
-
-
   const startTask = async (task) => {
-
-    if(task.id === -1) 
-    {
+    if (task.id === -1) {
       setSuccessMessage("Task not saved!");
       setTimeout(() => setSuccessMessage(""), 3000);
       return;
     }
     try {
       setRunningTaskId(task.id);
-  
+
       setTasks((prevTasks) =>
         prevTasks.map((t) =>
           t.id === task.id
@@ -112,46 +119,43 @@ const Tasks = ({
             : t
         )
       );
-      
-  
+
       const newWs = new WebSocket("ws://127.0.0.1:8000/notification");
       setWs(newWs);
       openModal(task.id);
-      setTimeout(() => {}, '001');
-      
+
       newWs.onopen = async () => {
         console.log("WebSocket connected for notifications.");
-  
-        try {
-          const response = await fetch(`http://127.0.0.1:8000/tasks/${task.id}/start`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: task.name,
-              commands: task.commands.map((cmd) => ({
-                agent: cmd.name,
-                task: cmd.text,
-              })),
-            }),
-          });
-          
-          if (response.ok) {
-            const data = await response.json(); 
-            setTimeout(() => {
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                  {
-                    id: uuidv4(),
-                    sender: "bot",
-                    text: data.message,
-                    loading: false,
-                  },
-                    ]);
 
-                  }, 0);
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/tasks/${task.id}/start`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: task.name,
+                commands: task.commands.map((cmd) => ({
+                  agent: cmd.name,
+                  task: cmd.text,
+                })),
+              }),
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              {
+                id: uuidv4(),
+                sender: "bot",
+                text: data.message,
+                loading: false,
+              },
+            ]);
           } else {
             console.error("Task start request failed:", response.statusText);
-            setTimeout(() => {
             setMessages((prevMessages) => [
               ...prevMessages,
               {
@@ -161,42 +165,37 @@ const Tasks = ({
                 loading: false,
               },
             ]);
-            }, 0);
           }
         } catch (fetchError) {
           console.error("Error sending task start request:", fetchError);
-          setTimeout(() => {
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              {
-                id: uuidv4(),
-                sender: "bot",
-                text: "An error occurred while starting the task.",
-                loading: false,
-              },
-            ]);
-          }, 0);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: uuidv4(),
+              sender: "bot",
+              text: "An error occurred while starting the task.",
+              loading: false,
+            },
+          ]);
         } finally {
-          setTimeout(() => {
-            setRunningTaskId(null);
-            }, 0)
+          setRunningTaskId(null);
         }
-        
       };
-  
+
       newWs.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (!data.status) return;
-          if (data.status === "summarizing"){
-            updateNotification("Summarizing", "summarizing");
-            return;
-          }
           console.log(data.status);
+
+          if (data.status === "summarizing") {
+            queueNotification("Summarizing", "summarizing");
+          }
+
           setTasks((prevTasks) =>
             prevTasks.map((t) => {
               if (t.id !== task.id) return t;
-      
+
               let updatedCommands = [...t.commands];
               const firstPendingIndex = updatedCommands.findIndex(
                 (cmd) => cmd.status === "pending"
@@ -204,43 +203,39 @@ const Tasks = ({
 
               if (data.status === "running" && firstPendingIndex !== -1) {
                 updatedCommands[firstPendingIndex].status = "running";
-                updateNotification("Job Running", "running");
-                                
+                queueNotification("Job Running", "running");
               } else if (data.status === "finished") {
-                updateNotification("Job Completed", "finished");
+                queueNotification("Job Completed", "finished");
                 const firstRunningIndex = updatedCommands.findIndex(
                   (cmd) => cmd.status === "running"
                 );
-
                 if (firstRunningIndex !== -1) {
                   updatedCommands[firstRunningIndex].status = "finished";
                 }
-
               } else if (data.status === "failed") {
-                updateNotification("Job Failed", "failed");
+                queueNotification("Job Failed", "failed");
                 const firstRunningIndex = updatedCommands.findIndex(
                   (cmd) => cmd.status === "running"
                 );
-
                 if (firstRunningIndex !== -1) {
                   updatedCommands[firstRunningIndex].status = "failed";
                 }
-              } 
+              }
+
               const allFinished = updatedCommands.every(
                 (cmd) => cmd.status === "finished" || cmd.status === "failed"
               );
-      
-              if (allFinished) {
+
+              if (allFinished && data.status !== "summarizing") {
                 updatedCommands = updatedCommands.map((cmd) => ({
                   ...cmd,
                   status: "idle",
                 }));
-                setTimeout(() => {
-                  setRunningTaskId(null);
-                  }, 0);
+                setTimeout(() => setRunningTaskId(null), 0);
+                
                 console.log("All commands finished, resetting to idle");
               }
-      
+
               return { ...t, commands: updatedCommands };
             })
           );
@@ -248,9 +243,7 @@ const Tasks = ({
           console.error("Error parsing WebSocket message:", err);
         }
       };
-      
-      
-  
+
       newWs.onclose = () => {
         console.log("WebSocket closed for notifications");
       };
@@ -259,64 +252,23 @@ const Tasks = ({
       setRunningTaskId(null);
     }
   };
-  
-  const updateNotification = (message, status) => {
-    setTimeout(() => {
-    setNotifications((prevNotifications) => {
-      const now = Date.now();
-  
-      // If we're marking a "running" notification as "finished" or "failed", find the first "running"
-      if (status === "finished" || status === "failed") {
-        const runningIndex = prevNotifications.findIndex(
-            (notif) => notif.status === "running"
-        );
-  
-        // If found, update that "running" notification instead of adding a new one
-        if (runningIndex !== -1) {
-          const updatedNotifications = [...prevNotifications];
-          updatedNotifications[runningIndex] = {
-            ...updatedNotifications[runningIndex],
-            message, 
-            status
-          };
-  
-          // Schedule removal for 4s
-          setTimeout(() => {
-            setNotifications((current) =>
-              current.filter(
-                (n) => n !== updatedNotifications[runningIndex]
-              )
-            );
-          }, 4000);
-  
-          return updatedNotifications;
-        }
-      }
-  
-      const newNotification = {
-        id: now,
-        message,
-        status
-      };
-      const updatedNotifications = [...prevNotifications, newNotification];
-  
-      // Remove after 4s if not "running"
-      if (status !== "running") {
-        setTimeout(() => {
-          setNotifications((current) =>
-            current.filter((n) => n.id !== now)
-          );
-        }, 5000);
-      }
-  
-      return updatedNotifications;
-    });
-    }, 0);
 
+  const queueNotification = useCallback((message, status) => {
+    setLocalNotificationsQueue((prev) => [
+      ...prev,
+      { message, status },
+    ]);
+  }, []);
+
+  const scheduleNotificationRemoval = (notification, delay) => {
+    setTimeout(() => {
+      setRemovalQueue((prev) => [...prev, notification.id]);
+    }, delay);
   };
-  
-  
-  
+
+  const clearAll = () => {
+    setClearAllNotifications(true);
+  };
 
   const stopTask = async (task) => {
     try {
@@ -342,14 +294,14 @@ const Tasks = ({
             : t
         )
       );
-      
+
       if (ws) {
         ws.close();
         setWs(null);
       }
-      setNotifications(() => []);
-      setRunningTaskId(null);
 
+      clearAll();
+      setRunningTaskId(null);
 
       console.log("Task stopped successfully");
     } catch (error) {
@@ -357,11 +309,74 @@ const Tasks = ({
     }
   };
 
+  useEffect(() => {
+    if (localNotificationsQueue.length === 0) return;
+
+    setNotifications((prev) => {
+      let updatedNotifications = [...prev];
+
+      localNotificationsQueue.forEach(({ message, status }) => {
+        const now = Date.now();
+
+        if (status === "finished" || status === "failed") {
+          const runningIndex = updatedNotifications.findIndex(
+            (notif) => notif.status === "running"
+          );
+
+          if (runningIndex !== -1) {
+            updatedNotifications[runningIndex] = {
+              ...updatedNotifications[runningIndex],
+              message,
+              status,
+            };
+            scheduleNotificationRemoval(
+              updatedNotifications[runningIndex],
+              4000
+            );
+            return;
+          }
+        }
+
+        const newNotification = {
+          id: now,
+          message,
+          status,
+        };
+        updatedNotifications.push(newNotification);
+
+        if (status !== "running") {
+          scheduleNotificationRemoval(newNotification, 5000);
+        }
+      });
+
+      return updatedNotifications;
+    });
+
+    setLocalNotificationsQueue([]);
+  }, [localNotificationsQueue, setNotifications]);
+
+  useEffect(() => {
+    if (removalQueue.length === 0) return;
+
+    setNotifications((prev) =>
+      prev.filter((notif) => !removalQueue.includes(notif.id))
+    );
+    setRemovalQueue([]);
+  }, [removalQueue, setNotifications]);
+
+  useEffect(() => {
+    if (!clearAllNotifications) return;
+
+    setNotifications([]);
+    setClearAllNotifications(false);
+  }, [clearAllNotifications, setNotifications]);
+
   const isDisabled = () => runningTaskId !== null;
 
   const handleContainerClick = () => {
     setSelectedTaskId(null);
   };
+
   const handleTaskClick = (taskId, e) => {
     e.stopPropagation();
     setSelectedTaskId(taskId);
@@ -384,7 +399,6 @@ const Tasks = ({
     };
     setCurrentModalTaskId(newTaskId);
     setTasks((prev) => [...prev, newTask]);
-
   };
 
   const updateTaskName = (taskId, newName) => {
@@ -402,8 +416,9 @@ const Tasks = ({
       setShowDeleteConfirm(true);
     }
   };
+
   const handleConfirmDelete = async () => {
-    if(selectedTaskId === -1) {
+    if (selectedTaskId === -1) {
       setSuccessMessage("Task not saved!");
       setShowDeleteConfirm(false);
       setSelectedTaskId(null);
@@ -411,9 +426,12 @@ const Tasks = ({
       return;
     }
     try {
-      const response = await fetch(`http://127.0.0.1:8000/tasks/${selectedTaskId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8000/tasks/${selectedTaskId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         const updatedTasks = await response.json();
@@ -428,53 +446,59 @@ const Tasks = ({
       setShowDeleteConfirm(false);
     }
   };
+
   const handleCancelDelete = () => {
     setShowDeleteConfirm(false);
   };
 
   const updateTaskCommands = (taskId, updatedCommands) => {
     setTasks((prevTasks) =>
-      prevTasks.map((t) => (t.id === taskId ? { ...t, commands: updatedCommands } : t))
+      prevTasks.map((t) =>
+        t.id === taskId ? { ...t, commands: updatedCommands } : t
+      )
     );
   };
 
   const handleGenerateTask = async () => {
     if (generateTaskPrompt.length < 5) return;
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:8000/generate-task/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: generateTaskPrompt }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to generate task");
       }
-  
+
       await fetchTasks();
-  
+
       if (!successMessageShown.current) {
         setSuccessMessage("Task generated successfully!");
-        successMessageShown.current = true; 
+        successMessageShown.current = true;
         setTimeout(() => setSuccessMessage(""), 3000);
       }
-  
+
       showGenerateTaskModal(false);
-  
       setGenerateTaskPrompt("");
     } catch (error) {
       console.error("Error generating task:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
       setTimeout(() => setSuccessMessage(""), 3000);
       successMessageShown.current = false;
     }
   };
-  
+
   return (
     <>
-      <div className={`delete-confirm-overlay ${showDeleteConfirm ? "show" : ""}`}>
+      <div
+        className={`delete-confirm-overlay ${
+          showDeleteConfirm ? "show" : ""
+        }`}
+      >
         <div className="delete-confirm-modal">
           <p>Are you sure you want to delete this task?</p>
           <div className="delete-confirm-buttons">
@@ -484,11 +508,14 @@ const Tasks = ({
         </div>
       </div>
 
+      {/* Tasks List */}
       <div className="tasks-container" onClick={handleContainerClick}>
         {tasks.map((task) => (
           <div
             key={task.id}
-            className={`task-item ${selectedTaskId === task.id ? "task-selected" : ""}`}
+            className={`task-item ${
+              selectedTaskId === task.id ? "task-selected" : ""
+            }`}
             onClick={(e) => handleTaskClick(task.id, e)}
             onDoubleClick={() => openModal(task.id)}
           >
@@ -503,7 +530,9 @@ const Tasks = ({
                 disabled={isDisabled()}
               >
                 <img
-                  src={runningTaskId === task.id ? loadingButton : startButton}
+                  src={
+                    runningTaskId === task.id ? loadingButton : startButton
+                  }
                   alt="start button"
                 />
               </button>
@@ -517,45 +546,69 @@ const Tasks = ({
             </div>
           </div>
         ))}
+
+        {/* Task Actions */}
         <div className="task-actions">
-          <button className="task-generate-button" onClick={() => showGenerateTaskModal(true)}>generate task</button>
-          <button className="add-btn" onClick={handleAddTask} disabled={isDisabled()}>new task</button>
-          <button className="remove-btn" onClick={handleRemoveTaskRequest}>remove task</button>
+          <button
+            className="task-generate-button"
+            onClick={() => showGenerateTaskModal(true)}
+          >
+            generate task
+          </button>
+          <button className="add-btn" onClick={handleAddTask} disabled={isDisabled()}>
+            new task
+          </button>
+          <button className="remove-btn" onClick={handleRemoveTaskRequest}>
+            remove task
+          </button>
         </div>
+
+        {/* Generate Task Modal */}
         {generateTaskModal && (
-          <div className="generate-task-modal" onClick={() => showGenerateTaskModal(false)}>
-            <div className="generate-task-input" onClick={(e) => e.stopPropagation()}>
-            <textarea
-              value={generateTaskPrompt}
-              onChange={(e) => setGenerateTaskPrompt(e.target.value)}
-              placeholder="Enter your prompt here..."
-            ></textarea>
-            {loading ? (
-              <div className="spinner-container">
-                <div className="spinner"></div>
-              </div>
-            ) : (
-              <button
-                onClick={handleGenerateTask}
-                disabled={loading}
-                style={{ backgroundColor: loading ? "#ccc" : "#004de6" }}
-              >
-                Generate
-              </button>
-            )}
-          </div>
+          <div
+            className="generate-task-modal"
+            onClick={() => showGenerateTaskModal(false)}
+          >
+            <div
+              className="generate-task-input"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <textarea
+                value={generateTaskPrompt}
+                onChange={(e) => setGenerateTaskPrompt(e.target.value)}
+                placeholder="Enter your prompt here..."
+              ></textarea>
+
+              {loading ? (
+                <div className="spinner-container">
+                  <div className="spinner"></div>
+                </div>
+              ) : (
+                <button
+                  onClick={handleGenerateTask}
+                  disabled={loading}
+                  style={{ backgroundColor: loading ? "#ccc" : "#004de6" }}
+                >
+                  Generate
+                </button>
+              )}
+            </div>
           </div>
         )}
 
+        {/* Success Message */}
         {successMessage && <div className="success-message">{successMessage}</div>}
 
+        {/* Command Modal (DndProvider) */}
         {currentModalTaskId && (
           <DndProvider backend={HTML5Backend}>
             <TaskList
               showModal={closeModal}
               taskId={currentModalTaskId}
               taskName={tasks.find((t) => t.id === currentModalTaskId)?.name}
-              commands={tasks.find((t) => t.id === currentModalTaskId)?.commands}
+              commands={
+                tasks.find((t) => t.id === currentModalTaskId)?.commands
+              }
               updateTaskCommands={(updatedCommands) =>
                 updateTaskCommands(currentModalTaskId, updatedCommands)
               }
