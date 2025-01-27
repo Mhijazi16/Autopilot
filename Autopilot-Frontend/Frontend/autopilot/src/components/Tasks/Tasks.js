@@ -52,10 +52,27 @@ const Tasks = ({
       }
       const data = await response.json();
       mapTasks(data);
+      if(runningTaskId != null) {
+        setTasks((prevTasks) =>
+          prevTasks.map((t) =>
+            t.id === runningTaskId
+              ? {
+                  ...t,
+                  commands: t.commands.map((cmd) => ({
+                    ...cmd,
+                    status: "pending",
+                  })),
+                }
+              : t
+          )
+        );
+        const newWs = new WebSocket("ws://127.0.0.1:8000/notification");
+        setWs(newWs);
+      }
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  }, [mapTasks]); 
+  }, [mapTasks, runningTaskId]); 
 
   useEffect(() => {
     fetchTasks();
@@ -68,6 +85,8 @@ const Tasks = ({
   const closeModal = () => {
     setCurrentModalTaskId(null);
   };
+
+
 
   const startTask = async (task) => {
 
@@ -98,6 +117,7 @@ const Tasks = ({
       const newWs = new WebSocket("ws://127.0.0.1:8000/notification");
       setWs(newWs);
       openModal(task.id);
+      setTimeout(() => {}, '001');
       
       newWs.onopen = async () => {
         console.log("WebSocket connected for notifications.");
@@ -117,18 +137,21 @@ const Tasks = ({
           
           if (response.ok) {
             const data = await response.json(); 
-            console.log(response.data);
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              {
-                id: uuidv4(), 
-                sender: "bot",
-                text: data.message, 
-                loading: false,
-              },
-            ]);
+            setTimeout(() => {
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                  {
+                    id: uuidv4(),
+                    sender: "bot",
+                    text: data.message,
+                    loading: false,
+                  },
+                    ]);
+
+                  }, 0);
           } else {
             console.error("Task start request failed:", response.statusText);
+            setTimeout(() => {
             setMessages((prevMessages) => [
               ...prevMessages,
               {
@@ -138,20 +161,25 @@ const Tasks = ({
                 loading: false,
               },
             ]);
+            }, 0);
           }
         } catch (fetchError) {
           console.error("Error sending task start request:", fetchError);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: uuidv4(),
-              sender: "bot",
-              text: "An error occurred while starting the task.",
-              loading: false,
-            },
-          ]);
+          setTimeout(() => {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              {
+                id: uuidv4(),
+                sender: "bot",
+                text: "An error occurred while starting the task.",
+                loading: false,
+              },
+            ]);
+          }, 0);
         } finally {
-          setRunningTaskId(null);
+          setTimeout(() => {
+            setRunningTaskId(null);
+            }, 0)
         }
         
       };
@@ -159,9 +187,11 @@ const Tasks = ({
       newWs.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log(data);
           if (!data.status) return;
-      
+          if (data.status === "summarizing"){
+            updateNotification("Summarizing", "summarizing");
+            return;
+          }
           console.log(data.status);
           setTasks((prevTasks) =>
             prevTasks.map((t) => {
@@ -171,7 +201,7 @@ const Tasks = ({
               const firstPendingIndex = updatedCommands.findIndex(
                 (cmd) => cmd.status === "pending"
               );
-      
+
               if (data.status === "running" && firstPendingIndex !== -1) {
                 updatedCommands[firstPendingIndex].status = "running";
                 updateNotification("Job Running", "running");
@@ -195,10 +225,7 @@ const Tasks = ({
                 if (firstRunningIndex !== -1) {
                   updatedCommands[firstRunningIndex].status = "failed";
                 }
-              } else if (data.status === "summarizing"){
-                updateNotification("Summarizing", "summarizing");
-              }
-      
+              } 
               const allFinished = updatedCommands.every(
                 (cmd) => cmd.status === "finished" || cmd.status === "failed"
               );
@@ -208,7 +235,9 @@ const Tasks = ({
                   ...cmd,
                   status: "idle",
                 }));
-                setRunningTaskId(null);
+                setTimeout(() => {
+                  setRunningTaskId(null);
+                  }, 0);
                 console.log("All commands finished, resetting to idle");
               }
       
@@ -232,6 +261,7 @@ const Tasks = ({
   };
   
   const updateNotification = (message, status) => {
+    setTimeout(() => {
     setNotifications((prevNotifications) => {
       const now = Date.now();
   
@@ -281,6 +311,8 @@ const Tasks = ({
   
       return updatedNotifications;
     });
+    }, 0);
+
   };
   
   
@@ -310,22 +342,14 @@ const Tasks = ({
             : t
         )
       );
-
-      setNotifications((prevNotifications) =>
-        prevNotifications.filter(
-          (notif) =>
-            !task.commands.some(
-              (cmd) => cmd.name === notif.message && notif.status === "running"
-            )
-        )
-      );
       
-      setRunningTaskId(null);
-
       if (ws) {
         ws.close();
         setWs(null);
       }
+      setNotifications(() => []);
+      setRunningTaskId(null);
+
 
       console.log("Task stopped successfully");
     } catch (error) {
@@ -344,7 +368,7 @@ const Tasks = ({
   };
 
   const handleAddTask = () => {
-    const newTaskId = -1;
+    const newTaskId = tasks.length + 1;
     const newTask = {
       id: newTaskId,
       name: `Task Name`,

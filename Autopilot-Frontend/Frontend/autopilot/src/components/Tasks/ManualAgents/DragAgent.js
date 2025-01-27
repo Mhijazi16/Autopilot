@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import Packages from "../../../assets/icons/packager.svg";
-import Navigation from "../../../assets/icons/navigation.png";
+// import Navigation from "../../../assets/icons/navigation.png";
 import Process from "../../../assets/icons/processes.svg";
 import Shell from "../../../assets/icons/shell.png";
 import Network from "../../../assets/icons/network.svg";
@@ -16,7 +16,7 @@ const icons = [
   { src: Process, alt: "Process" },
   { src: Shell, alt: "Shell" },
   { src: Packages, alt: "Packages" },
-  { src: Navigation, alt: "Navigation" },
+  // { src: Navigation, alt: "Navigation" },
   { src: Users, alt: "Users" },
   { src: Coder, alt: "Coder" },
   { src: Network, alt: "Network" },
@@ -86,8 +86,8 @@ const DragAgent = ({
     const rect = dragAgentRef.current.getBoundingClientRect();
     openPickerForAgent({
       id,
-      top: rect.top + window.scrollY + rect.height,
-      left: rect.left + window.scrollX + 47,
+      top: rect.top  + rect.height,
+      left: rect.left + 47,
     });
   };
 

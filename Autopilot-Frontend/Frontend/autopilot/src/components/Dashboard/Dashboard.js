@@ -106,48 +106,62 @@ const agentDetails = {
       </>
     ),
   },
-  Navigation: {
-    icon: navigationIcon,
-    description: (
-      <>
-        <p>The Navigation Agent helps you interact with various online services by allowing you to perform web searches, 
-        find images and videos, check weather forecasts, and get directions.</p><br/>
-        <ul>
-          <li><b>search google:</b> Search for web content on Google.</li>
-          <li><b>search google news:</b> Find news articles on Google News.</li>
-          <li><b>search google images:</b> Find images through Google.</li>
-          <li><b>search youtube videos:</b> Locate YouTube videos by title.</li>
-          <li><b>search weather forecast:</b> Get weather information for a specific location.</li>
-          <li><b>get top search result:</b> Fetch the top result from a Google search.</li>
-          <li><b>get directions:</b> Get driving or walking directions via Google Maps.</li>
-        </ul>
-      </>
-    ),
-  },
+  // Navigation: {
+  //   icon: navigationIcon,
+  //   description: (
+  //     <>
+  //       <p>The Navigation Agent helps you interact with various online services by allowing you to perform web searches, 
+  //       find images and videos, check weather forecasts, and get directions.</p><br/>
+  //       <ul>
+  //         <li><b>search google:</b> Search for web content on Google.</li>
+  //         <li><b>search google news:</b> Find news articles on Google News.</li>
+  //         <li><b>search google images:</b> Find images through Google.</li>
+  //         <li><b>search youtube videos:</b> Locate YouTube videos by title.</li>
+  //         <li><b>search weather forecast:</b> Get weather information for a specific location.</li>
+  //         <li><b>get top search result:</b> Fetch the top result from a Google search.</li>
+  //         <li><b>get directions:</b> Get driving or walking directions via Google Maps.</li>
+  //       </ul>
+  //     </>
+  //   ),
+  // },
   Processes: {
     icon: processIcon,
-    description: <><p>
-    The Database Agent manages data storage and retrieval,
-    ensuring efficient access to databases and structured data.
-    </p>
+    description: <>
+    <p>The Processes & Services Agent provides powerful tools to manage system services and processes, ensuring seamless control over your system's operations.</p><br/>
+    <ul>
+      <li><b>start service:</b> Start a specified service on the system.</li>
+      <li><b>stop service:</b> Stop a specified service running on the system.</li>
+      <li><b>restart service:</b> Restart a service to apply changes or recover from issues.</li>
+      <li><b>enable service:</b> Enable a service to start automatically on system boot.</li>
+      <li><b>disable service:</b> Disable a service from starting automatically on system boot.</li>
+      <li><b>show service status:</b> Display the current status of a specified service.</li>
+      <li><b>kill process:</b> Terminate a specific process by its ID or name.</li>
+      <li><b>list service logs:</b> View logs of a specific service to monitor or troubleshoot issues.</li>
+      <li><b>run service in background:</b> Run a service or process in the background for uninterrupted operation.</li>
+    </ul>
+
     </>,
   },
   Shell: {
     icon: shellIcon,
     description: <>
-    <p>
-    The Linux Shell Agent allows you to execute shell commands directly 
-    on your Linux system, making it easy to interact with the operating system through the command line.
-    </p>  
+    <p>The Shell Agent provides the flexibility to execute custom commands, enabling advanced operations and tasks not covered by other agents.</p><br/>
+    <ul>
+      <li><b>run custom command:</b> Execute any specific shell command directly on the system.</li>
+    </ul>
+
   </>
   },
   Coding: {
     icon: codeIcon,
     description: <>  
-    <p>
-    The Coding Agent supports various coding and development tools to
-    help with programming tasks and code management.
-    </p>
+    <p>The Code Agent streamlines the execution and automation of code-related tasks, making it easier to manage and run programs directly from the system.</p><br/>
+    <ul>
+      <li><b>compile and run C/C++ files:</b> Compile C or C++ programs and execute them seamlessly.</li>
+      <li><b>write and run scripts:</b> Create and execute Bash scripts or other programming language files.</li>
+      <li><b>create cron jobs:</b> Schedule tasks and automate processes by setting up cron jobs.</li>
+    </ul>
+
   </>
   },
   Github: {
@@ -172,9 +186,17 @@ const agentDetails = {
   Filesystem: {
     icon: filesystemIcon,
     description: <>  
-    <p>The Troubleshooting Agent helps identify and resolve technical issues within 
-    the system, ensuring smooth operations.
-    </p>
+    <p>The Filesystem Agent offers essential tools to manage and interact with files and folders, enhancing productivity and organization on your system.</p><br/>
+    <ul>
+      <li><b>locate file or folder:</b> Find the path of a specific file or folder on the system.</li>
+      <li><b>compress files:</b> Create compressed archives of files or folders for storage or sharing.</li>
+      <li><b>decompress files:</b> Extract compressed files to access their contents.</li>
+      <li><b>open file:</b> Open a specific file for viewing or editing.</li>
+      <li><b>open folder:</b> Access a folder to browse its contents.</li>
+      <li><b>open video:</b> Play a video file using the system's default player.</li>
+      <li><b>open image:</b> View an image file with the default viewer.</li>
+    </ul>
+
     </>
   },
   Users: {

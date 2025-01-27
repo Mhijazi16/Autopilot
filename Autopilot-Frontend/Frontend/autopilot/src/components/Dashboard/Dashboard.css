@@ -27,6 +27,14 @@
     margin-bottom: 3rem;
 }
 
+.agent-card:nth-child(7) {
+    margin-left: 12rem;
+}
+
+.agent-card:nth-child(8) {
+    margin-right: 12rem;
+}
+
 .agent-card {
     display: flex;
     gap: 7%;
