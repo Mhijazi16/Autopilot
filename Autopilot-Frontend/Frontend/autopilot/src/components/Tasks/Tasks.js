@@ -188,10 +188,6 @@ const Tasks = ({
           if (!data.status) return;
           console.log(data.status);
 
-          if (data.status === "summarizing") {
-            queueNotification("Summarizing", "summarizing");
-          }
-
           setTasks((prevTasks) =>
             prevTasks.map((t) => {
               if (t.id !== task.id) return t;
@@ -226,7 +222,7 @@ const Tasks = ({
                 (cmd) => cmd.status === "finished" || cmd.status === "failed"
               );
 
-              if (allFinished && data.status !== "summarizing") {
+              if (allFinished) {
                 updatedCommands = updatedCommands.map((cmd) => ({
                   ...cmd,
                   status: "idle",

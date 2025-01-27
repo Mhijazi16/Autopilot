@@ -80,9 +80,6 @@ function App() {
                 {notification.status === "running" && (
                   <span className="spinner-notif"></span>
                 )}
-                {notification.status === "summarizing" && (
-                  <span className="spinner-notif"></span>
-                )}
                 {notification.status === "finished" && <span className="icon">✔</span>}
                 {notification.status === "failed" && <span className="icon">✖</span>}
               </div>
