@@ -50,6 +50,7 @@ function App() {
                   <Chatbot
                     messages={messages}
                     setMessages={setMessages}
+                    setNotifications={setNotifications}
                   />
                 }
               />

@@ -97,15 +97,15 @@ const Tasks = ({
     setCurrentModalTaskId(null);
   };
 
+
   const startTask = async (task) => {
     if (task.id === -1) {
       setSuccessMessage("Task not saved!");
       setTimeout(() => setSuccessMessage(""), 3000);
       return;
     }
-    try {
-      setRunningTaskId(task.id);
-
+    
+    setRunningTaskId(task.id);
       setTasks((prevTasks) =>
         prevTasks.map((t) =>
           t.id === task.id
@@ -119,6 +119,9 @@ const Tasks = ({
             : t
         )
       );
+
+      
+    try {
 
       const newWs = new WebSocket("ws://127.0.0.1:8000/notification");
       setWs(newWs);
@@ -182,61 +185,72 @@ const Tasks = ({
         }
       };
 
+      
+
       newWs.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (!data.status) return;
           console.log(data.status);
 
-          setTasks((prevTasks) =>
-            prevTasks.map((t) => {
-              if (t.id !== task.id) return t;
-
-              let updatedCommands = [...t.commands];
-              const firstPendingIndex = updatedCommands.findIndex(
-                (cmd) => cmd.status === "pending"
-              );
-
-              if (data.status === "running" && firstPendingIndex !== -1) {
-                updatedCommands[firstPendingIndex].status = "running";
-                queueNotification("Job Running", "running");
-              } else if (data.status === "finished") {
-                queueNotification("Job Completed", "finished");
-                const firstRunningIndex = updatedCommands.findIndex(
-                  (cmd) => cmd.status === "running"
-                );
-                if (firstRunningIndex !== -1) {
-                  updatedCommands[firstRunningIndex].status = "finished";
-                }
-              } else if (data.status === "failed") {
-                queueNotification("Job Failed", "failed");
-                const firstRunningIndex = updatedCommands.findIndex(
-                  (cmd) => cmd.status === "running"
-                );
-                if (firstRunningIndex !== -1) {
-                  updatedCommands[firstRunningIndex].status = "failed";
-                }
-              }
-
-              const allFinished = updatedCommands.every(
+          
+          function mapNotifications(t) {
+            if (t.id !== task.id) return t;
+            let updatedCommands = [...t.commands];
+            
+            const firstPendingIndex = updatedCommands.findIndex((cmd) => cmd.status === "pending");
+            const firstRunningIndex = updatedCommands.findIndex((cmd) => cmd.status === "running");
+        
+            switch (data.status) {
+                case "running":
+                    if (firstPendingIndex !== -1) {
+                        updatedCommands[firstPendingIndex].status = "running";
+                        queueNotification("Job Running", "running");
+                    }
+                    break;
+        
+                case "finished":
+                    queueNotification("Job Completed", "finished");
+                    if (firstRunningIndex !== -1) {
+                        updatedCommands[firstRunningIndex].status = "finished";
+                    }
+                    break;
+        
+                case "failed":
+                    queueNotification("Job Failed", "failed");
+                    if (firstRunningIndex !== -1) {
+                        updatedCommands[firstRunningIndex].status = "failed";
+                    }
+                    break;
+        
+                default:
+                    console.warn("Unknown status:", data.status);
+                    break;
+            }
+        
+            const allFinished = updatedCommands.every(
                 (cmd) => cmd.status === "finished" || cmd.status === "failed"
-              );
-
-              if (allFinished) {
+            );
+        
+            if (allFinished) {
                 updatedCommands = updatedCommands.map((cmd) => ({
-                  ...cmd,
-                  status: "idle",
+                    ...cmd,
+                    status: "idle",
                 }));
                 setTimeout(() => setRunningTaskId(null), 0);
-                
+        
                 console.log("All commands finished, resetting to idle");
-              }
+            }
+        
+            return { ...t, commands: updatedCommands };
+        }
+        
 
-              return { ...t, commands: updatedCommands };
-            })
+          setTasks((prevTasks) =>
+            prevTasks.map((t) => mapNotifications(t))
           );
         } catch (err) {
-          console.error("Error parsing WebSocket message:", err);
+          console.error("Error parsing WebSocket message:", err);   
         }
       };
 
