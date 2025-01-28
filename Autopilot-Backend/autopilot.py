@@ -218,8 +218,8 @@ async def start_task(id: int):
             task = job['task']
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
+            response = f"\n\n **The task {task}\n\n"
             response += str(await runner.Run(task + "\n **please return only one word either failed or yes it worked**"))
-            print(response)
             if any(word in response.lower() for word in ["failed", "unsuccessful", "does not exist", "not successful"]):
                 await socket.send_json({"status": "failed"})
             else: 
