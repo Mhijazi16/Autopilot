@@ -16,10 +16,11 @@ def create_users(usernames: list[str], passwords: list[str]):
         Go12j#@1
     """
 
+    tmp = ""
     if len(usernames) == 0 or len(passwords) == 0: 
-        return "⚠️ Error: usernames or passwords are empty" 
+        raise Exception("⚠️ Error: usernames or passwords are empty") 
     elif len(usernames) != len(passwords): 
-        return "⚠️ Error: usernames length doesn't equal passwords length"
+        raise Exception("⚠️ Error: usernames length doesn't equal passwords length")
     
     successful_users = []
     command = "sudo useradd -m "
@@ -36,13 +37,14 @@ def create_users(usernames: list[str], passwords: list[str]):
             issue = f"useradd: user '{username}' already exists"
             if issue in result: 
                 tmp = f"🚧 user by the name of {username} is already in the system.\n"
+                raise Exception(issue)
             else: 
                 successful_users.append(username)
                 change_password(username,password)
                 tmp = f"✅ user by the name of {username} was created.\n"
 
         except: 
-            tmp = f"🚨 faild creating {username} as a user.\n"
+            tmp += f"🚨 faild creating {username} as a user.\n"
         finally: 
             send_to_terminal(tmp)
             output = tmp
@@ -66,23 +68,22 @@ def remove_users(usernames: list[str]):
     output = ""
 
     for username in usernames: 
+        tmp = ""
         try: 
-            tmp = ""
             cmd = command + username 
             start_terminal(cmd)
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
-            if "granted" in message: 
-                issue = f"userdel: user '{username}' does not exist"
-                if  issue in read_status(child): 
-                    tmp = f"🚧 user by the name of {username} doesn't exist.\n"
-                else: 
-                    remove_groups([username])
-                    successful_removes.append(username)
-                    tmp =  f"✅ user by the name of {username} was removed.\n"
+            if "not exist" in message: 
+                tmp += f"🚧 user by the name of {username} doesn't exist.\n"
+                raise Exception(tmp)
+            else: 
+                remove_groups([username])
+                successful_removes.append(username)
+                tmp =  f"✅ user by the name of {username} was removed.\n"
         except: 
-            tmp = f"🚨 faild removing {username}.\n"
+            tmp += f"🚨 faild removing {username}.\n"
         finally: 
             send_to_terminal(tmp)
             output += tmp
@@ -110,12 +111,11 @@ def add_groups(names: list[str]):
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
-            if "granted" in message: 
-                issue = f"groupadd: group '{group}' already exists"
-                if  issue in read_status(child): 
-                    tmp = f"🚧 group by the name of '{group}' already exist.\n"
-                else: 
-                    tmp = f"✅ group by the name of '{group}' was added.\n"
+            if  "already exists" in message: 
+                tmp = f"🚧 group by the name of '{group}' already exist.\n"
+                raise Exception(tmp)
+            else: 
+                tmp = f"✅ group by the name of '{group}' was added.\n"
         except: 
             tmp = f"🚨 faild creating {group}.\n"
         finally: 
@@ -132,27 +132,24 @@ def remove_groups(names: list[str]):
         Args: 
             names: list of strings
     """
-    if len(names) == 0: 
-        return "⚠️ Error: no group names were supplied!" 
 
     command = "sudo groupdel "
     output = ""
     for group in names: 
+        tmp = ""
         try: 
-            tmp = ""
             cmd = command + group 
             start_terminal(cmd)
             child = pexpect.spawn(cmd)
             child, message = handle_sudo(child)
 
-            if "granted" in message: 
-                issue = f"groupdel: group '{group}' does not exist"
-                if  issue in read_status(child): 
-                    tmp = f"🚧 group by the name of '{group}' doesn't exist.\n"
-                else: 
-                    tmp = f"✅ group by the name of '{group}' was removed.\n"
+            if "not exist" in message: 
+                tmp = f"🚧 group by the name of '{group}' doesn't exist.\n"
+                raise Exception(tmp)
+            else: 
+                tmp = f"✅ group by the name of '{group}' was removed.\n"
         except: 
-            tmp = f"🚨 faild removing {group}.\n"
+            tmp += f"🚨 faild removing {group}.\n"
         finally: 
             send_to_terminal(tmp)
             output += tmp
@@ -171,18 +168,22 @@ def add_group_users(group: str, usernames: list[str]):
     names = ",".join(usernames)
     command = f"sudo gpasswd -M {names} {group}"
     start_terminal(command)
-    output = ""
-
+    tmp = ""
     try:
         child = pexpect.spawn(command)
         child, message = handle_sudo(child)
-        output = f"✅ {names} where added to group {group}"
-    except Exception as e:
-        output = f"🚨 faild adding {names} to group : {group}.\n"
-    finally: 
-        send_to_terminal(output)
 
-    return output
+        if "not exist" in message: 
+            tmp = f"🚧 group or user by the name of '{group}' doesn't exist.\n"
+            raise Exception(tmp)
+        else: 
+            tmp = f"✅ {names} where added to group {group}"
+    except Exception:
+        tmp += f"🚨 faild adding {names} to group : {group}.\n"
+    finally: 
+        send_to_terminal(tmp)
+
+    return tmp  
 
 def remove_group_users(group: str, usernames: list[str]): 
     """
@@ -201,7 +202,11 @@ def remove_group_users(group: str, usernames: list[str]):
     try:
         child = pexpect.spawn(command)
         child, message = handle_sudo(child)
-        output = f"✅ {names} removed from group {group}"
+        if "not exist" in message: 
+            output = f"🚧 group or user by the name of '{group}' doesn't exist.\n"
+            raise Exception(output)
+        else: 
+            output = f"✅ {names} removed from group {group}"
     except Exception as e:
         output = f"🚨 faild removing {names} removing group : {group}.\n"
     finally: 

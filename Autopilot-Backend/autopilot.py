@@ -218,16 +218,15 @@ async def start_task(id: int):
             task = job['task']
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
-            response += str(await runner.Run(task))
-            if "failed" in response.lower(): 
+            response += str(await runner.Run(task + "\n **please return only one word either failed or yes it worked**"))
+            print(response)
+            if any(word in response.lower() for word in ["failed", "unsuccessful", "does not exist", "not successful"]):
                 await socket.send_json({"status": "failed"})
             else: 
-                print("1) finished the job")
                 await socket.send_json({"status": "finished"})
-                print("2) finished the job")
             result += response
 
-        print("starting to summarize")
+        print("[INFO] starting to summarize")
         # await socket.send_json({"status": "summarizing"})
         sum_prompt = f"""
             I have multiple Agents that run commands 
