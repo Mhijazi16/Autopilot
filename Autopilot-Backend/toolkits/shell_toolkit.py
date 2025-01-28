@@ -4,12 +4,6 @@ import os
 import socket
 import pexpect
 
-def start_terminal(command):
-    if not os.path.exists("/tmp/terminal_socket"): 
-        os.system("python /home/ha1st/github/Autopilot/Autopilot-Backend/utils/terminal.py &")
-        sleep(2)
-    send_to_terminal(f"$ {command}")
-
 def send_to_terminal(data):
     try:
         terminal_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -18,6 +12,12 @@ def send_to_terminal(data):
         terminal_socket.close()
     except Exception as e:
         print(f"Error sending data to socket: {e}")
+
+def start_terminal(command):
+    if not os.path.exists("/tmp/terminal_socket"): 
+        os.system("python /home/ha1st/github/Autopilot/Autopilot-Backend/utils/terminal.py &")
+        sleep(2)
+    send_to_terminal(f"$ {command}")
 
 def read_status(process) -> str:
     try:
@@ -35,14 +35,9 @@ def handle_sudo(process: pexpect.spawn, password: str = ""):
 
     process.expect_exact("[sudo] password for ha1st: ")
     process.sendline(password)
-    result = process.expect(["Sorry, try again.", pexpect.EOF,".*"])
-    read_status(process)
-
-    if  result == 0: 
-        process.close()
-        return process, "permission denied"
-    else :
-        return process, "access granted"
+    process.expect(["Sorry, try again.", pexpect.EOF,".*"])
+    result = read_status(process)
+    return process, result
 
 def execute(command): 
     """ 

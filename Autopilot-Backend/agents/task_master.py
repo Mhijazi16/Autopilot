@@ -30,9 +30,13 @@ class TaskMaster():
 
                 The Agents you can do that Job: 
                 {toolkit}
+
+                Please Only use the names of Agents provided don't 
+                use anything extra
             """
 
         self.llm = ChatOllama(
+            # model="llama3.1:8b-instruct-q4_K_S",
             model="llama3.1:8b-instruct-q5_0",
             temperature=0,
         ).with_structured_output(Plan)

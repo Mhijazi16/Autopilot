@@ -27,7 +27,7 @@ class ShellAgent():
         3. `command3`
         """
 
-        llm = ChatOllama(model="unsloth",temperature=0)
+        llm = ChatOllama(model="cracker",temperature=0)
         response = llm.invoke(prompt)
         return {'messages': response, 'prompt': state['messages'][-1].content}
 

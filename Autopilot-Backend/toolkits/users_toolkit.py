@@ -31,24 +31,22 @@ def create_users(usernames: list[str], passwords: list[str]):
             cmd = command + username 
             start_terminal(cmd)
             child = pexpect.spawn(cmd)
-            child, message = handle_sudo(child)
+            child, result = handle_sudo(child)
 
-            if "granted" in message: 
-                issue = f"useradd: user '{username}' already exists"
-                if issue in read_status(child): 
-                    tmp = f"🚧 user by the name of {username} is already in the system.\n"
-                else: 
-                    successful_users.append(username)
-                    change_password(username,password)
-                    tmp = f"✅ user by the name of {username} was created.\n"
+            issue = f"useradd: user '{username}' already exists"
+            if issue in result: 
+                tmp = f"🚧 user by the name of {username} is already in the system.\n"
+            else: 
+                successful_users.append(username)
+                change_password(username,password)
+                tmp = f"✅ user by the name of {username} was created.\n"
 
         except: 
             tmp = f"🚨 faild creating {username} as a user.\n"
         finally: 
             send_to_terminal(tmp)
-            output += tmp
-
-    return f"The result of the process:\n{output}"
+            output = tmp
+    return output
 
 def remove_users(usernames: list[str]): 
     """
@@ -186,6 +184,31 @@ def add_group_users(group: str, usernames: list[str]):
 
     return output
 
+def remove_group_users(group: str, usernames: list[str]): 
+    """
+        this tool removes one or more users from 
+        a group takes in group name and usernames
+        Args: 
+            group: str
+            usernames: list of strings
+    """
+
+    names = ",".join(usernames)
+    command = f"sudo gpasswd -d {names} {group}"
+    start_terminal(command)
+    output = ""
+
+    try:
+        child = pexpect.spawn(command)
+        child, message = handle_sudo(child)
+        output = f"✅ {names} removed from group {group}"
+    except Exception as e:
+        output = f"🚨 faild removing {names} removing group : {group}.\n"
+    finally: 
+        send_to_terminal(output)
+
+    return output
+
 def change_password(username: str, new_password: str): 
     """ 
         This tool is used to change 
@@ -194,6 +217,7 @@ def change_password(username: str, new_password: str):
             username: str 
             new_password: str
     """
+    output = ""
     try:
         command = f"sudo passwd {username}"
         start_terminal(command)
@@ -202,12 +226,17 @@ def change_password(username: str, new_password: str):
 
         child.expect_exact("[sudo] password for ha1st: ")
         child.sendline(password)
+        result = read_status(child)
+        if "not exist" in result: 
+            raise Exception()
 
         child.expect_exact("New password: ")
         child.sendline(new_password)
         child.expect_exact("Retype new password: ")
         child.sendline(new_password)
-        child.expect(EOF)
+        result = read_status(child)
+        if "error" in result: 
+            raise Exception()
         output = f"✅ Password successfully chagned to {new_password}" 
     except:
         output = "🚨 faild changing the password."
@@ -232,4 +261,5 @@ def get_users_toolkit():
             add_groups,
             remove_groups,
             add_group_users,
+            remove_group_users,
             change_password]

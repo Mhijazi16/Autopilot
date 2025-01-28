@@ -31,4 +31,4 @@ def agent_factory(agent , config):
         toolkit = get_coding_toolkit()
 
 
-    return ReactAgent("llama3.2", toolkit, config) 
+    return ReactAgent("llama3.1", toolkit, config) 

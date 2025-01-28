@@ -174,17 +174,10 @@ async def chat(prompt: str):
         toolkit = description_factory(toolbar)
         autopilot = TaskMaster(toolkit).compile_graph()
 
-        # agent = ReactAgent("groq",
-        #                    toolkit,
-        #                    {"configurable": {"thread_id": "1"}})
-        # agent = ReactAgent("llama3.2",
-        #                    toolkit,
-        #                    {"configurable": {"thread_id": "1"}})
-        # res = await agent.Run(prompt)
-
         output = await autopilot.ainvoke({'messages': prompt})
-        message = output['messages'][-1].content
-        return json.dumps({'message': message})
+        response = output['messages'][-1].content
+        message = str(response).split("</think>")[1]
+        return {'message': message}
     except Exception as e:
         print(f"Error in chat endpoint: {e}")
 
@@ -220,20 +213,22 @@ async def start_task(id: int):
                 memory.set("halt", "no")
                 break
             
-            await send_job_running()
+            await socket.send_json({"status": "running"})
             agent = job['agent']
             task = job['task']
             print(f"[INFO] current agent: {agent}")
             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
             response += str(await runner.Run(task))
             if "failed" in response.lower(): 
-                await send_job_failed()
+                await socket.send_json({"status": "failed"})
             else: 
-                await send_job_finished()
+                print("1) finished the job")
+                await socket.send_json({"status": "finished"})
+                print("2) finished the job")
             result += response
 
-        await send_summarizing()
-
+        print("starting to summarize")
+        # await socket.send_json({"status": "summarizing"})
         sum_prompt = f"""
             I have multiple Agents that run commands 
             on my linux system your responsible for 
