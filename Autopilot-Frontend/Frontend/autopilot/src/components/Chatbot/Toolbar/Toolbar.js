@@ -3,7 +3,7 @@ import { Tooltip } from 'react-tooltip';
 import "./Toolbar.css";
 
 import packagerIcon from '../../../assets/icons/packager.svg'
-import navigationIcon from '../../../assets/icons/navigation.png';
+// import navigationIcon from '../../../assets/icons/navigation.png';
 import processIcon from '../../../assets/icons/processes.svg';
 import shellIcon from '../../../assets/icons/shell.png';
 import networkIcon from '../../../assets/icons/network.svg'
@@ -19,7 +19,7 @@ const Toolbar = () => {
     { src: processIcon, alt: "Process" },
     { src: shellIcon, alt: "Shell" },
     { src: packagerIcon, alt: "Packages" },
-    { src: navigationIcon, alt: "Navigation" },
+    // { src: navigationIcon, alt: "Navigation" },
     { src: usersIcon, alt: "Users" },
     { src: codeIcon, alt: "Coder" },
     { src: networkIcon, alt: "Network" },
