@@ -26,7 +26,7 @@ class ToolbarSchema(BaseModel):
     Filesystem: Literal["On","Off"] = "Off"
 
 def init() -> Redis:
-    os.system("redis-server &")
+    # os.system("redis-server &")
     time.sleep(2)
 
     memory = get_memory() 

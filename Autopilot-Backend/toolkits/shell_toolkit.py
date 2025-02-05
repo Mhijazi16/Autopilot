@@ -19,9 +19,10 @@ def start_terminal(command):
         sleep(2)
     send_to_terminal(f"$ {command}")
 
-def read_status(process) -> str:
+def read_status(process, dont: bool = False) -> str:
     try:
-        process.expect(EOF)
+        if not dont: 
+            process.expect(EOF)
         data = process.before.decode()
         send_to_terminal(data)
         return data

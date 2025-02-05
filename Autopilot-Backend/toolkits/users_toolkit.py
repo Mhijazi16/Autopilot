@@ -17,11 +17,6 @@ def create_users(usernames: list[str], passwords: list[str]):
     """
 
     tmp = ""
-    if len(usernames) == 0 or len(passwords) == 0: 
-        raise Exception("⚠️ Error: usernames or passwords are empty") 
-    elif len(usernames) != len(passwords): 
-        raise Exception("⚠️ Error: usernames length doesn't equal passwords length")
-    
     successful_users = []
     command = "sudo useradd -m "
     output = ""
@@ -40,7 +35,7 @@ def create_users(usernames: list[str], passwords: list[str]):
                 raise Exception(issue)
             else: 
                 successful_users.append(username)
-                change_password(username,password)
+                change_password(username, password)
                 tmp = f"✅ user by the name of {username} was created.\n"
 
         except: 
@@ -149,7 +144,7 @@ def remove_groups(names: list[str]):
             else: 
                 tmp = f"✅ group by the name of '{group}' was removed.\n"
         except: 
-            tmp += f"🚨 faild removing {group}.\n"
+            tmp += f"🚨 faild removing {group} group.\n"
         finally: 
             send_to_terminal(tmp)
             output += tmp
@@ -227,11 +222,8 @@ def change_password(username: str, new_password: str):
         command = f"sudo passwd {username}"
         start_terminal(command)
         child = pexpect.spawn(command)
-        password = str(os.getenv("PASS"))
+        child, result = handle_sudo(child)
 
-        child.expect_exact("[sudo] password for ha1st: ")
-        child.sendline(password)
-        result = read_status(child)
         if "not exist" in result: 
             raise Exception()
 
@@ -239,7 +231,7 @@ def change_password(username: str, new_password: str):
         child.sendline(new_password)
         child.expect_exact("Retype new password: ")
         child.sendline(new_password)
-        result = read_status(child)
+        result = read_status(child, True)
         if "error" in result: 
             raise Exception()
         output = f"✅ Password successfully chagned to {new_password}" 

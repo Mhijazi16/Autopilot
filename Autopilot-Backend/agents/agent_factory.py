@@ -32,3 +32,4 @@ def agent_factory(agent , config):
 
 
     return ReactAgent("llama3.1", toolkit, config) 
+    # return ReactAgent("llama3.1:8b-instruct-q4_K_S", toolkit, config) 

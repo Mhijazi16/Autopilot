@@ -11,6 +11,10 @@ from langchain_ollama.chat_models import ChatOllama
 from agents.react import active_sockets
 from toolkits.toolkit_factory import description_factory
 from pydantic import BaseModel
+import psutil 
+import GPUtil
+import time
+import csv
 import asyncio
 import json
 
@@ -181,6 +185,40 @@ async def chat(prompt: str):
     except Exception as e:
         print(f"Error in chat endpoint: {e}")
 
+async def benchmark_system():
+    metrics = {}
+    cpu_usage = psutil.cpu_percent(interval=1)
+    metrics['cpu_usage'] = cpu_usage
+
+    gpus = GPUtil.getGPUs()
+    gpu = gpus[0]
+    metrics['gpu_usage'] = gpu.load * 100
+    metrics['gpu_memory_used'] = gpu.memoryUsed
+    metrics['gpu_temp'] = gpu.temperature
+
+    temps = psutil.sensors_temperatures()
+    metrics['cpu_temp'] = temps['coretemp'][0].current
+
+    return metrics
+
+async def write_benchmarks(metrics, task, after):
+    row = {
+        'task': task,
+        'cpu_usage': metrics['cpu_usage'] * 10,
+        'cpu_temp': metrics['cpu_temp'],
+        'gpu_usage': metrics['gpu_usage'] * 10,
+        'gpu_memory': metrics['gpu_memo'],
+        'gpu_temp': metrics['gpu_temp'],
+        'time': after
+    }
+    
+    headers = ['task', 'cpu_usage', 'gpu_usage','gpu_memory', 'cpu_temp', 'gpu_temp', 'time']
+    with open("benchmark.csv", mode='a', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=headers)
+        if file.tell() == 0:
+            writer.writeheader()
+        writer.writerow(row)
+
 @app.post("/tasks")
 async def create_task(task: Task): 
     key = f"task:{task.id}"
@@ -199,62 +237,131 @@ async def start_task(id: int):
     try:
         data = memory.get(f"task:{id}")
         jobs = json.loads(data)
-        socket = active_sockets['notification']
-        memory.set("halt", "no")
-        memory.set("feedback", "Off")
 
-        result = ""
         for job in jobs['commands']:
-            response = f"Agent Was Tasked to {job['agent']}"
-            response = f"The result from {job['agent']} Agent: \n"
-            halt = memory.get("halt")
-            if halt == "yes":
-                print("[INFO] Job was interrupted")
-                memory.set("halt", "no")
-                break
-            
-            await socket.send_json({"status": "running"})
-            agent = job['agent']
-            task = job['task']
-            print(f"[INFO] current agent: {agent}")
-            runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
-            response = f"\n\n **The task {task}\n\n"
-            response += str(await runner.Run(task + "\n **please return only one word either failed or yes it worked**"))
-            if any(word in response.lower() for word in ["failed", "unsuccessful", "does not exist", "not successful"]):
-                await socket.send_json({"status": "failed"})
-            else: 
-                await socket.send_json({"status": "finished"})
-            result += response
 
-        print("[INFO] starting to summarize")
+            before = time.time()
+
+            result += await process_job(job, socket)
+
+            after = time.time() - before
+            metrics = await benchmark_system()
+            await write_benchmarks(metrics , job['task'], after)
+
+
+        # print("[INFO] starting to summarize")
         # await socket.send_json({"status": "summarizing"})
-        sum_prompt = f"""
-            I have multiple Agents that run commands 
-            on my linux system your responsible for 
-            taking the results of those agents and 
-            after that summarize what they did on the 
-            system please use markdown and emoji
-            when you summarize. 
+        # sum_prompt = f"""
+        #     I have multiple Agents that run commands 
+        #     on my linux system your responsible for   
+        #     taking the results of those agents and 
+        #     after that summarize what they did on the 
+         #     system please use markdown and emoji
+        #     when you summarize. 
+        #
+        #     please don't add anything extra over 
+        #     the agents result I just need you to 
+        #     rephrashe it and make it look better.
+        #
+        #     Here is the Agents results:
+        #     {result}
+        #  """
+        # summarizer = ChatOllama(
+        #             model="deepseek-r1:7b",
+        #             temperature=0
+        #         )
+        #
+        # response = summarizer.invoke(sum_prompt)
+        # message = str(response.content).split("</think>")[1]
 
-            please don't add anything extra over 
-            the agents result I just need you to 
-            rephrashe it and make it look better.
-
-            Here is the Agents results:
-            {result}
-         """
-        summarizer = ChatOllama(
-                    model="deepseek-r1:7b",
-                    temperature=0
-                )
-
-        response = summarizer.invoke(sum_prompt)
-        message = str(response.content).split("</think>")[1]
-        return {'message': message}
+        return {'message': "hi"}
     except Exception as e:
-        await send_job_failed()
-        print(f"[ERROR] Issue in Starting Task {e}")
-        return {'message': "failed executing Jobs"}
+        print(f"[ERROR] {e}")
+        await socket.send_json({"status": "error", "message": str(e)})
+
+async def process_job(job, socket):
+    response = f"Agent Was Tasked to {job['agent']}"
+    response = f"The result from {job['agent']} Agent: \n"
+    halt = memory.get("halt")
+    if halt == "yes":
+        print("[INFO] Job was interrupted")
+        memory.set("halt", "no")
+        return response
+    
+    await socket.send_json({"status": "running"})
+    agent = job['agent']
+    task = job['task']
+    print(f"[INFO] current agent: {agent}")
+    runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
+    response = f"\n\n **The task {task}\n\n"
+    response += str(await runner.Run(task + "\n **please return only one word either failed or yes it worked**"))
+    if any(word in response.lower() for word in ["failed", "unsuccessful", "does not exist", "not successful"]):
+        await socket.send_json({"status": "failed"})
+    else: 
+        await socket.send_json({"status": "finished"})
+    return response
+
+# @app.post("/tasks/{id}/start")
+# async def start_task(id: int): 
+#     try:
+#         data = memory.get(f"task:{id}")
+#         jobs = json.loads(data)
+#         socket = active_sockets['notification']
+#         memory.set("halt", "no")
+#         memory.set("feedback", "Off")
+#
+#         result = ""
+#         for job in jobs['commands']:
+#             response = f"Agent Was Tasked to {job['agent']}"
+#             response = f"The result from {job['agent']} Agent: \n"
+#             halt = memory.get("halt")
+#             if halt == "yes":
+#                 print("[INFO] Job was interrupted")
+#                 memory.set("halt", "no")
+#                 break
+#
+#             await socket.send_json({"status": "running"})
+#             agent = job['agent']
+#             task = job['task']
+#             print(f"[INFO] current agent: {agent}")
+#             runner = agent_factory(agent, {"configurable": {"thread_id": 1}})
+#             response = f"\n\n **The task {task}\n\n"
+#             response += str(await runner.Run(task + "\n **please return only one word either failed or yes it worked**"))
+#             if any(word in response.lower() for word in ["failed", "unsuccessful", "does not exist", "not successful"]):
+#                 await socket.send_json({"status": "failed"})
+#             else: 
+#                 await socket.send_json({"status": "finished"})
+#             result += response
+#
+        # print("[INFO] starting to summarize")
+        # await socket.send_json({"status": "summarizing"})
+        # sum_prompt = f"""
+        #     I have multiple Agents that run commands 
+        #     on my linux system your responsible for 
+        #     taking the results of those agents and 
+        #     after that summarize what they did on the 
+        #     system please use markdown and emoji
+        #     when you summarize. 
+        #
+        #     please don't add anything extra over 
+        #     the agents result I just need you to 
+        #     rephrashe it and make it look better.
+        #
+        #     Here is the Agents results:
+        #     {result}
+        #  """
+        # summarizer = ChatOllama(
+        #             model="deepseek-r1:7b",
+        #             temperature=0
+        #         )
+        #
+        # response = summarizer.invoke(sum_prompt)
+        # message = str(response.content).split("</think>")[1]
+    #     return {'message': "done"}
+    # except Exception as e:
+    #     await send_job_failed()
+    #     print(f"[ERROR] Issue in Starting Task {e}")
+    #     return {'message': "failed executing Jobs"}
 
 @app.post("/tasks/stop")
 async def stop_task(): 
