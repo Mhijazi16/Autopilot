@@ -1,7 +1,6 @@
 # Autopilot
 ![autopilot](./Autopilot-Frontend/UI/logo.gif)
 
-
 ## User Interface 
 ![Dashboard](https://github.com/user-attachments/assets/1b26874f-8969-412e-8cee-0ab2e9ebee89)
 ![Aut](https://github.com/user-attachments/assets/3e37bd52-6214-4e73-bdd9-db8079f0bc69)
